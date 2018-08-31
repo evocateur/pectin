@@ -1,0 +1,21 @@
+# don't build tags, it's redundant
+if: tag IS blank
+language: node_js
+node_js:
+  - '10'
+  - '8'
+cache:
+  directories:
+    - $HOME/.npm
+before_install:
+  - nvm install-latest-npm
+install:
+  - npm ci
+script:
+  - npm test
+sudo: false
+env:
+  global:
+    - NO_UPDATE_NOTIFIER=1
+matrix:
+  fast_finish: true
