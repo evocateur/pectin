@@ -51,13 +51,13 @@ Pectin's CLI was written to seamlessly wrap `rollup`. It helps avoid, among othe
 
 ## Packages
 
--   [`@pectin/api`](./packages/pectin-api)
--   [`@pectin/babelrc`](./packages/pectin-babelrc)
--   [`@pectin/cli`](./packages/pectin-cli)
--   [`@pectin/core`](./packages/pectin-core)
--   [`rollup-config-pectin`](./packages/rollup-config-pectin)
--   [`rollup-plugin-main-entry`](./packages/rollup-plugin-main-entry)
--   [`rollup-plugin-subpath-externals`](./packages/rollup-plugin-subpath-externals)
+-   [`@pectin/api`](./packages/pectin-api#readme)
+-   [`@pectin/babelrc`](./packages/pectin-babelrc#readme)
+-   [`@pectin/cli`](./packages/pectin-cli#readme)
+-   [`@pectin/core`](./packages/pectin-core#readme)
+-   [`rollup-config-pectin`](./packages/rollup-config-pectin#readme)
+-   [`rollup-plugin-main-entry`](./packages/rollup-plugin-main-entry#readme)
+-   [`rollup-plugin-subpath-externals`](./packages/rollup-plugin-subpath-externals#readme)
 
 ## Related
 
