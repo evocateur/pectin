@@ -33,14 +33,14 @@
   },
   "dependencies": {
     "@pectin/babelrc": "file:../pectin-babelrc",
-    "rollup-plugin-main-entry": "file:../rollup-plugin-main-entry",
-    "rollup-plugin-subpath-externals": "file:../rollup-plugin-subpath-externals",
     "babel-core": "^6.26.0",
     "babel-plugin-external-helpers": "^6.22.0",
     "load-json-file": "^4.0.0",
     "rollup-plugin-babel": "^3.0.7",
     "rollup-plugin-commonjs": "^9.1.6",
     "rollup-plugin-json": "^3.0.0",
-    "rollup-plugin-node-resolve": "^3.3.0"
+    "rollup-plugin-main-entry": "file:../rollup-plugin-main-entry",
+    "rollup-plugin-node-resolve": "^3.3.0",
+    "rollup-plugin-subpath-externals": "file:../rollup-plugin-subpath-externals"
   }
 }
