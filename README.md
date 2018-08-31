@@ -52,6 +52,11 @@ For example, it isn't always the case that _every_ package in a monorepo actuall
 
 Pectin's CLI was written to seamlessly wrap `rollup`. It helps avoid, among other things, Rollup's CLI emitting a warning and exiting non-zero when you pass an empty array (that is, no changes since the last build) to Rollup via the default export of `rollup.config.js`. Pectin's CLI supports all options supported by Rollup's CLI.
 
+## Contributing
+
+Please note that this project is released with a [Contributor Code of Conduct](./CODE_OF_CONDUCT.md).
+By participating in this project you agree to abide by its terms.
+
 ## Packages
 
 -   [`@pectin/api`](./packages/pectin-api#readme)
