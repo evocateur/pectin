@@ -2,6 +2,9 @@
 
 > [Rollup][]-related tools for incremental transpilation of packages in [Lerna][]-based monorepos
 
+[![npm version](https://img.shields.io/npm/v/@pectin/cli.svg)](https://www.npmjs.com/package/@pectin/cli)
+[![Build Status](https://travis-ci.org/evocateur/pectin.svg?branch=latest)](https://travis-ci.org/evocateur/pectin)
+
 ## Getting Started
 
 The easiest way to start using Pectin is to install the CLI and run it during an npm lifecycle, such as `"prerelease"`:
