@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`pectin-core integration: cjs 1`] = `
+"'use strict';
+
+function foo() {}
+
+module.exports = foo;
+"
+`;
+
+exports[`pectin-core integration: esm 1`] = `
+"function foo() {}
+
+export default foo;
+"
+`;
+
+exports[`pectin-core throws an error when no pkg.main supplied 1`] = `"required field 'main' missing in package.json"`;

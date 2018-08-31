@@ -1,0 +1,47 @@
+{
+  "name": "pectin-monorepo",
+  "version": "0.0.0-ignore",
+  "description": "Pectin makes fruit-rollups stronger",
+  "author": "Daniel Stockman <daniel.stockman@gmail.com>",
+  "homepage": "https://github.com/evocateur/pectin#readme",
+  "license": "ISC",
+  "private": true,
+  "engines": {
+    "npm": ">=5.6.0",
+    "node": ">=8.9"
+  },
+  "bin": {
+    "pectin": "packages/pectin-cli/bin/pectin"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/evocateur/pectin.git"
+  },
+  "scripts": {
+    "lint": "eslint --cache --cache-location ./node_modules/.cache/ --ignore-path .gitignore .",
+    "pretest": "npm run lint",
+    "test": "jest --coverage"
+  },
+  "dependencies": {
+    "@pectin/api": "file:packages/pectin-api",
+    "@pectin/babelrc": "file:packages/pectin-babelrc",
+    "@pectin/cli": "file:packages/pectin-cli",
+    "@pectin/core": "file:packages/pectin-core",
+    "rollup-config-pectin": "file:packages/rollup-config-pectin",
+    "rollup-plugin-main-entry": "file:packages/rollup-plugin-main-entry",
+    "rollup-plugin-subpath-externals": "file:packages/rollup-plugin-subpath-externals"
+  },
+  "devDependencies": {
+    "chalk": "^2.4.1",
+    "eslint": "^5.4.0",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-zillow": "^1.0.0",
+    "jest": "^23.5.0",
+    "lerna": "^3.2.1",
+    "prettier": "^1.14.2",
+    "rollup": "^0.65.0",
+    "tacks": "^1.2.7",
+    "tempy": "^0.2.1",
+    "touch": "^3.1.0"
+  }
+}

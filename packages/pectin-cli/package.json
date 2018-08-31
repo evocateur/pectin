@@ -1,0 +1,42 @@
+{
+  "name": "@pectin/cli",
+  "version": "1.0.0",
+  "description": "Lightweight CLI for running convention-based rollup builds in lerna monorepos",
+  "keywords": [
+    "rollup",
+    "cli",
+    "lerna",
+    "monorepo"
+  ],
+  "author": "Daniel Stockman <daniel.stockman@gmail.com>",
+  "homepage": "https://github.com/evocateur/pectin/tree/latest/packages/pectin-cli#readme",
+  "license": "ISC",
+  "main": "lib/pectin-cli.js",
+  "bin": {
+    "pectin": "bin/pectin"
+  },
+  "files": [
+    "bin",
+    "lib"
+  ],
+  "engines": {
+    "node": ">=8.9"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/evocateur/pectin.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "dependencies": {
+    "@pectin/api": "file:../pectin-api",
+    "npmlog": "^4.1.2",
+    "resolve-from": "^4.0.0",
+    "rollup": "^0.65.0",
+    "yargs": "^12.0.1"
+  }
+}

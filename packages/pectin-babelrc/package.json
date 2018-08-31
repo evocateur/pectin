@@ -1,0 +1,35 @@
+{
+  "name": "@pectin/babelrc",
+  "version": "1.0.0",
+  "description": "Locate and prepare custom babel config for rollup-plugin-babel",
+  "keywords": [
+    "rollup",
+    "babelrc"
+  ],
+  "author": "Daniel Stockman <daniel.stockman@gmail.com>",
+  "homepage": "https://github.com/evocateur/pectin/tree/latest/packages/pectin-babelrc#readme",
+  "license": "ISC",
+  "main": "lib/pectin-babelrc.js",
+  "files": [
+    "lib"
+  ],
+  "engines": {
+    "node": ">=8.9"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/evocateur/pectin.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "peerDependencies": {
+    "rollup-plugin-babel": "^3.0.7"
+  },
+  "dependencies": {
+    "cosmiconfig": "^5.0.6"
+  }
+}

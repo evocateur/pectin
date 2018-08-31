@@ -1,0 +1,33 @@
+---
+  extends:
+    - plugin:zillow/recommended
+    - plugin:zillow/jest
+    - plugin:node/recommended
+  env:
+    browser: false
+    node: true
+  plugins:
+    - node
+  rules:
+    node/no-unsupported-features:
+      - error
+      # version controlled by "engines" field in package.json
+    padding-line-between-statements:
+      - error
+      # blank line before return statements
+      - { blankLine: "always", prev: "*", next: "return" }
+      # blank line after const/let statement(s)
+      - { blankLine: "always", prev: ["const", "let"], next: "*" }
+      - { blankLine: "any",    prev: ["const", "let"], next: ["const", "let"] }
+      # blank line before and after multi-line block-like statements
+      - { blankLine: "always", prev: "*", next: "multiline-block-like" }
+      - { blankLine: "always", prev: "multiline-block-like", next: "*" }
+    strict: off
+  root: true
+  overrides:
+    - files:
+        - "packages/*/test/**"
+      rules:
+        # dev dependencies are hoisted to the root
+        zillow/import/no-extraneous-dependencies: off
+        node/no-extraneous-require: off

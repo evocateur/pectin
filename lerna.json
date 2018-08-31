@@ -1,0 +1,19 @@
+{
+  "command": {
+    "publish": {
+      "allowBranch": "latest",
+      "conventionalCommits": true,
+      "message": "chore(release): %s"
+    }
+  },
+  "ignoreChanges": [
+    "**/__tests__/**",
+    "**/test/**",
+    "*.test.js",
+    "*.md"
+  ],
+  "packages": [
+    "packages/*"
+  ],
+  "version": "1.0.0"
+}

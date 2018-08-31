@@ -1,0 +1,181 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`pectin-babelrc appends external-helpers to babelrc plugins when missing 1`] = `
+Object {
+  "babelrc": false,
+  "exclude": "node_modules/**",
+  "plugins": Array [
+    "transform-object-rest-spread",
+    "external-helpers",
+  ],
+  "presets": Array [
+    Array [
+      "env",
+      Object {
+        "modules": false,
+        "runtime": false,
+      },
+    ],
+  ],
+}
+`;
+
+exports[`pectin-babelrc creates babelrc plugins if missing 1`] = `
+Object {
+  "babelrc": false,
+  "exclude": "node_modules/**",
+  "plugins": Array [
+    "external-helpers",
+  ],
+  "presets": Array [
+    Array [
+      "env",
+      Object {
+        "modules": false,
+        "runtime": false,
+      },
+    ],
+  ],
+}
+`;
+
+exports[`pectin-babelrc does not duplicate external-helpers in babelrc plugins 1`] = `
+Object {
+  "babelrc": false,
+  "exclude": "node_modules/**",
+  "plugins": Array [
+    "external-helpers",
+    "lodash",
+  ],
+  "presets": Array [
+    Array [
+      "env",
+      Object {
+        "modules": false,
+        "runtime": false,
+      },
+    ],
+  ],
+}
+`;
+
+exports[`pectin-babelrc does not pass options to non-configurable presets 1`] = `
+Object {
+  "babelrc": false,
+  "exclude": "node_modules/**",
+  "plugins": Array [
+    "external-helpers",
+  ],
+  "presets": Array [
+    Array [
+      "env",
+      Object {
+        "modules": false,
+        "runtime": false,
+      },
+    ],
+    "react",
+  ],
+}
+`;
+
+exports[`pectin-babelrc enables runtimeHelpers when babel-runtime is a dep 1`] = `
+Object {
+  "babelrc": false,
+  "exclude": "node_modules/**",
+  "plugins": Array [],
+  "presets": Array [
+    Array [
+      "env",
+      Object {
+        "modules": false,
+        "runtime": true,
+      },
+    ],
+  ],
+  "runtimeHelpers": true,
+}
+`;
+
+exports[`pectin-babelrc finds .babelrc.js config 1`] = `
+Object {
+  "babelrc": false,
+  "exclude": "node_modules/**",
+  "plugins": Array [
+    "external-helpers",
+  ],
+  "presets": Array [
+    Array [
+      "env",
+      Object {
+        "modules": false,
+        "runtime": false,
+      },
+    ],
+  ],
+}
+`;
+
+exports[`pectin-babelrc finds babel.config.js config 1`] = `
+Object {
+  "babelrc": false,
+  "exclude": "node_modules/**",
+  "plugins": Array [
+    "external-helpers",
+  ],
+  "presets": Array [
+    Array [
+      "env",
+      Object {
+        "modules": false,
+        "runtime": false,
+      },
+    ],
+  ],
+}
+`;
+
+exports[`pectin-babelrc finds pkg.babel config 1`] = `
+Object {
+  "babelrc": false,
+  "exclude": "node_modules/**",
+  "plugins": Array [
+    "external-helpers",
+  ],
+  "presets": Array [
+    Array [
+      "env",
+      Object {
+        "modules": false,
+        "runtime": false,
+      },
+    ],
+  ],
+}
+`;
+
+exports[`pectin-babelrc overrides preset modules config 1`] = `
+Object {
+  "babelrc": false,
+  "exclude": "node_modules/**",
+  "plugins": Array [
+    "external-helpers",
+  ],
+  "presets": Array [
+    Array [
+      "env",
+      Object {
+        "loose": true,
+        "modules": false,
+        "runtime": false,
+      },
+    ],
+  ],
+}
+`;
+
+exports[`pectin-babelrc throws an error when .babelrc preset is missing 1`] = `"At least one options-accepting preset (like babel-preset-env) is required in .babelrc"`;
+
+exports[`pectin-babelrc throws an error when no configurable preset is found 1`] = `"At least one options-accepting preset (like babel-preset-env) is required in .babelrc"`;
+
+exports[`pectin-babelrc throws an error when pkg.babel preset is missing 1`] = `"At least one options-accepting preset (like babel-preset-env) is required in \\"babel\\" config block of package.json"`;
