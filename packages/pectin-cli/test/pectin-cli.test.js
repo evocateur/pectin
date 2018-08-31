@@ -24,8 +24,16 @@ jest.mock('../lib/invoke-rollup');
 const run = (...args) =>
     new Promise((resolve, reject) =>
         cli()
-            .fail((msg, err) => reject(err))
-            .parse(args, (err, argv) => resolve(argv))
+            .fail((msg, err) => {
+                setImmediate(() => reject(err));
+            })
+            .parse(args, (err, argv) => {
+                // I have no idea why Jest + Node v8.x needs this wrapper
+                // Without it, all the mock call assertions fail because the
+                // call registration has not been made yet?
+                // Basically, it's resolving "too quickly", as far as I can tell
+                setImmediate(() => resolve(argv));
+            })
     );
 
 describe('pectin-cli', () => {
