@@ -37,7 +37,7 @@
     "eslint-plugin-node": "^7.0.1",
     "eslint-plugin-zillow": "^1.0.0",
     "jest": "^23.5.0",
-    "lerna": "^3.2.1",
+    "lerna": "^3.4.0",
     "prettier": "^1.14.2",
     "rollup": "^0.65.0",
     "tacks": "^1.2.7",
