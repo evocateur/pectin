@@ -33,11 +33,10 @@
     "rollup": ">=0.65.0"
   },
   "dependencies": {
+    "@lerna/project": "^3.0.0",
     "@pectin/core": "file:../pectin-core",
     "dot-prop": "^4.2.0",
-    "find-up": "^3.0.0",
     "globby": "^8.0.1",
-    "load-json-file": "^4.0.0",
     "p-map": "^1.2.0"
   }
 }

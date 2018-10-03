@@ -5,11 +5,10 @@ const fs = require('fs');
 const path = require('path');
 const util = require('util');
 const dotProp = require('dot-prop');
-const findUp = require('find-up');
 const globby = require('globby');
-const loadJsonFile = require('load-json-file');
 const pMap = require('p-map');
-const { loadManifest, createConfig } = require('@pectin/core');
+const { getPackages } = require('@lerna/project');
+const { createConfig } = require('@pectin/core');
 
 const statAsync = util.promisify(fs.stat);
 
@@ -22,23 +21,18 @@ async function findConfigs({
     concurrency = os.cpus().length,
     watch = !!process.env.ROLLUP_WATCH,
 } = {}) {
-    const manifests = await findManifests(cwd);
-    const pkgs = await pMap(manifests, m => loadManifest(m), { concurrency: 100 });
+    const lernaPackages = await getPackages(cwd);
+    const pkgs = lernaPackages.map(wrapper => {
+        const pkg = wrapper.toJSON();
+
+        // map synthetic location to internal cwd property
+        pkg.cwd = wrapper.location;
+
+        return pkg;
+    });
     const configs = await pMap(pkgs, pkg => generateConfig(pkg, { watch }), { concurrency });
 
     return configs.filter(x => Boolean(x));
-}
-
-async function findManifests(cwd) {
-    const lernaJsonPath = await findUp('lerna.json', { cwd });
-    const lernaConfig = await loadJsonFile(lernaJsonPath);
-    const patterns = lernaConfig.packages.map(rootGlob => `${rootGlob}/package.json`);
-
-    return globby(patterns, {
-        absolute: true,
-        cwd: path.dirname(lernaJsonPath),
-        ignore: ['**/node_modules/**'],
-    });
 }
 
 async function generateConfig(pkg, opts) {
