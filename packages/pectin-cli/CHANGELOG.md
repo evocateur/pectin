@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.2.0"></a>
+# [1.2.0](https://github.com/evocateur/pectin/compare/v1.1.0...v1.2.0) (2018-10-03)
+
+
+### Features
+
+* **cli:** Upgrade rollup to ^0.66.3 ([653ed9b](https://github.com/evocateur/pectin/commit/653ed9b))
+
+
+
+
+
 <a name="1.1.0"></a>
 # [1.1.0](https://github.com/evocateur/pectin/compare/v1.0.0...v1.1.0) (2018-10-03)
 
