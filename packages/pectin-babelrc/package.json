@@ -27,7 +27,7 @@
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "peerDependencies": {
-    "rollup-plugin-babel": "^3.0.7"
+    "rollup-plugin-babel": "^4.0.1"
   },
   "dependencies": {
     "cosmiconfig": "^5.0.6"

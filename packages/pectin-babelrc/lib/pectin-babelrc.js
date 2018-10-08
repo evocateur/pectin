@@ -39,14 +39,10 @@ module.exports = async function pectinBabelrc(pkg, cwd) {
 
     const presetOptions = {
         modules: false,
-        runtime: false,
     };
 
-    // enable transform-runtime when babel-runtime found in dependencies
-    if ('babel-runtime' in (pkg.dependencies || {})) {
-        presetOptions.runtime = true;
-        rc.runtimeHelpers = true;
-    }
+    // enable runtime transform when @babel/runtime found in dependencies
+    const runtimeHelpers = '@babel/runtime' in (pkg.dependencies || {});
 
     // pass options to presets
     if (hasConfigurablePreset(rc)) {
@@ -71,16 +67,16 @@ module.exports = async function pectinBabelrc(pkg, cwd) {
                 : fileLoc;
 
         throw new Error(
-            `At least one options-accepting preset (like babel-preset-env) is required in ${badConfig}`
+            `At least one options-accepting preset (like @babel/preset-env) is required in ${badConfig}`
         );
     }
 
-    // add external-helpers if runtime is not enabled
-    if (!rc.runtimeHelpers) {
+    // add @babel/plugin-external-helpers if runtime is not enabled
+    if (!runtimeHelpers) {
         if (!rc.plugins) {
-            rc.plugins = ['external-helpers'];
-        } else if (rc.plugins.indexOf('external-helpers') === -1) {
-            rc.plugins = rc.plugins.concat('external-helpers');
+            rc.plugins = ['@babel/plugin-external-helpers'];
+        } else if (rc.plugins.indexOf('@babel/plugin-external-helpers') === -1) {
+            rc.plugins = rc.plugins.concat('@babel/plugin-external-helpers');
         }
     }
 
