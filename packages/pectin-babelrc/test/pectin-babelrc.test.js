@@ -16,13 +16,13 @@ function createFixture(spec) {
 }
 
 describe('pectin-babelrc', () => {
-    it('appends external-helpers to babelrc plugins when missing', async () => {
+    it('appends @babel/plugin-external-helpers to babelrc plugins when missing', async () => {
         const pkg = {
             name: 'helpers-external',
         };
         const cwd = createFixture({
             '.babelrc': File({
-                presets: ['env'],
+                presets: ['@babel/preset-env'],
                 plugins: ['transform-object-rest-spread'],
             }),
             'package.json': File(pkg),
@@ -31,14 +31,14 @@ describe('pectin-babelrc', () => {
         await expect(pectinBabelrc(pkg, cwd)).resolves.toMatchSnapshot();
     });
 
-    it('does not duplicate external-helpers in babelrc plugins', async () => {
+    it('does not duplicate @babel/plugin-external-helpers in babelrc plugins', async () => {
         const pkg = {
             name: 'helpers-existing',
         };
         const cwd = createFixture({
             '.babelrc': File({
-                presets: ['env'],
-                plugins: ['external-helpers', 'lodash'],
+                presets: ['@babel/preset-env'],
+                plugins: ['@babel/plugin-external-helpers', 'lodash'],
             }),
             'package.json': File(pkg),
         });
@@ -52,7 +52,7 @@ describe('pectin-babelrc', () => {
         };
         const cwd = createFixture({
             '.babelrc': File({
-                presets: ['env', 'react'],
+                presets: ['@babel/preset-env', 'react'],
             }),
             'package.json': File(pkg),
         });
@@ -66,7 +66,7 @@ describe('pectin-babelrc', () => {
         };
         const cwd = createFixture({
             '.babelrc': File({
-                presets: [['env', { loose: true, modules: 'commonjs' }]],
+                presets: [['@babel/preset-env', { loose: true, modules: 'commonjs' }]],
             }),
             'package.json': File(pkg),
         });
@@ -74,17 +74,17 @@ describe('pectin-babelrc', () => {
         await expect(pectinBabelrc(pkg, cwd)).resolves.toMatchSnapshot();
     });
 
-    it('enables runtimeHelpers when babel-runtime is a dep', async () => {
+    it('enables runtimeHelpers when @babel/runtime is a dep', async () => {
         const pkg = {
             name: 'helpers-runtime',
             dependencies: {
-                'babel-runtime': '^6.23.0',
+                '@babel/runtime': '^7.0.0',
                 lodash: '^4.17.4',
             },
         };
         const cwd = createFixture({
             '.babelrc': File({
-                presets: ['env'],
+                presets: ['@babel/preset-env'],
                 plugins: [],
             }),
             'package.json': File(pkg),
@@ -102,7 +102,7 @@ describe('pectin-babelrc', () => {
         };
         const cwd = createFixture({
             '.babelrc': File({
-                presets: ['env'],
+                presets: ['@babel/preset-env'],
             }),
             'package.json': File(pkg),
         });
@@ -119,7 +119,7 @@ describe('pectin-babelrc', () => {
         };
         const cwd = createFixture({
             '.babelrc': File({
-                presets: ['env'],
+                presets: ['@babel/preset-env'],
                 plugins: ['lodash'],
             }),
             'package.json': File(pkg),
@@ -140,7 +140,7 @@ describe('pectin-babelrc', () => {
         const cwd = createFixture({
             'babel.config.js': File(`
                 module.exports = {
-                    presets: ['env'],
+                    presets: ['@babel/preset-env'],
                 };
             `),
             'package.json': File(pkg),
@@ -156,7 +156,7 @@ describe('pectin-babelrc', () => {
         const cwd = createFixture({
             '.babelrc.js': File(`
                 module.exports = {
-                    presets: ['env'],
+                    presets: ['@babel/preset-env'],
                 };
             `),
             'package.json': File(pkg),
@@ -169,7 +169,7 @@ describe('pectin-babelrc', () => {
         const pkg = {
             name: 'with-babel-prop',
             babel: {
-                presets: ['env'],
+                presets: ['@babel/preset-env'],
             },
         };
         const cwd = createFixture({
@@ -234,7 +234,7 @@ describe('pectin-babelrc', () => {
         const pkg2 = {
             name: 'pkg2',
             babel: {
-                presets: ['env'],
+                presets: ['@babel/preset-env'],
                 plugins: ['lodash'],
             },
         };
@@ -244,7 +244,7 @@ describe('pectin-babelrc', () => {
         const pkg4 = {
             name: 'pkg4',
             dependencies: {
-                'babel-runtime': '*',
+                '@babel/runtime': '*',
             },
         };
 
@@ -253,7 +253,7 @@ describe('pectin-babelrc', () => {
                 name: 'monorepo',
                 private: true,
                 babel: {
-                    presets: ['env'],
+                    presets: ['@babel/preset-env'],
                     plugins: ['transform-object-rest-spread'],
                 },
             }),
@@ -266,7 +266,7 @@ describe('pectin-babelrc', () => {
                 }),
                 pkg3: Dir({
                     '.babelrc': File({
-                        presets: ['env'],
+                        presets: ['@babel/preset-env'],
                     }),
                     'package.json': File(pkg3),
                 }),
@@ -289,18 +289,20 @@ describe('pectin-babelrc', () => {
         ]);
 
         expect(config1).toMatchObject({
-            plugins: ['transform-object-rest-spread', 'external-helpers'],
+            plugins: [
+                'transform-object-rest-spread',
+                expect.stringContaining('@babel/plugin-external-helpers'),
+            ],
         });
         expect(config2).toMatchObject({
-            plugins: ['lodash', 'external-helpers'],
+            plugins: ['lodash', expect.stringContaining('@babel/plugin-external-helpers')],
         });
         expect(config3).toMatchObject({
-            plugins: ['external-helpers'],
+            plugins: [expect.stringContaining('@babel/plugin-external-helpers')],
         });
         expect(config4).toMatchObject({
-            presets: [['env', { runtime: true }]],
+            presets: [['@babel/preset-env', {}]],
             plugins: ['transform-object-rest-spread'],
-            runtimeHelpers: true,
         });
     });
 });

@@ -24,7 +24,7 @@ function createFixture(pkgSpec) {
     const fixture = new Tacks(
         Dir({
             '.babelrc': File({
-                presets: ['env'],
+                presets: ['@babel/preset-env'],
             }),
             'lerna.json': File({
                 packages: ['modules/**'],
