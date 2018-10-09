@@ -74,9 +74,9 @@ module.exports = async function pectinBabelrc(pkg, cwd) {
     // add @babel/plugin-external-helpers if runtime is not enabled
     if (!runtimeHelpers) {
         if (!rc.plugins) {
-            rc.plugins = ['@babel/plugin-external-helpers'];
+            rc.plugins = [require.resolve('@babel/plugin-external-helpers')];
         } else if (rc.plugins.indexOf('@babel/plugin-external-helpers') === -1) {
-            rc.plugins = rc.plugins.concat('@babel/plugin-external-helpers');
+            rc.plugins = rc.plugins.concat(require.resolve('@babel/plugin-external-helpers'));
         }
     }
 
