@@ -30,65 +30,34 @@ expect.addSnapshotSerializer({
 });
 
 describe('pectin-babelrc', () => {
-    it('appends @babel/plugin-external-helpers to babelrc plugins when missing', async () => {
+    it('generates config for rollup-plugin-babel', async () => {
         const pkg = {
-            name: 'helpers-external',
+            name: 'babel-7-config',
+            dependencies: {
+                lodash: '^4.17.4',
+            },
         };
         const cwd = createFixture({
             '.babelrc': File({
-                presets: ['@babel/preset-env'],
-                plugins: ['transform-object-rest-spread'],
+                presets: ['@babel/env'],
             }),
             'package.json': File(pkg),
         });
+        const rc = await pectinBabelrc(pkg, cwd);
 
-        await expect(pectinBabelrc(pkg, cwd)).resolves.toMatchSnapshot();
+        expect(rc).toMatchInlineSnapshot(`
+Object {
+  "babelrc": false,
+  "exclude": "node_modules/**",
+  "presets": Array [
+    "@babel/env",
+  ],
+  "runtimeHelpers": false,
+}
+`);
     });
 
-    it('does not duplicate @babel/plugin-external-helpers in babelrc plugins', async () => {
-        const pkg = {
-            name: 'helpers-existing',
-        };
-        const cwd = createFixture({
-            '.babelrc': File({
-                presets: ['@babel/preset-env'],
-                plugins: ['@babel/plugin-external-helpers', 'lodash'],
-            }),
-            'package.json': File(pkg),
-        });
-
-        await expect(pectinBabelrc(pkg, cwd)).resolves.toMatchSnapshot();
-    });
-
-    it('does not pass options to non-configurable presets', async () => {
-        const pkg = {
-            name: 'preset-non-config',
-        };
-        const cwd = createFixture({
-            '.babelrc': File({
-                presets: ['@babel/preset-env', 'react'],
-            }),
-            'package.json': File(pkg),
-        });
-
-        await expect(pectinBabelrc(pkg, cwd)).resolves.toMatchSnapshot();
-    });
-
-    it('overrides preset modules config', async () => {
-        const pkg = {
-            name: 'preset-config-override',
-        };
-        const cwd = createFixture({
-            '.babelrc': File({
-                presets: [['@babel/preset-env', { loose: true, modules: 'commonjs' }]],
-            }),
-            'package.json': File(pkg),
-        });
-
-        await expect(pectinBabelrc(pkg, cwd)).resolves.toMatchSnapshot();
-    });
-
-    it('enables runtimeHelpers when @babel/runtime is a dep', async () => {
+    it('enables runtimeHelpers when @babel/runtime is a dependency', async () => {
         const pkg = {
             name: 'helpers-runtime',
             dependencies: {
@@ -99,29 +68,12 @@ describe('pectin-babelrc', () => {
         const cwd = createFixture({
             '.babelrc': File({
                 presets: ['@babel/preset-env'],
-                plugins: [],
             }),
             'package.json': File(pkg),
         });
+        const rc = await pectinBabelrc(pkg, cwd);
 
-        await expect(pectinBabelrc(pkg, cwd)).resolves.toMatchSnapshot();
-    });
-
-    it('creates babelrc plugins if missing', async () => {
-        const pkg = {
-            name: 'no-plugins',
-            dependencies: {
-                lodash: '^4.17.4',
-            },
-        };
-        const cwd = createFixture({
-            '.babelrc': File({
-                presets: ['@babel/preset-env'],
-            }),
-            'package.json': File(pkg),
-        });
-
-        await expect(pectinBabelrc(pkg, cwd)).resolves.toMatchSnapshot();
+        expect(rc).toHaveProperty('runtimeHelpers', true);
     });
 
     it('does not mutate cached config', async () => {
@@ -139,12 +91,14 @@ describe('pectin-babelrc', () => {
             'package.json': File(pkg),
         });
 
-        const opts = pectinBabelrc(pkg, cwd);
+        const opts = await pectinBabelrc(pkg, cwd);
 
         // cosmiconfig caches live objects
         opts.foo = 'bar';
 
-        await expect(pectinBabelrc(pkg, cwd)).resolves.not.toHaveProperty('foo');
+        const rc = await pectinBabelrc(pkg, cwd);
+
+        expect(rc).not.toHaveProperty('foo');
     });
 
     it('finds babel.config.js config', async () => {
@@ -160,7 +114,18 @@ describe('pectin-babelrc', () => {
             'package.json': File(pkg),
         });
 
-        await expect(pectinBabelrc(pkg, cwd)).resolves.toMatchSnapshot();
+        const rc = await pectinBabelrc(pkg, cwd);
+
+        expect(rc).toMatchInlineSnapshot(`
+Object {
+  "babelrc": false,
+  "exclude": "node_modules/**",
+  "presets": Array [
+    "@babel/preset-env",
+  ],
+  "runtimeHelpers": false,
+}
+`);
     });
 
     it('finds .babelrc.js config', async () => {
@@ -175,8 +140,18 @@ describe('pectin-babelrc', () => {
             `),
             'package.json': File(pkg),
         });
+        const rc = await pectinBabelrc(pkg, cwd);
 
-        await expect(pectinBabelrc(pkg, cwd)).resolves.toMatchSnapshot();
+        expect(rc).toMatchInlineSnapshot(`
+Object {
+  "babelrc": false,
+  "exclude": "node_modules/**",
+  "presets": Array [
+    "@babel/preset-env",
+  ],
+  "runtimeHelpers": false,
+}
+`);
     });
 
     it('finds pkg.babel config', async () => {
@@ -189,8 +164,18 @@ describe('pectin-babelrc', () => {
         const cwd = createFixture({
             'package.json': File(pkg),
         });
+        const rc = await pectinBabelrc(pkg, cwd);
 
-        await expect(pectinBabelrc(pkg, cwd)).resolves.toMatchSnapshot();
+        expect(rc).toMatchInlineSnapshot(`
+Object {
+  "babelrc": false,
+  "exclude": "node_modules/**",
+  "presets": Array [
+    "@babel/preset-env",
+  ],
+  "runtimeHelpers": false,
+}
+`);
     });
 
     it('throws an error when .babelrc preset is missing', async () => {
@@ -207,7 +192,15 @@ describe('pectin-babelrc', () => {
             'package.json': File(pkg),
         });
 
-        await expect(pectinBabelrc(pkg, cwd)).rejects.toThrowErrorMatchingSnapshot();
+        try {
+            await pectinBabelrc(pkg, cwd);
+        } catch (err) {
+            expect(err.message).toMatchInlineSnapshot(
+                `"At least one preset (like @babel/preset-env) is required in .babelrc"`
+            );
+        }
+
+        expect.assertions(1);
     });
 
     it('throws an error when pkg.babel preset is missing', async () => {
@@ -224,21 +217,15 @@ describe('pectin-babelrc', () => {
             'package.json': File(pkg),
         });
 
-        await expect(pectinBabelrc(pkg, cwd)).rejects.toThrowErrorMatchingSnapshot();
-    });
+        try {
+            await pectinBabelrc(pkg, cwd);
+        } catch (err) {
+            expect(err.message).toMatchInlineSnapshot(
+                `"At least one preset (like @babel/preset-env) is required in \\"babel\\" config block of package.json"`
+            );
+        }
 
-    it('throws an error when no configurable preset is found', async () => {
-        const pkg = {
-            name: 'no-configurable-preset',
-        };
-        const cwd = createFixture({
-            '.babelrc': File({
-                presets: ['react'],
-            }),
-            'package.json': File(pkg),
-        });
-
-        await expect(pectinBabelrc(pkg, cwd)).rejects.toThrowErrorMatchingSnapshot();
+        expect.assertions(1);
     });
 
     test('integration', async () => {
@@ -302,21 +289,54 @@ describe('pectin-babelrc', () => {
             pectinBabelrc(pkg4, pkg4.cwd),
         ]);
 
-        expect(config1).toMatchObject({
-            plugins: [
-                'transform-object-rest-spread',
-                expect.stringContaining('@babel/plugin-external-helpers'),
-            ],
-        });
-        expect(config2).toMatchObject({
-            plugins: ['lodash', expect.stringContaining('@babel/plugin-external-helpers')],
-        });
-        expect(config3).toMatchObject({
-            plugins: [expect.stringContaining('@babel/plugin-external-helpers')],
-        });
-        expect(config4).toMatchObject({
-            presets: [['@babel/preset-env', {}]],
-            plugins: ['transform-object-rest-spread'],
-        });
+        expect(config1).toMatchInlineSnapshot(`
+Object {
+  "babelrc": false,
+  "exclude": "node_modules/**",
+  "plugins": Array [
+    "transform-object-rest-spread",
+  ],
+  "presets": Array [
+    "@babel/preset-env",
+  ],
+  "runtimeHelpers": false,
+}
+`);
+        expect(config2).toMatchInlineSnapshot(`
+Object {
+  "babelrc": false,
+  "exclude": "node_modules/**",
+  "plugins": Array [
+    "lodash",
+  ],
+  "presets": Array [
+    "@babel/preset-env",
+  ],
+  "runtimeHelpers": false,
+}
+`);
+        expect(config3).toMatchInlineSnapshot(`
+Object {
+  "babelrc": false,
+  "exclude": "node_modules/**",
+  "presets": Array [
+    "@babel/preset-env",
+  ],
+  "runtimeHelpers": false,
+}
+`);
+        expect(config4).toMatchInlineSnapshot(`
+Object {
+  "babelrc": false,
+  "exclude": "node_modules/**",
+  "plugins": Array [
+    "transform-object-rest-spread",
+  ],
+  "presets": Array [
+    "@babel/preset-env",
+  ],
+  "runtimeHelpers": true,
+}
+`);
     });
 });
