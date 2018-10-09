@@ -15,6 +15,20 @@ function createFixture(spec) {
     return cwd;
 }
 
+const REPO_ROOT = path.resolve(__dirname, '../../..');
+
+expect.addSnapshotSerializer({
+    test(val) {
+        return typeof val === 'string' && val.indexOf(REPO_ROOT) > -1;
+    },
+    serialize(val, config, indentation, depth) {
+        const str = val.replace(REPO_ROOT, '<REPO_ROOT>');
+
+        // top-level strings don't need quotes, but nested ones do (object properties, etc)
+        return depth ? `"${str}"` : str;
+    },
+});
+
 describe('pectin-babelrc', () => {
     it('appends @babel/plugin-external-helpers to babelrc plugins when missing', async () => {
         const pkg = {

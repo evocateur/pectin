@@ -6,7 +6,7 @@ Object {
   "exclude": "node_modules/**",
   "plugins": Array [
     "transform-object-rest-spread",
-    "/Users/dylanb/stash/pectin/node_modules/@babel/plugin-external-helpers/lib/index.js",
+    "<REPO_ROOT>/node_modules/@babel/plugin-external-helpers/lib/index.js",
   ],
   "presets": Array [
     Array [
@@ -25,7 +25,7 @@ Object {
   "babelrc": false,
   "exclude": "node_modules/**",
   "plugins": Array [
-    "/Users/dylanb/stash/pectin/node_modules/@babel/plugin-external-helpers/lib/index.js",
+    "<REPO_ROOT>/node_modules/@babel/plugin-external-helpers/lib/index.js",
   ],
   "presets": Array [
     Array [
@@ -64,7 +64,7 @@ Object {
   "babelrc": false,
   "exclude": "node_modules/**",
   "plugins": Array [
-    "/Users/dylanb/stash/pectin/node_modules/@babel/plugin-external-helpers/lib/index.js",
+    "<REPO_ROOT>/node_modules/@babel/plugin-external-helpers/lib/index.js",
   ],
   "presets": Array [
     Array [
@@ -101,7 +101,7 @@ Object {
   "babelrc": false,
   "exclude": "node_modules/**",
   "plugins": Array [
-    "/Users/dylanb/stash/pectin/node_modules/@babel/plugin-external-helpers/lib/index.js",
+    "<REPO_ROOT>/node_modules/@babel/plugin-external-helpers/lib/index.js",
   ],
   "presets": Array [
     Array [
@@ -120,7 +120,7 @@ Object {
   "babelrc": false,
   "exclude": "node_modules/**",
   "plugins": Array [
-    "/Users/dylanb/stash/pectin/node_modules/@babel/plugin-external-helpers/lib/index.js",
+    "<REPO_ROOT>/node_modules/@babel/plugin-external-helpers/lib/index.js",
   ],
   "presets": Array [
     Array [
@@ -139,7 +139,7 @@ Object {
   "babelrc": false,
   "exclude": "node_modules/**",
   "plugins": Array [
-    "/Users/dylanb/stash/pectin/node_modules/@babel/plugin-external-helpers/lib/index.js",
+    "<REPO_ROOT>/node_modules/@babel/plugin-external-helpers/lib/index.js",
   ],
   "presets": Array [
     Array [
@@ -158,7 +158,7 @@ Object {
   "babelrc": false,
   "exclude": "node_modules/**",
   "plugins": Array [
-    "/Users/dylanb/stash/pectin/node_modules/@babel/plugin-external-helpers/lib/index.js",
+    "<REPO_ROOT>/node_modules/@babel/plugin-external-helpers/lib/index.js",
   ],
   "presets": Array [
     Array [
