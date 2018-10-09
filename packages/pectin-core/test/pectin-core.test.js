@@ -1,15 +1,12 @@
 'use strict';
 
 const path = require('path');
-const util = require('util');
 const { rollup } = require('rollup');
-const { execFile } = require('child_process');
 const Tacks = require('tacks');
 const tempy = require('tempy');
 const pectinCore = require('../');
 
 const { Dir, File } = Tacks;
-const execFileAsync = util.promisify(execFile);
 
 function createFixture(pkgSpec) {
     const cwd = tempy.directory();
@@ -17,7 +14,9 @@ function createFixture(pkgSpec) {
         Dir({
             // .babelrc is necessary to avoid an
             // implicit resolution from repo root
-            '.babelrc': File({ presets: ['@babel/preset-env'] }),
+            '.babelrc': File({
+                presets: ['@babel/env'],
+            }),
             ...pkgSpec,
         })
     );
@@ -31,7 +30,7 @@ describe('pectin-core', () => {
     // avoid polluting other test state
     const REPO_ROOT = path.resolve('.');
 
-    afterAll(() => {
+    afterEach(() => {
         process.chdir(REPO_ROOT);
     });
 
@@ -163,40 +162,29 @@ describe('pectin-core', () => {
         expect(typeof pectinCore.loadManifest).toBe('function');
     });
 
-    test.skip('integration', async () => {
+    test('integration', async () => {
         const cwd = createFixture({
             'package.json': File({
                 name: 'integration',
                 main: 'dist/index.js',
                 module: 'dist/index.module.js',
-                devDependencies: {
-                    '@babel/core': '^7.0.0',
-                    '@babel/plugin-external-helpers': '^7.0.0',
-                    '@babel/plugin-proposal-class-properties': '^7.1.0',
-                    '@babel/preset-env': '^7.1.0',
-                },
             }),
             src: Dir({
                 'test.svg': File(`test`),
-                'index.js': File(
-                    `import svgTest from './test.svg'; export default function foo() { return svgTest; };`
-                ),
+                // a class is a lot more interesting output
+                'index.js': File(`
+import svgTest from './test.svg';
+
+export default class Foo {
+    bar() {
+        return svgTest;
+    }
+};
+`),
             }),
         });
-        const pkgPath = path.join(cwd, 'package.json');
 
-        // copy over pre-installed devDependencies for babel's sake
-        // cd packages/pectin-core
-        // npm i --no-save @babel/plugin-proposal-class-properties \
-        // @babel/preset-env @babel/plugin-proposal-object-rest-spread @babel/core \
-        // @babel/plugin-external-helpers
-        // tar cvf node_modules_fixture.tar node_modules/
-        // mv node_modules_fixture.tar test/
-        await execFileAsync('tar', ['-xf', path.join(__dirname, 'node_modules_fixture.tar')], {
-            cwd,
-        });
-
-        const config = await pectinCore(pkgPath);
+        const config = await pectinCore(path.join(cwd, 'package.json'));
         const { output: outputOptions, ...inputOptions } = config;
         const [cjsOutput, esmOutput] = outputOptions;
 
@@ -205,7 +193,53 @@ describe('pectin-core', () => {
         const esm = await bundle.write(esmOutput);
         const cjs = await bundle.write(cjsOutput);
 
-        expect(esm.code).toMatchSnapshot('esm');
-        expect(cjs.code).toMatchSnapshot('cjs');
+        expect(esm.code).toMatchInlineSnapshot(`
+"function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError(\\"Cannot call a class as a function\\");
+  }
+}
+
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if (\\"value\\" in descriptor) descriptor.writable = true;
+    Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
+
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
+  return Constructor;
+}
+
+var svgTest = 'data:image/svg+xml;base64,dGVzdA==';
+
+var Foo =
+/*#__PURE__*/
+function () {
+  function Foo() {
+    _classCallCheck(this, Foo);
+  }
+
+  _createClass(Foo, [{
+    key: \\"bar\\",
+    value: function bar() {
+      return svgTest;
+    }
+  }]);
+
+  return Foo;
+}();
+
+export default Foo;
+"
+`);
+        expect(cjs.code).toMatch("'use strict';");
+        expect(cjs.code).toMatch('module.exports = Foo;');
+        // transpiled code is otherwise identical
     });
 });
