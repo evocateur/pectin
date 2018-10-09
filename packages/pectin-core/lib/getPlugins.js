@@ -6,6 +6,7 @@ const json = require('rollup-plugin-json');
 const nodeResolve = require('rollup-plugin-node-resolve');
 const mainEntry = require('rollup-plugin-main-entry');
 const subpathExternals = require('rollup-plugin-subpath-externals');
+const svg = require('rollup-plugin-svg');
 const babelrc = require('@pectin/babelrc');
 
 module.exports = async function getPlugins(pkg) {
@@ -28,5 +29,7 @@ module.exports = async function getPlugins(pkg) {
         babel(rc),
         // https://github.com/rollup/rollup-plugin-commonjs#usage
         commonjs(),
+        // https://github.com/antony/rollup-plugin-svg
+        svg(),
     ];
 };

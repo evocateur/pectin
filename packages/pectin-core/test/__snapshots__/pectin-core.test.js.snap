@@ -3,14 +3,22 @@
 exports[`pectin-core integration: cjs 1`] = `
 "'use strict';
 
-function foo() {}
+var svgTest = 'data:image/svg+xml;base64,dGVzdDs=';
+
+function foo() {
+  return svgTest;
+}
 
 module.exports = foo;
 "
 `;
 
 exports[`pectin-core integration: esm 1`] = `
-"function foo() {}
+"var svgTest = 'data:image/svg+xml;base64,dGVzdDs=';
+
+function foo() {
+  return svgTest;
+}
 
 export default foo;
 "
