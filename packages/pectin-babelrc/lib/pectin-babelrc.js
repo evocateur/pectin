@@ -42,7 +42,7 @@ module.exports = async function pectinBabelrc(pkg, cwd) {
     };
 
     // enable runtime transform when @babel/runtime found in dependencies
-    const runtimeHelpers = '@babel/runtime' in (pkg.dependencies || {});
+    rc.runtimeHelpers = '@babel/runtime' in (pkg.dependencies || {});
 
     // pass options to presets
     if (hasConfigurablePreset(rc)) {
@@ -72,7 +72,7 @@ module.exports = async function pectinBabelrc(pkg, cwd) {
     }
 
     // add @babel/plugin-external-helpers if runtime is not enabled
-    if (!runtimeHelpers) {
+    if (!rc.runtimeHelpers) {
         if (!rc.plugins) {
             rc.plugins = [require.resolve('@babel/plugin-external-helpers')];
         } else if (rc.plugins.indexOf('@babel/plugin-external-helpers') === -1) {
