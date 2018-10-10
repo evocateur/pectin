@@ -60,6 +60,7 @@ describe('pectin-core', () => {
                 expect.objectContaining({ name: 'json' }),
                 expect.objectContaining({ name: 'babel' }),
                 expect.objectContaining({ name: 'commonjs' }),
+                expect.objectContaining({ name: 'svg' }),
             ],
         });
     });
@@ -175,7 +176,10 @@ describe('pectin-core', () => {
                 },
             }),
             src: Dir({
-                'index.js': File('export default function foo() {};'),
+                'test.svg': File(`test`),
+                'index.js': File(
+                    `import svgTest from './test.svg'; export default function foo() { return svgTest; };`
+                ),
             }),
         });
         const pkgPath = path.join(cwd, 'package.json');
