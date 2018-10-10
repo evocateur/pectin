@@ -37,6 +37,6 @@
     "@pectin/core": "file:../pectin-core",
     "dot-prop": "^4.2.0",
     "globby": "^8.0.1",
-    "p-map": "^1.2.0"
+    "p-map": "^2.0.0"
   }
 }
