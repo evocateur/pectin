@@ -33,7 +33,6 @@
   },
   "dependencies": {
     "@babel/core": "^7.0.0",
-    "@babel/plugin-external-helpers": "^7.0.0",
     "@pectin/babelrc": "file:../pectin-babelrc",
     "babel-core": "^7.0.0-bridge.0",
     "load-json-file": "^4.0.0",
