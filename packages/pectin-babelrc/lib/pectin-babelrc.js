@@ -15,73 +15,24 @@ const explorer = cosmiconfig('babel', {
     ],
 });
 
-const NON_CONFIGURABLE_PRESETS = new Set([
-    'flow',
-    'react',
-    'stage-0',
-    'stage-1',
-    'stage-2',
-    'stage-3',
-]);
-
-function hasConfigurablePreset(rc) {
-    return (
-        rc.presets &&
-        rc.presets.some(preset => Array.isArray(preset) || !NON_CONFIGURABLE_PRESETS.has(preset))
-    );
-}
-
 module.exports = async function pectinBabelrc(pkg, cwd) {
     const { config, filepath } = await explorer.search(cwd);
 
     // don't mutate (potentially) cached config
     const rc = Object.assign({}, config);
 
-    const presetOptions = {
-        modules: false,
-        runtime: false,
-    };
+    // enable runtime transform when @babel/runtime found in dependencies
+    rc.runtimeHelpers = '@babel/runtime' in (pkg.dependencies || {});
 
-    // enable transform-runtime when babel-runtime found in dependencies
-    if ('babel-runtime' in (pkg.dependencies || {})) {
-        presetOptions.runtime = true;
-        rc.runtimeHelpers = true;
-    }
-
-    // pass options to presets
-    if (hasConfigurablePreset(rc)) {
-        rc.presets = rc.presets.map(preset => {
-            let result;
-
-            if (NON_CONFIGURABLE_PRESETS.has(preset)) {
-                result = preset;
-            } else if (typeof preset === 'string') {
-                result = [preset, presetOptions];
-            } else {
-                result = [preset[0], Object.assign({}, preset[1], presetOptions)];
-            }
-
-            return result;
-        });
-    } else {
+    // babel 7 doesn't need `{ modules: false }`, just verify a preset exists
+    if (!rc.presets) {
         const fileLoc = path.relative(cwd, filepath);
         const badConfig =
             path.basename(filepath) === 'package.json'
                 ? `"babel" config block of ${fileLoc}`
                 : fileLoc;
 
-        throw new Error(
-            `At least one options-accepting preset (like babel-preset-env) is required in ${badConfig}`
-        );
-    }
-
-    // add external-helpers if runtime is not enabled
-    if (!rc.runtimeHelpers) {
-        if (!rc.plugins) {
-            rc.plugins = ['external-helpers'];
-        } else if (rc.plugins.indexOf('external-helpers') === -1) {
-            rc.plugins = rc.plugins.concat('external-helpers');
-        }
+        throw new Error(`At least one preset (like @babel/preset-env) is required in ${badConfig}`);
     }
 
     // rollup-specific babel config
