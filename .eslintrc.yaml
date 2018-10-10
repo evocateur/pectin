@@ -9,6 +9,12 @@
   plugins:
     - node
   rules:
+    no-restricted-syntax:
+      - error
+      - ForInStatement
+      # allows ForOfStatement
+      - LabeledStatement
+      - WithStatement
     node/no-unsupported-features:
       - error
       # version controlled by "engines" field in package.json
