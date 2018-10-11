@@ -138,6 +138,76 @@ describe('rollup-plugin-subpath-externals', () => {
         expect(bundle.imports).toEqual(['react']);
     });
 
+    it('externalizes _only_ peerDependencies when output.format is "umd"', async () => {
+        const bundle = await rollup({
+            plugins: [
+                {
+                    resolveId(id) {
+                        if (id === 'whackadoodle') {
+                            return 'whackadoodle';
+                        }
+
+                        return null;
+                    },
+                    load: id => {
+                        if (id === 'whackadoodle') {
+                            return 'export default function whackaDoodle() {};';
+                        }
+
+                        return null;
+                    },
+                },
+                stubInput(`
+                    import React from 'react';
+                    import woo from 'whackadoodle';
+                    export default (s) => React.render(woo(s));
+                `),
+                subpathExternals(
+                    {
+                        dependencies: {
+                            whackadoodle: '*',
+                        },
+                        devDependencies: {
+                            react: '*',
+                        },
+                        peerDependencies: {
+                            react: '^15.0.0 || ^16.0.0',
+                        },
+                    },
+                    { format: 'umd' }
+                ),
+            ],
+        });
+
+        const { code } = await bundle.generate({
+            format: 'umd',
+            name: 'StubComponent',
+            globals: {
+                react: 'React',
+            },
+            indent: '    ',
+        });
+
+        expect(code).toMatchInlineSnapshot(`
+"(function (global, factory) {
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('react')) :
+    typeof define === 'function' && define.amd ? define(['react'], factory) :
+    (global.StubComponent = factory(global.React));
+}(this, (function (React) { 'use strict';
+
+    React = React && React.hasOwnProperty('default') ? React['default'] : React;
+
+    function whackaDoodle() {}
+
+    var stub = (s) => React.render(whackaDoodle(s));
+
+    return stub;
+
+})));
+"
+`);
+    });
+
     it('externalizes node built-ins', async () => {
         const bundle = await rollup({
             plugins: [

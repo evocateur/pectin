@@ -3,8 +3,13 @@
 const builtins = require('builtin-modules');
 
 // ensure subpath imports (lodash, babel-runtime) are also externalized
-module.exports = function subpathExternals({ dependencies = {}, peerDependencies = {} }) {
-    const pkgDeps = Object.keys(dependencies).concat(Object.keys(peerDependencies));
+module.exports = function subpathExternals(pkg, output) {
+    const { format } = output || {};
+    const { dependencies = {}, peerDependencies = {} } = pkg;
+    const pkgDeps =
+        format !== 'umd'
+            ? Object.keys(dependencies).concat(Object.keys(peerDependencies))
+            : Object.keys(peerDependencies);
 
     // subpath imports always begin with module name (never on builtins)
     const subPathImport = new RegExp(`^(${pkgDeps.join('|')})/`);
