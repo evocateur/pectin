@@ -374,6 +374,98 @@ export default Advanced;
 `);
     });
 
+    it('generates pkg.unpkg UMD output for unscoped package with peers', async () => {
+        const pkg = {
+            name: 'unpkg-umd-output',
+            main: './dist/index.js',
+            module: './dist/index.module.js',
+            unpkg: './dist/index.min.js',
+            peerDependencies: {
+                react: '*',
+            },
+            dependencies: {
+                '@babel/runtime': '^7.0.0',
+            },
+        };
+        const cwd = createFixture({
+            'package.json': File(pkg),
+            src: Dir({
+                'index.js': File(
+                    'import React from "react"; export default () => React.render("woo");'
+                ),
+            }),
+        });
+        const configs = await pectinCore.createMultiConfig(pkg, { cwd });
+        const results = await generateResults(configs);
+        const fileNames = results.map(result => `dist/${result.fileName}`);
+        const minOutput = results.pop().code;
+        const umdOutput = results.pop().code;
+
+        expect(fileNames).toContain('dist/index.dev.js');
+        expect(fileNames).toContain('dist/index.min.js');
+        expect(umdOutput).toMatchInlineSnapshot(`
+"(function (global, factory) {
+typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('react')) :
+typeof define === 'function' && define.amd ? define(['react'], factory) :
+(global.UnpkgUmdOutput = factory(global.React));
+}(this, (function (React) { 'use strict';
+
+React = React && React.hasOwnProperty('default') ? React['default'] : React;
+
+var index = (function () {
+  return React.render(\\"woo\\");
+});
+
+return index;
+
+})));
+"
+`);
+        expect(minOutput).toMatchInlineSnapshot(`
+"!function(e,t){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?module.exports=t(require(\\"react\\")):\\"function\\"==typeof define&&define.amd?define([\\"react\\"],t):e.UnpkgUmdOutput=t(e.React)}(this,function(e){\\"use strict\\";e=e&&e.hasOwnProperty(\\"default\\")?e.default:e;return function(){return e.render(\\"woo\\")}});
+"
+`);
+    });
+
+    it('generates pkg.unpkg UMD output for scoped package without peers', async () => {
+        const pkg = {
+            name: '@unpkg/scoped-umd',
+            main: './dist/index.js',
+            unpkg: './dist/index.min.js',
+        };
+        const cwd = createFixture({
+            'package.json': File(pkg),
+            src: Dir({
+                'index.js': File('export default function main() { console.log("yay"); }'),
+            }),
+        });
+        const configs = await pectinCore.createMultiConfig(pkg, { cwd });
+        const results = await generateResults(configs);
+        const minOutput = results.pop().code;
+        const umdOutput = results.pop().code;
+
+        expect(umdOutput).toMatchInlineSnapshot(`
+"(function (global, factory) {
+typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+typeof define === 'function' && define.amd ? define(factory) :
+(global.ScopedUmd = factory());
+}(this, (function () { 'use strict';
+
+function main() {
+  console.log(\\"yay\\");
+}
+
+return main;
+
+})));
+"
+`);
+        expect(minOutput).toMatchInlineSnapshot(`
+"!function(e,o){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?module.exports=o():\\"function\\"==typeof define&&define.amd?define(o):e.ScopedUmd=o()}(this,function(){\\"use strict\\";return function(){console.log(\\"yay\\")}});
+"
+`);
+    });
+
     test('integration', async () => {
         const cwd = createFixture({
             'package.json': File({

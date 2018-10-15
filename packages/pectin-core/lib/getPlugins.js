@@ -8,9 +8,13 @@ const nodeResolve = require('rollup-plugin-node-resolve');
 const mainEntry = require('rollup-plugin-main-entry');
 const subpathExternals = require('rollup-plugin-subpath-externals');
 const svg = require('rollup-plugin-svg');
+const { terser } = require('rollup-plugin-terser');
 const babelrc = require('@pectin/babelrc');
 
 module.exports = async function getPlugins(pkg, cwd, output) {
+    const env = dotProp.get(output, 'env');
+    const fmt = dotProp.get(output, 'format');
+    const min = fmt === 'umd' && env === 'production';
     const rc = await babelrc(pkg, cwd, output);
 
     return [
@@ -32,5 +36,17 @@ module.exports = async function getPlugins(pkg, cwd, output) {
         babel(rc),
         // https://github.com/rollup/rollup-plugin-commonjs#usage
         commonjs(),
+        min &&
+            terser({
+                compress: {
+                    pure_getters: true,
+                    unsafe: true,
+                    unsafe_comps: true,
+                },
+                mangle: {
+                    keep_classnames: true,
+                    keep_fnames: true,
+                },
+            }),
     ].filter(x => Boolean(x));
 };
