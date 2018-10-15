@@ -17,6 +17,29 @@ module.exports = function getOutput(pkg, cwd) {
         });
     }
 
+    // @see https://github.com/defunctzombie/package-browser-field-spec
+    if (typeof pkg.browser === 'string') {
+        // alternative main (basic)
+        output.push({
+            file: path.resolve(cwd, pkg.browser),
+            format: 'cjs',
+        });
+    } else if (pkg.browser) {
+        // specific files (advanced)
+        output.push(
+            pkg.browser[pkg.main] && {
+                file: path.resolve(cwd, pkg.browser[pkg.main]),
+                format: 'cjs',
+            }
+        );
+        output.push(
+            pkg.browser[pkg.module] && {
+                file: path.resolve(cwd, pkg.browser[pkg.module]),
+                format: 'esm',
+            }
+        );
+    }
+
     return output.filter(x => Boolean(x)).map(obj => {
         const extra = {
             exports: obj.format === 'esm' ? 'named' : 'auto',

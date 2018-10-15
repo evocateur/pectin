@@ -210,6 +210,170 @@ describe('pectin-core', () => {
         expect(typeof pectinCore.loadManifest).toBe('function');
     });
 
+    it('generates basic pkg.browser output', async () => {
+        const pkg = {
+            name: 'basic-browser-outputs',
+            main: './dist/index.js',
+            module: './dist/index.module.js',
+            browser: './dist/index.browser.js',
+        };
+        const cwd = createFixture({
+            'package.json': File(pkg),
+            src: Dir({
+                'index.js': File('export default class Basic {};'),
+            }),
+        });
+
+        const configs = await pectinCore.createMultiConfig(pkg, { cwd });
+        const results = await generateResults(configs);
+        const fileNames = results.map(result => `dist/${result.fileName}`);
+        const [cjsMain, esmModule, cjsBrowser] = results.map(
+            result => `// dist/${result.fileName}\n${result.code}`
+        );
+
+        expect(fileNames).toEqual([
+            'dist/index.js',
+            'dist/index.module.js',
+            'dist/index.browser.js',
+        ]);
+        expect(cjsMain).toMatchInlineSnapshot(`
+"// dist/index.js
+'use strict';
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError(\\"Cannot call a class as a function\\");
+  }
+}
+
+var Basic = function Basic() {
+  _classCallCheck(this, Basic);
+};
+
+module.exports = Basic;
+"
+`);
+        expect(esmModule).toMatchInlineSnapshot(`
+"// dist/index.module.js
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError(\\"Cannot call a class as a function\\");
+  }
+}
+
+var Basic = function Basic() {
+  _classCallCheck(this, Basic);
+};
+
+export default Basic;
+"
+`);
+        expect(cjsBrowser).toMatchInlineSnapshot(`
+"// dist/index.browser.js
+'use strict';
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError(\\"Cannot call a class as a function\\");
+  }
+}
+
+var Basic = function Basic() {
+  _classCallCheck(this, Basic);
+};
+
+module.exports = Basic;
+"
+`);
+    });
+
+    it('generates advanced pkg.browser outputs', async () => {
+        const pkg = {
+            name: 'advanced-browser-outputs',
+            main: './dist/index.js',
+            module: './dist/index.module.js',
+            browser: {
+                './dist/index.js': './dist/index.browser.js',
+                './dist/index.module.js': './dist/index.module.browser.js',
+            },
+            dependencies: {
+                '@babel/runtime': '^7.0.0',
+            },
+        };
+        const cwd = createFixture({
+            'package.json': File(pkg),
+            src: Dir({
+                'index.js': File('export default class Advanced {};'),
+            }),
+        });
+        const configs = await pectinCore.createMultiConfig(pkg, { cwd });
+        const results = await generateResults(configs);
+        const fileNames = results.map(result => `dist/${result.fileName}`);
+        const [cjsMain, esmModule, cjsBrowser, esmBrowser] = results.map(
+            result => `// dist/${result.fileName}\n${result.code}`
+        );
+
+        expect(fileNames).toEqual([
+            'dist/index.js',
+            'dist/index.module.js',
+            'dist/index.browser.js',
+            'dist/index.module.browser.js',
+        ]);
+
+        expect(cjsMain).toMatchInlineSnapshot(`
+"// dist/index.js
+'use strict';
+
+function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+
+var _classCallCheck = _interopDefault(require('@babel/runtime/helpers/classCallCheck'));
+
+var Advanced = function Advanced() {
+  _classCallCheck(this, Advanced);
+};
+
+module.exports = Advanced;
+"
+`);
+        expect(esmModule).toMatchInlineSnapshot(`
+"// dist/index.module.js
+import _classCallCheck from '@babel/runtime/helpers/esm/classCallCheck';
+
+var Advanced = function Advanced() {
+  _classCallCheck(this, Advanced);
+};
+
+export default Advanced;
+"
+`);
+        expect(cjsBrowser).toMatchInlineSnapshot(`
+"// dist/index.browser.js
+'use strict';
+
+function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+
+var _classCallCheck = _interopDefault(require('@babel/runtime/helpers/classCallCheck'));
+
+var Advanced = function Advanced() {
+  _classCallCheck(this, Advanced);
+};
+
+module.exports = Advanced;
+"
+`);
+        expect(esmBrowser).toMatchInlineSnapshot(`
+"// dist/index.module.browser.js
+import _classCallCheck from '@babel/runtime/helpers/esm/classCallCheck';
+
+var Advanced = function Advanced() {
+  _classCallCheck(this, Advanced);
+};
+
+export default Advanced;
+"
+`);
+    });
+
     test('integration', async () => {
         const cwd = createFixture({
             'package.json': File({
