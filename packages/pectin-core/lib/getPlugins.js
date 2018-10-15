@@ -25,11 +25,11 @@ module.exports = async function getPlugins(pkg) {
         }),
         // https://github.com/rollup/rollup-plugin-json#usage
         json(),
+        // https://github.com/antony/rollup-plugin-svg
+        svg(),
         // https://github.com/rollup/rollup-plugin-babel#configuring-babel
         babel(rc),
         // https://github.com/rollup/rollup-plugin-commonjs#usage
         commonjs(),
-        // https://github.com/antony/rollup-plugin-svg
-        svg(),
     ];
 };

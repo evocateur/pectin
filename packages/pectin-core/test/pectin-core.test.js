@@ -15,7 +15,7 @@ function createFixture(pkgSpec) {
             // .babelrc is necessary to avoid an
             // implicit resolution from repo root
             '.babelrc': File({
-                presets: ['@babel/env'],
+                presets: ['@babel/env', '@babel/preset-react'],
             }),
             ...pkgSpec,
         })
@@ -57,9 +57,9 @@ describe('pectin-core', () => {
                 expect.objectContaining({ name: 'subpath-externals' }),
                 expect.objectContaining({ name: 'node-resolve' }),
                 expect.objectContaining({ name: 'json' }),
+                expect.objectContaining({ name: 'svg' }),
                 expect.objectContaining({ name: 'babel' }),
                 expect.objectContaining({ name: 'commonjs' }),
-                expect.objectContaining({ name: 'svg' }),
             ],
         });
     });
@@ -168,16 +168,22 @@ describe('pectin-core', () => {
                 name: 'integration',
                 main: 'dist/index.js',
                 module: 'dist/index.module.js',
+                dependencies: {
+                    react: '*',
+                },
             }),
             src: Dir({
-                'test.svg': File(`test`),
+                'test.svg': File(
+                    `<?xml version="1.0" ?><svg viewBox="0 0 151.57 151.57" xmlns="http://www.w3.org/2000/svg"><line x1="47.57" x2="103.99" y1="103.99" y2="47.57"/><line x1="45.8" x2="105.7" y1="45.87" y2="105.77"/></svg>`
+                ),
                 // a class is a lot more interesting output
                 'index.js': File(`
+import React from 'react';
 import svgTest from './test.svg';
 
-export default class Foo {
-    bar() {
-        return svgTest;
+export default class Foo extends React.Component {
+    render() {
+        return <div>{svgTest}</div>;
     }
 };
 `),
@@ -194,7 +200,9 @@ export default class Foo {
         const cjs = await bundle.write(cjsOutput);
 
         expect(esm.code).toMatchInlineSnapshot(`
-"function _classCallCheck(instance, Constructor) {
+"import React from 'react';
+
+function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError(\\"Cannot call a class as a function\\");
   }
@@ -216,24 +224,75 @@ function _createClass(Constructor, protoProps, staticProps) {
   return Constructor;
 }
 
-var svgTest = 'data:image/svg+xml;base64,dGVzdA==';
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== \\"function\\" && superClass !== null) {
+    throw new TypeError(\\"Super expression must either be null or a function\\");
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) _setPrototypeOf(subClass, superClass);
+}
+
+function _getPrototypeOf(o) {
+  _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+    return o.__proto__ || Object.getPrototypeOf(o);
+  };
+  return _getPrototypeOf(o);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError(\\"this hasn't been initialised - super() hasn't been called\\");
+  }
+
+  return self;
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (call && (typeof call === \\"object\\" || typeof call === \\"function\\")) {
+    return call;
+  }
+
+  return _assertThisInitialized(self);
+}
+
+var svgTest = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pjxzdmcgdmlld0JveD0iMCAwIDE1MS41NyAxNTEuNTciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGxpbmUgeDE9IjQ3LjU3IiB4Mj0iMTAzLjk5IiB5MT0iMTAzLjk5IiB5Mj0iNDcuNTciLz48bGluZSB4MT0iNDUuOCIgeDI9IjEwNS43IiB5MT0iNDUuODciIHkyPSIxMDUuNzciLz48L3N2Zz4=';
 
 var Foo =
 /*#__PURE__*/
-function () {
+function (_React$Component) {
+  _inherits(Foo, _React$Component);
+
   function Foo() {
     _classCallCheck(this, Foo);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(Foo).apply(this, arguments));
   }
 
   _createClass(Foo, [{
-    key: \\"bar\\",
-    value: function bar() {
-      return svgTest;
+    key: \\"render\\",
+    value: function render() {
+      return React.createElement(\\"div\\", null, svgTest);
     }
   }]);
 
   return Foo;
-}();
+}(React.Component);
 
 export default Foo;
 "
