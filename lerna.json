@@ -1,9 +1,10 @@
 {
   "command": {
     "publish": {
-      "allowBranch": "latest",
+      "allowBranch": "1.x",
       "conventionalCommits": true,
-      "message": "chore(release): %s"
+      "message": "chore(release): %s",
+      "npmTag": "legacy"
     }
   },
   "ignoreChanges": [
