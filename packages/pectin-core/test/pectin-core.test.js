@@ -58,11 +58,35 @@ describe('pectin-core', () => {
                 expect.objectContaining({ name: 'subpath-externals' }),
                 expect.objectContaining({ name: 'node-resolve' }),
                 expect.objectContaining({ name: 'json' }),
-                expect.objectContaining({ name: 'svg' }),
                 expect.objectContaining({ name: 'babel' }),
                 expect.objectContaining({ name: 'commonjs' }),
             ],
         });
+    });
+
+    it('adds svg plugin via opt-in pkg.rollup.inlineSVG', async () => {
+        const cwd = createFixture({
+            'package.json': File({
+                name: 'inline-svg-data-uri',
+                main: 'dist/index.js',
+                rollup: {
+                    inlineSVG: true,
+                },
+            }),
+        });
+        const pkgPath = path.join(cwd, 'package.json');
+        const config = await pectinCore(pkgPath);
+
+        expect(config.plugins).toEqual([
+            expect.objectContaining({ name: 'main-entry' }),
+            expect.objectContaining({ name: 'subpath-externals' }),
+            expect.objectContaining({ name: 'node-resolve' }),
+            expect.objectContaining({ name: 'json' }),
+            // order is important, must come before babel()
+            expect.objectContaining({ name: 'svg' }),
+            expect.objectContaining({ name: 'babel' }),
+            expect.objectContaining({ name: 'commonjs' }),
+        ]);
     });
 
     it('generates rollup config with modules output', async () => {
@@ -169,6 +193,9 @@ describe('pectin-core', () => {
                 name: 'integration',
                 main: 'dist/index.js',
                 module: 'dist/index.module.js',
+                rollup: {
+                    inlineSVG: true,
+                },
                 dependencies: {
                     react: '*',
                 },
