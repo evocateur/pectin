@@ -52,7 +52,6 @@ Object {
   "presets": Array [
     "@babel/env",
   ],
-  "runtimeHelpers": false,
 }
 `);
     });
@@ -123,7 +122,6 @@ Object {
   "presets": Array [
     "@babel/preset-env",
   ],
-  "runtimeHelpers": false,
 }
 `);
     });
@@ -149,7 +147,6 @@ Object {
   "presets": Array [
     "@babel/preset-env",
   ],
-  "runtimeHelpers": false,
 }
 `);
     });
@@ -173,7 +170,6 @@ Object {
   "presets": Array [
     "@babel/preset-env",
   ],
-  "runtimeHelpers": false,
 }
 `);
     });
@@ -235,12 +231,15 @@ Object {
         const pkg2 = {
             name: 'pkg2',
             babel: {
-                presets: ['@babel/preset-env'],
+                presets: ['@babel/env'],
                 plugins: ['lodash'],
             },
         };
         const pkg3 = {
             name: 'pkg3',
+            dependencies: {
+                '@babel/runtime': '*',
+            },
         };
         const pkg4 = {
             name: 'pkg4',
@@ -286,7 +285,7 @@ Object {
             pectinBabelrc(pkg1, pkg1.cwd),
             pectinBabelrc(pkg2, pkg2.cwd),
             pectinBabelrc(pkg3, pkg3.cwd),
-            pectinBabelrc(pkg4, pkg4.cwd),
+            pectinBabelrc(pkg4, pkg4.cwd, { format: 'esm' }),
         ]);
 
         expect(config1).toMatchInlineSnapshot(`
@@ -299,7 +298,6 @@ Object {
   "presets": Array [
     "@babel/preset-env",
   ],
-  "runtimeHelpers": false,
 }
 `);
         expect(config2).toMatchInlineSnapshot(`
@@ -310,19 +308,26 @@ Object {
     "lodash",
   ],
   "presets": Array [
-    "@babel/preset-env",
+    "@babel/env",
   ],
-  "runtimeHelpers": false,
 }
 `);
         expect(config3).toMatchInlineSnapshot(`
 Object {
   "babelrc": false,
   "exclude": "node_modules/**",
+  "plugins": Array [
+    Array [
+      "@babel/plugin-transform-runtime",
+      Object {
+        "useESModules": false,
+      },
+    ],
+  ],
   "presets": Array [
     "@babel/preset-env",
   ],
-  "runtimeHelpers": false,
+  "runtimeHelpers": true,
 }
 `);
         expect(config4).toMatchInlineSnapshot(`
@@ -331,6 +336,12 @@ Object {
   "exclude": "node_modules/**",
   "plugins": Array [
     "transform-object-rest-spread",
+    Array [
+      "@babel/plugin-transform-runtime",
+      Object {
+        "useESModules": true,
+      },
+    ],
   ],
   "presets": Array [
     "@babel/preset-env",

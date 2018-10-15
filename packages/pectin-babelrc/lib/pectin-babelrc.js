@@ -15,14 +15,20 @@ const explorer = cosmiconfig('babel', {
     ],
 });
 
-module.exports = async function pectinBabelrc(pkg, cwd) {
+module.exports = async function pectinBabelrc(pkg, cwd, output) {
+    const { format = 'cjs' } = output || {};
     const { config, filepath } = await explorer.search(cwd);
 
     // don't mutate (potentially) cached config
     const rc = Object.assign({}, config);
 
     // enable runtime transform when @babel/runtime found in dependencies
-    rc.runtimeHelpers = '@babel/runtime' in (pkg.dependencies || {});
+    if ('@babel/runtime' in (pkg.dependencies || {})) {
+        rc.runtimeHelpers = true;
+        // avoid mutating cached array
+        rc.plugins = (rc.plugins || []).slice();
+        rc.plugins.push(['@babel/plugin-transform-runtime', { useESModules: format !== 'cjs' }]);
+    }
 
     // babel 7 doesn't need `{ modules: false }`, just verify a preset exists
     if (!rc.presets) {
