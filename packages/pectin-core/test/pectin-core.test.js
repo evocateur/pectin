@@ -58,9 +58,9 @@ describe('pectin-core', () => {
                 expect.objectContaining({ name: 'subpath-externals' }),
                 expect.objectContaining({ name: 'node-resolve' }),
                 expect.objectContaining({ name: 'json' }),
+                expect.objectContaining({ name: 'svg' }),
                 expect.objectContaining({ name: 'babel' }),
                 expect.objectContaining({ name: 'commonjs' }),
-                expect.objectContaining({ name: 'svg' }),
             ],
         });
     });
