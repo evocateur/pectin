@@ -23,6 +23,22 @@ const rollupConfig = createConfig(pkg);
 
 **Note:** This package requires node >=8.9.
 
+## Options
+
+To transform SVG imports into inlined data URIs, pass `rollup.inlineSVG = true` in your package.json:
+
+```json
+{
+    "name": "my-pkg",
+    "version": "1.0.0",
+    "rollup": {
+        "inlineSVG": true
+    }
+}
+```
+
+If you are using [babel-plugin-inline-react-svg](https://github.com/airbnb/babel-plugin-inline-react-svg) in your Babel config you **should not** configure this option as it will break the plugin.
+
 ## Related
 
 Check the [Pectin project docs](https://github.com/evocateur/pectin#readme) for more information.

@@ -1,6 +1,7 @@
 'use strict';
 
 const path = require('path');
+const dotProp = require('dot-prop');
 
 /**
  * By convention, entry points live in the 'src' directory with
@@ -13,17 +14,17 @@ const path = require('path');
  * @param {Object} pkg
  * @return {String} input path resolved to pkg.cwd
  */
-module.exports = function getInput({ main, cwd, rollup = {} }) {
-    if (!main) {
-        const location = path.relative('.', path.join(cwd, 'package.json'));
+module.exports = function getInput(pkg) {
+    if (!pkg.main) {
+        const location = path.relative('.', path.join(pkg.cwd, 'package.json'));
 
         throw new TypeError(`required field 'main' missing in ${location}`);
     }
 
-    const rootDir = rollup.rootDir || 'src';
-    const input = rollup.input || rebaseInput(rootDir, main);
+    const rootDir = dotProp.get(pkg, 'rollup.rootDir', 'src');
+    const input = dotProp.get(pkg, 'rollup.input', rebaseInput(rootDir, pkg.main));
 
-    return path.resolve(cwd, input);
+    return path.resolve(pkg.cwd, input);
 };
 
 function rebaseInput(rootDir, filePath) {

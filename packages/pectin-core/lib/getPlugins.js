@@ -1,5 +1,6 @@
 'use strict';
 
+const dotProp = require('dot-prop');
 const babel = require('rollup-plugin-babel');
 const commonjs = require('rollup-plugin-commonjs');
 const json = require('rollup-plugin-json');
@@ -26,10 +27,10 @@ module.exports = async function getPlugins(pkg) {
         // https://github.com/rollup/rollup-plugin-json#usage
         json(),
         // https://github.com/antony/rollup-plugin-svg
-        svg(),
+        dotProp.get(pkg, 'rollup.inlineSVG') && svg(),
         // https://github.com/rollup/rollup-plugin-babel#configuring-babel
         babel(rc),
         // https://github.com/rollup/rollup-plugin-commonjs#usage
         commonjs(),
-    ];
+    ].filter(x => Boolean(x));
 };
