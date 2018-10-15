@@ -8,7 +8,7 @@ const dotProp = require('dot-prop');
 const globby = require('globby');
 const pMap = require('p-map');
 const { getPackages } = require('@lerna/project');
-const { createConfig } = require('@pectin/core');
+const { createMultiConfig } = require('@pectin/core');
 
 const statAsync = util.promisify(fs.stat);
 
@@ -17,22 +17,20 @@ exports.generateConfig = generateConfig;
 exports.isUpToDate = isUpToDate;
 
 async function findConfigs({
-    cwd,
+    cwd: startDir,
     concurrency = os.cpus().length,
     watch = !!process.env.ROLLUP_WATCH,
 } = {}) {
-    const lernaPackages = await getPackages(cwd);
-    const pkgs = lernaPackages.map(wrapper => {
-        const pkg = wrapper.toJSON();
+    const lernaPackages = await getPackages(startDir);
+    const configs = await pMap(
+        // clones internal JSON, maps synthetic location to cwd property
+        lernaPackages.map(pkg => [pkg.toJSON(), pkg.location]),
+        ([pkg, cwd]) => generateConfig(pkg, { cwd, watch }),
+        { concurrency }
+    );
 
-        // map synthetic location to internal cwd property
-        pkg.cwd = wrapper.location;
-
-        return pkg;
-    });
-    const configs = await pMap(pkgs, pkg => generateConfig(pkg, { watch }), { concurrency });
-
-    return configs.filter(x => Boolean(x));
+    // flatten then compact
+    return configs.reduce((acc, val) => acc.concat(val), []).filter(x => Boolean(x));
 }
 
 async function generateConfig(pkg, opts) {
@@ -48,11 +46,21 @@ async function generateConfig(pkg, opts) {
         return null;
     }
 
+    // back-compat for old property location
+    if (pkg.cwd) {
+        // eslint-disable-next-line no-param-reassign
+        opts = Object.assign({}, opts, {
+            cwd: pkg.cwd,
+        });
+    }
+
     try {
-        config = await createConfig(pkg);
+        config = await createMultiConfig(pkg, opts);
 
         // improve the logging output by shortening the input path
-        config.input = path.relative('.', config.input);
+        for (const obj of config) {
+            obj.input = path.relative('.', obj.input);
+        }
     } catch (ex) {
         // skip packages that throw errors (e.g., missing pkg.main)
         // TODO: re-throw if this is an _unexpected_ error
@@ -61,10 +69,12 @@ async function generateConfig(pkg, opts) {
 
     if (opts.watch) {
         // don't clear the screen during watch
-        config.watch = {
-            clearScreen: false,
-        };
-    } else if (await isUpToDate(pkg, config)) {
+        for (const obj of config) {
+            obj.watch = {
+                clearScreen: false,
+            };
+        }
+    } else if (await isUpToDate(opts, config)) {
         // no changes, don't rebuild
         return null;
     }
@@ -72,7 +82,13 @@ async function generateConfig(pkg, opts) {
     return config;
 }
 
-async function isUpToDate(pkg, config) {
+async function isUpToDate(opts, config) {
+    // back-compat for old signature
+    if (Array.isArray(config)) {
+        // eslint-disable-next-line no-param-reassign
+        [config] = config;
+    }
+
     // only need to test one output since all are built simultaneously
     const outFile = config.output[0].file;
 
@@ -98,9 +114,9 @@ async function isUpToDate(pkg, config) {
     // re-resolve cwd so logging-friendly relative paths don't muck things up
     const cwd = path.resolve(path.dirname(config.input));
 
-    if (cwd === pkg.cwd) {
+    if (cwd === opts.cwd) {
         // a "rooted" module needs to ignore output, test, & node_modules
-        const outputDir = path.relative(pkg.cwd, path.dirname(outFile));
+        const outputDir = path.relative(opts.cwd, path.dirname(outFile));
 
         matchers.push(`!${outputDir}/**`, '!node_modules/**', '!test/**');
     }

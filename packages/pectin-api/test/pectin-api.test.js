@@ -4,7 +4,7 @@ const path = require('path');
 const Tacks = require('tacks');
 const tempy = require('tempy');
 const touch = require('touch');
-const { findConfigs } = require('../');
+const { findConfigs, generateConfig, isUpToDate } = require('../');
 
 const { Dir, File, Symlink } = Tacks;
 
@@ -45,7 +45,7 @@ function createFixture(pkgSpec) {
 
 describe('pectin-api', () => {
     // avoid polluting other test state
-    const REPO_ROOT = path.resolve('.');
+    const REPO_ROOT = path.resolve(__dirname, '../../..');
 
     afterAll(() => {
         process.chdir(REPO_ROOT);
@@ -351,8 +351,18 @@ describe('pectin-api', () => {
         ];
 
         await expect(findConfigs()).resolves.toMatchObject([
-            { input: 'modules/app/src/index.js' },
-            { input: 'modules/lib/missing-dist/src/index.js' },
+            {
+                input: 'modules/app/src/index.js',
+                output: [{ format: 'cjs', exports: 'auto' }],
+            },
+            {
+                input: 'modules/lib/missing-dist/src/index.js',
+                output: [{ format: 'cjs', exports: 'auto' }],
+            },
+            {
+                input: 'modules/lib/missing-dist/src/index.js',
+                output: [{ format: 'esm', exports: 'named' }],
+            },
         ]);
     });
 
@@ -361,6 +371,7 @@ describe('pectin-api', () => {
             'watch-existing': Dir({
                 'package.json': File({
                     main: 'lib/index.js',
+                    module: 'lib/index.module.js',
                 }),
                 lib: Dir({
                     'index.js': File('module.exports = "test";'),
@@ -389,6 +400,73 @@ describe('pectin-api', () => {
         await expect(findConfigs({ watch: true })).resolves.toMatchObject([
             { watch: { clearScreen: false } },
             { watch: { clearScreen: false } },
+            { watch: { clearScreen: false } },
         ]);
+    });
+
+    describe('generateConfig', () => {
+        it('supports 1.x cwd config location', async () => {
+            const { cwd } = createFixture({
+                'package.json': File({
+                    name: '@test/pkg-cwd',
+                    main: 'dist/index.js',
+                }),
+                src: Dir({
+                    'index.js': File('export default "test";'),
+                }),
+            });
+            const pkg = {
+                name: '@test/pkg-cwd',
+                main: 'dist/index.js',
+                cwd,
+            };
+            const opts = {};
+            const config = await generateConfig(pkg, opts);
+
+            expect(config).toMatchObject([
+                {
+                    input: 'src/index.js',
+                    output: [{ format: 'cjs', exports: 'auto' }],
+                },
+            ]);
+            // options are not mutated
+            expect(opts).toEqual({});
+        });
+    });
+
+    describe('isUpToDate', () => {
+        it('supports 1.x argument signature', async () => {
+            const updateFile = createFixture({
+                'package.json': File({
+                    name: '@test/up-to-date',
+                    main: 'dist/index.js',
+                }),
+                dist: Dir({
+                    'index.js': File('module.exports = "test";'),
+                }),
+                src: Dir({
+                    'index.js': File('export default "test";'),
+                }),
+            });
+            const { cwd } = updateFile;
+
+            await updateFile('src/index.js');
+
+            const result = await isUpToDate(
+                { cwd },
+                {
+                    input: 'src/index.js',
+                    output: [
+                        {
+                            file: path.resolve(cwd, 'dist/index.js'),
+                            format: 'cjs',
+                            exports: 'auto',
+                        },
+                    ],
+                }
+            );
+
+            expect(result).toBe(false);
+        });
     });
 });
