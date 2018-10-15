@@ -3,24 +3,38 @@
 exports[`pectin-core integration: cjs 1`] = `
 "'use strict';
 
-var svgTest = 'data:image/svg+xml;base64,dGVzdDs=';
+function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-function foo() {
-  return svgTest;
+var React = _interopDefault(require('react'));
+
+var svgTest = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pjxzdmcgdmlld0JveD0iMCAwIDE1MS41NyAxNTEuNTciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGxpbmUgeDE9IjQ3LjU3IiB4Mj0iMTAzLjk5IiB5MT0iMTAzLjk5IiB5Mj0iNDcuNTciLz48bGluZSB4MT0iNDUuOCIgeDI9IjEwNS43IiB5MT0iNDUuODciIHkyPSIxMDUuNzciLz48L3N2Zz4=';
+
+function FooComponent() {
+    return React.createElement(
+        'div',
+        null,
+        svgTest
+    );
 }
 
-module.exports = foo;
+module.exports = FooComponent;
 "
 `;
 
 exports[`pectin-core integration: esm 1`] = `
-"var svgTest = 'data:image/svg+xml;base64,dGVzdDs=';
+"import React from 'react';
 
-function foo() {
-  return svgTest;
+var svgTest = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pjxzdmcgdmlld0JveD0iMCAwIDE1MS41NyAxNTEuNTciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGxpbmUgeDE9IjQ3LjU3IiB4Mj0iMTAzLjk5IiB5MT0iMTAzLjk5IiB5Mj0iNDcuNTciLz48bGluZSB4MT0iNDUuOCIgeDI9IjEwNS43IiB5MT0iNDUuODciIHkyPSIxMDUuNzciLz48L3N2Zz4=';
+
+function FooComponent() {
+    return React.createElement(
+        'div',
+        null,
+        svgTest
+    );
 }
 
-export default foo;
+export default FooComponent;
 "
 `;
 

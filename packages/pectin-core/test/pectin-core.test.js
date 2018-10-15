@@ -17,7 +17,7 @@ function createFixture(pkgSpec) {
         Dir({
             // .babelrc is necessary to avoid an
             // implicit resolution from repo root
-            '.babelrc': File({ presets: ['env'] }),
+            '.babelrc': File({ presets: ['env', 'react'] }),
             ...pkgSpec,
         })
     );
@@ -58,9 +58,9 @@ describe('pectin-core', () => {
                 expect.objectContaining({ name: 'subpath-externals' }),
                 expect.objectContaining({ name: 'node-resolve' }),
                 expect.objectContaining({ name: 'json' }),
+                expect.objectContaining({ name: 'svg' }),
                 expect.objectContaining({ name: 'babel' }),
                 expect.objectContaining({ name: 'commonjs' }),
-                expect.objectContaining({ name: 'svg' }),
             ],
         });
     });
@@ -169,17 +169,27 @@ describe('pectin-core', () => {
                 name: 'integration',
                 main: 'dist/index.js',
                 module: 'dist/index.module.js',
+                dependencies: {
+                    react: '*',
+                },
                 devDependencies: {
                     'babel-plugin-external-helpers': '^6.22.0',
                     'babel-plugin-transform-object-rest-spread': '^6.26.0',
                     'babel-preset-env': '^1.6.0',
+                    'babel-preset-react': '^6.24.1',
                 },
             }),
             src: Dir({
-                'test.svg': File(`test`),
-                'index.js': File(
-                    `import svgTest from './test.svg'; export default function foo() { return svgTest; };`
+                'test.svg': File(
+                    `<?xml version="1.0" ?><svg viewBox="0 0 151.57 151.57" xmlns="http://www.w3.org/2000/svg"><line x1="47.57" x2="103.99" y1="103.99" y2="47.57"/><line x1="45.8" x2="105.7" y1="45.87" y2="105.77"/></svg>`
                 ),
+                'index.js': File(`
+import React from 'react';
+import svgTest from './test.svg';
+export default function FooComponent() {
+    return <div>{svgTest}</div>;
+};
+`),
             }),
         });
         const pkgPath = path.join(cwd, 'package.json');
