@@ -4,6 +4,7 @@ const path = require('path');
 const { rollup } = require('rollup');
 const Tacks = require('tacks');
 const tempy = require('tempy');
+const pMap = require('p-map');
 const pectinCore = require('../');
 
 const { Dir, File } = Tacks;
@@ -24,6 +25,26 @@ function createFixture(pkgSpec) {
     fixture.create(cwd);
 
     return cwd;
+}
+
+function generateResults(configs) {
+    if (!Array.isArray(configs)) {
+        // eslint-disable-next-line no-param-reassign
+        configs = [configs];
+    }
+
+    return pMap(configs, ({ output: outputOptions, ...inputOptions }) =>
+        rollup(inputOptions).then(bundle => {
+            if (Array.isArray(outputOptions)) {
+                return Promise.all(outputOptions.map(opts => bundle.generate(opts)));
+            }
+
+            return bundle.generate(outputOptions);
+        })
+    ).then(results =>
+        // flatten results
+        results.reduce((arr, result) => arr.concat(result), [])
+    );
 }
 
 describe('pectin-core', () => {
@@ -49,7 +70,7 @@ describe('pectin-core', () => {
                 {
                     file: path.join(cwd, 'dist/index.js'),
                     format: 'cjs',
-                    sourcemap: true,
+                    exports: 'auto',
                 },
             ],
             plugins: [
@@ -102,12 +123,12 @@ describe('pectin-core', () => {
             {
                 file: path.join(cwd, 'dist/index.js'),
                 format: 'cjs',
-                sourcemap: true,
+                exports: 'auto',
             },
             {
                 file: path.join(cwd, 'dist/index.module.js'),
-                format: 'es',
-                sourcemap: true,
+                format: 'esm',
+                exports: 'named',
             },
         ]);
     });
@@ -182,6 +203,9 @@ describe('pectin-core', () => {
         expect(pectinCore).toHaveProperty('createConfig');
         expect(typeof pectinCore.createConfig).toBe('function');
 
+        expect(pectinCore).toHaveProperty('createMultiConfig');
+        expect(typeof pectinCore.createMultiConfig).toBe('function');
+
         expect(pectinCore).toHaveProperty('loadManifest');
         expect(typeof pectinCore.loadManifest).toBe('function');
     });
@@ -196,6 +220,7 @@ describe('pectin-core', () => {
                     inlineSVG: true,
                 },
                 dependencies: {
+                    '@babel/runtime': '^7.0.0',
                     react: '*',
                 },
             }),
@@ -223,80 +248,16 @@ export default class Foo extends React.Component {
 
         const bundle = await rollup(inputOptions);
 
-        const esm = await bundle.write(esmOutput);
-        const cjs = await bundle.write(cjsOutput);
+        const esm = await bundle.generate(esmOutput);
+        const cjs = await bundle.generate(cjsOutput);
 
         expect(esm.code).toMatchInlineSnapshot(`
-"import React from 'react';
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError(\\"Cannot call a class as a function\\");
-  }
-}
-
-function _defineProperties(target, props) {
-  for (var i = 0; i < props.length; i++) {
-    var descriptor = props[i];
-    descriptor.enumerable = descriptor.enumerable || false;
-    descriptor.configurable = true;
-    if (\\"value\\" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, descriptor.key, descriptor);
-  }
-}
-
-function _createClass(Constructor, protoProps, staticProps) {
-  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-  if (staticProps) _defineProperties(Constructor, staticProps);
-  return Constructor;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== \\"function\\" && superClass !== null) {
-    throw new TypeError(\\"Super expression must either be null or a function\\");
-  }
-
-  subClass.prototype = Object.create(superClass && superClass.prototype, {
-    constructor: {
-      value: subClass,
-      writable: true,
-      configurable: true
-    }
-  });
-  if (superClass) _setPrototypeOf(subClass, superClass);
-}
-
-function _getPrototypeOf(o) {
-  _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-    return o.__proto__ || Object.getPrototypeOf(o);
-  };
-  return _getPrototypeOf(o);
-}
-
-function _setPrototypeOf(o, p) {
-  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-    o.__proto__ = p;
-    return o;
-  };
-
-  return _setPrototypeOf(o, p);
-}
-
-function _assertThisInitialized(self) {
-  if (self === void 0) {
-    throw new ReferenceError(\\"this hasn't been initialised - super() hasn't been called\\");
-  }
-
-  return self;
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (call && (typeof call === \\"object\\" || typeof call === \\"function\\")) {
-    return call;
-  }
-
-  return _assertThisInitialized(self);
-}
+"import _classCallCheck from '@babel/runtime/helpers/classCallCheck';
+import _createClass from '@babel/runtime/helpers/createClass';
+import _possibleConstructorReturn from '@babel/runtime/helpers/possibleConstructorReturn';
+import _getPrototypeOf from '@babel/runtime/helpers/getPrototypeOf';
+import _inherits from '@babel/runtime/helpers/inherits';
+import React from 'react';
 
 var svgTest = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pjxzdmcgdmlld0JveD0iMCAwIDE1MS41NyAxNTEuNTciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGxpbmUgeDE9IjQ3LjU3IiB4Mj0iMTAzLjk5IiB5MT0iMTAzLjk5IiB5Mj0iNDcuNTciLz48bGluZSB4MT0iNDUuOCIgeDI9IjEwNS43IiB5MT0iNDUuODciIHkyPSIxMDUuNzciLz48L3N2Zz4=';
 
@@ -325,6 +286,8 @@ export default Foo;
 "
 `);
         expect(cjs.code).toMatch("'use strict';");
+        expect(cjs.code).toMatch('_interopDefault');
+        expect(cjs.code).toMatch("require('@babel/runtime/helpers/createClass')");
         expect(cjs.code).toMatch('module.exports = Foo;');
         // transpiled code is otherwise identical
     });

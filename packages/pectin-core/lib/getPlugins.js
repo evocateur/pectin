@@ -10,12 +10,12 @@ const subpathExternals = require('rollup-plugin-subpath-externals');
 const svg = require('rollup-plugin-svg');
 const babelrc = require('@pectin/babelrc');
 
-module.exports = async function getPlugins(pkg) {
-    const rc = await babelrc(pkg, pkg.cwd);
+module.exports = async function getPlugins(pkg, cwd, output) {
+    const rc = await babelrc(pkg, cwd, output);
 
     return [
         mainEntry(pkg),
-        subpathExternals(pkg),
+        subpathExternals(pkg, output),
         // https://github.com/rollup/rollup-plugin-node-resolve#usage
         nodeResolve({
             preferBuiltins: true,

@@ -12,11 +12,11 @@ const dotProp = require('dot-prop');
  *  - pkg.rollup.input: the full path to entry file
  *
  * @param {Object} pkg
- * @return {String} input path resolved to pkg.cwd
+ * @return {String} input path resolved to cwd
  */
-module.exports = function getInput(pkg) {
+module.exports = function getInput(pkg, cwd) {
     if (!pkg.main) {
-        const location = path.relative('.', path.join(pkg.cwd, 'package.json'));
+        const location = path.relative('.', path.join(cwd, 'package.json'));
 
         throw new TypeError(`required field 'main' missing in ${location}`);
     }
@@ -24,7 +24,7 @@ module.exports = function getInput(pkg) {
     const rootDir = dotProp.get(pkg, 'rollup.rootDir', 'src');
     const input = dotProp.get(pkg, 'rollup.input', rebaseInput(rootDir, pkg.main));
 
-    return path.resolve(pkg.cwd, input);
+    return path.resolve(cwd, input);
 };
 
 function rebaseInput(rootDir, filePath) {

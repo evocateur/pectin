@@ -2,22 +2,26 @@
 
 const path = require('path');
 
-module.exports = function getOutput({ main, module, cwd }) {
+module.exports = function getOutput(pkg, cwd) {
     const output = [
         {
-            file: path.resolve(cwd, main),
+            file: path.resolve(cwd, pkg.main),
             format: 'cjs',
-            sourcemap: true,
         },
     ];
 
-    if (module) {
+    if (pkg.module) {
         output.push({
-            file: path.resolve(cwd, module),
-            format: 'es',
-            sourcemap: true,
+            file: path.resolve(cwd, pkg.module),
+            format: 'esm',
         });
     }
 
-    return output;
+    return output.filter(x => Boolean(x)).map(obj => {
+        const extra = {
+            exports: obj.format === 'esm' ? 'named' : 'auto',
+        };
+
+        return Object.assign(obj, extra);
+    });
 };
