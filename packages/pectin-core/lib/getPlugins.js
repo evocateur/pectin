@@ -6,6 +6,7 @@ const commonjs = require('rollup-plugin-commonjs');
 const json = require('rollup-plugin-json');
 const nodeResolve = require('rollup-plugin-node-resolve');
 const mainEntry = require('rollup-plugin-main-entry');
+const replace = require('rollup-plugin-replace');
 const subpathExternals = require('rollup-plugin-subpath-externals');
 const svg = require('rollup-plugin-svg');
 const { terser } = require('rollup-plugin-terser');
@@ -28,6 +29,12 @@ module.exports = async function getPlugins(pkg, cwd, output) {
             // just in case dependencies have missed the memo
             jsnext: true,
         }),
+        // https://github.com/rollup/rollup-plugin-replace#usage
+        replace(
+            Object.assign(env ? { 'process.env.NODE_ENV': JSON.stringify(env) } : {}, {
+                'process.env.BROWSER': JSON.stringify(output.browser || false),
+            })
+        ),
         // https://github.com/rollup/rollup-plugin-json#usage
         json(),
         // https://github.com/antony/rollup-plugin-svg

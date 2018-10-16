@@ -25,6 +25,7 @@ module.exports = function getOutput(pkg, cwd) {
         output.push({
             file: path.resolve(cwd, pkg.browser),
             format: 'cjs',
+            browser: true,
         });
     } else if (pkg.browser) {
         // specific files (advanced)
@@ -32,12 +33,14 @@ module.exports = function getOutput(pkg, cwd) {
             pkg.browser[pkg.main] && {
                 file: path.resolve(cwd, pkg.browser[pkg.main]),
                 format: 'cjs',
+                browser: true,
             }
         );
         output.push(
             pkg.browser[pkg.module] && {
                 file: path.resolve(cwd, pkg.browser[pkg.module]),
                 format: 'esm',
+                browser: true,
             }
         );
     }

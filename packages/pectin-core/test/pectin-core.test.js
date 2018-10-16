@@ -77,6 +77,7 @@ describe('pectin-core', () => {
                 expect.objectContaining({ name: 'main-entry' }),
                 expect.objectContaining({ name: 'subpath-externals' }),
                 expect.objectContaining({ name: 'node-resolve' }),
+                expect.objectContaining({ name: 'replace' }),
                 expect.objectContaining({ name: 'json' }),
                 expect.objectContaining({ name: 'babel' }),
                 expect.objectContaining({ name: 'commonjs' }),
@@ -101,6 +102,7 @@ describe('pectin-core', () => {
             expect.objectContaining({ name: 'main-entry' }),
             expect.objectContaining({ name: 'subpath-externals' }),
             expect.objectContaining({ name: 'node-resolve' }),
+            expect.objectContaining({ name: 'replace' }),
             expect.objectContaining({ name: 'json' }),
             // order is important, must come before babel()
             expect.objectContaining({ name: 'svg' }),
@@ -234,7 +236,13 @@ describe('pectin-core', () => {
         const cwd = createFixture({
             'package.json': File(pkg),
             src: Dir({
-                'index.js': File('export default class Basic {};'),
+                'index.js': File(`
+export default class Basic {
+    constructor() {
+        this.isBrowser = process.env.BROWSER;
+    }
+};
+`),
             }),
         });
 
@@ -262,6 +270,8 @@ function _classCallCheck(instance, Constructor) {
 
 var Basic = function Basic() {
   _classCallCheck(this, Basic);
+
+  this.isBrowser = false;
 };
 
 module.exports = Basic;
@@ -277,6 +287,8 @@ function _classCallCheck(instance, Constructor) {
 
 var Basic = function Basic() {
   _classCallCheck(this, Basic);
+
+  this.isBrowser = false;
 };
 
 export default Basic;
@@ -294,6 +306,8 @@ function _classCallCheck(instance, Constructor) {
 
 var Basic = function Basic() {
   _classCallCheck(this, Basic);
+
+  this.isBrowser = true;
 };
 
 module.exports = Basic;
@@ -317,7 +331,13 @@ module.exports = Basic;
         const cwd = createFixture({
             'package.json': File(pkg),
             src: Dir({
-                'index.js': File('export default class Advanced {};'),
+                'index.js': File(`
+export default class Advanced {
+    constructor() {
+        this.isBrowser = process.env.BROWSER;
+    }
+};
+`),
             }),
         });
         const configs = await pectinCore.createMultiConfig(pkg, { cwd });
@@ -344,6 +364,8 @@ var _classCallCheck = _interopDefault(require('@babel/runtime/helpers/classCallC
 
 var Advanced = function Advanced() {
   _classCallCheck(this, Advanced);
+
+  this.isBrowser = false;
 };
 
 module.exports = Advanced;
@@ -355,6 +377,8 @@ import _classCallCheck from '@babel/runtime/helpers/esm/classCallCheck';
 
 var Advanced = function Advanced() {
   _classCallCheck(this, Advanced);
+
+  this.isBrowser = false;
 };
 
 export default Advanced;
@@ -370,6 +394,8 @@ var _classCallCheck = _interopDefault(require('@babel/runtime/helpers/classCallC
 
 var Advanced = function Advanced() {
   _classCallCheck(this, Advanced);
+
+  this.isBrowser = true;
 };
 
 module.exports = Advanced;
@@ -381,6 +407,8 @@ import _classCallCheck from '@babel/runtime/helpers/esm/classCallCheck';
 
 var Advanced = function Advanced() {
   _classCallCheck(this, Advanced);
+
+  this.isBrowser = true;
 };
 
 export default Advanced;
@@ -450,7 +478,15 @@ return index;
         const cwd = createFixture({
             'package.json': File(pkg),
             src: Dir({
-                'index.js': File('export default function main() { console.log("yay"); }'),
+                'index.js': File(`
+export default function main() {
+    console.log("yay");
+
+    if (process.env.NODE_ENV === 'production') {
+        console.log('hooray');
+    }
+}
+`),
             }),
         });
         const configs = await pectinCore.createMultiConfig(pkg, { cwd });
@@ -475,7 +511,7 @@ return main;
 "
 `);
         expect(minOutput).toMatchInlineSnapshot(`
-"!function(e,o){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?module.exports=o():\\"function\\"==typeof define&&define.amd?define(o):e.ScopedUmd=o()}(this,function(){\\"use strict\\";return function(){console.log(\\"yay\\")}});
+"!function(e,o){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?module.exports=o():\\"function\\"==typeof define&&define.amd?define(o):e.ScopedUmd=o()}(this,function(){\\"use strict\\";return function(){console.log(\\"yay\\"),console.log(\\"hooray\\")}});
 "
 `);
     });
