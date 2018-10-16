@@ -38,6 +38,7 @@ module.exports = async function getPlugins(pkg, cwd, output) {
         commonjs(),
         min &&
             terser({
+                // https://github.com/terser-js/terser#minify-options
                 compress: {
                     pure_getters: true,
                     unsafe: true,

@@ -109,6 +109,20 @@ describe('pectin-core', () => {
         ]);
     });
 
+    it('adds terser plugin for env=production format=umd', async () => {
+        const pkg = {
+            name: 'inline-svg-data-uri',
+            main: 'dist/index.js',
+            unpkg: 'dist/index.min.js',
+        };
+        const cwd = createFixture({
+            'package.json': File(pkg),
+        });
+        const configs = await pectinCore.createMultiConfig(pkg, { cwd });
+
+        expect(configs.pop().plugins.pop()).toMatchObject({ name: 'terser' });
+    });
+
     it('generates rollup config with modules output', async () => {
         const cwd = createFixture({
             'package.json': File({
