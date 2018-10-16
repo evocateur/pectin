@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.1.0](https://github.com/evocateur/pectin/compare/v2.0.0...v2.1.0) (2018-10-16)
+
+
+### Bug Fixes
+
+* **core:** Make SVG inlining opt-in via package prop ([f072b17](https://github.com/evocateur/pectin/commit/f072b17)), closes [#4](https://github.com/evocateur/pectin/issues/4)
+* **core:** Re-order SVG plugin to avoid breaking React ([fc5202f](https://github.com/evocateur/pectin/commit/fc5202f)), closes [#4](https://github.com/evocateur/pectin/issues/4)
+
+
+### Features
+
+* **api:** Consume new plugins-per-format core API ([42a9659](https://github.com/evocateur/pectin/commit/42a9659))
+* **api:** p-map ^2.0.0 ([574d9f1](https://github.com/evocateur/pectin/commit/574d9f1))
+* **babelrc:** Accept optional format config that controls value of useESModules option passed to runtime transform ([8e7622d](https://github.com/evocateur/pectin/commit/8e7622d))
+* **core:** Add minified UMD output via pkg.unpkg with un-minified dev output ([e4e6f63](https://github.com/evocateur/pectin/commit/e4e6f63))
+* **core:** Add replacement of NODE_ENV and BROWSER env vars ([236acd2](https://github.com/evocateur/pectin/commit/236acd2))
+* **core:** Add simple and advanced browser output(s) via pkg.browser ([c8213d7](https://github.com/evocateur/pectin/commit/c8213d7))
+* **core:** Generate plugins per-format instead of per-input ([4e81e6f](https://github.com/evocateur/pectin/commit/4e81e6f))
+* **subpath-externals:** Accept optional format config that controls which types of dependencies are externalized ([446440d](https://github.com/evocateur/pectin/commit/446440d))
+
+
+
+
+
 # [2.0.0](https://github.com/evocateur/pectin/compare/v1.3.0...v2.0.0) (2018-10-10)
 
 

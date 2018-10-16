@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.1.0](https://github.com/evocateur/pectin/compare/v2.0.0...v2.1.0) (2018-10-16)
+
+
+### Features
+
+* **api:** Consume new plugins-per-format core API ([42a9659](https://github.com/evocateur/pectin/commit/42a9659))
+* **api:** p-map ^2.0.0 ([574d9f1](https://github.com/evocateur/pectin/commit/574d9f1))
+
+
+
+
+
 # [2.0.0](https://github.com/evocateur/pectin/compare/v1.3.0...v2.0.0) (2018-10-10)
 
 
