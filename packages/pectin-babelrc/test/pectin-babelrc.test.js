@@ -174,6 +174,86 @@ Object {
 `);
     });
 
+    it('does not duplicate simple runtime transform', async () => {
+        const pkg = {
+            name: 'no-duplicate-transform-simple',
+            dependencies: {
+                '@babel/runtime': '^7.0.0',
+            },
+        };
+        const cwd = createFixture({
+            '.babelrc': File({
+                presets: ['@babel/preset-env'],
+                plugins: ['@babel/transform-runtime', 'lodash'],
+            }),
+            'package.json': File(pkg),
+        });
+        const opts = await pectinBabelrc(pkg, cwd, { format: 'esm' });
+
+        expect(opts).toHaveProperty('plugins', [
+            ['@babel/plugin-transform-runtime', { useESModules: true }],
+            'lodash',
+        ]);
+    });
+
+    it('does not duplicate advanced runtime transform', async () => {
+        const pkg = {
+            name: 'no-duplicate-transform-advanced',
+            dependencies: {
+                '@babel/runtime': '^7.0.0',
+            },
+        };
+        const cwd = createFixture({
+            '.babelrc': File({
+                presets: ['@babel/env'],
+                plugins: [
+                    'graphql-tag',
+                    [
+                        '@babel/transform-runtime',
+                        {
+                            corejs: true,
+                        },
+                    ],
+                ],
+            }),
+            'package.json': File(pkg),
+        });
+        const opts = await pectinBabelrc(pkg, cwd, { format: 'esm' });
+
+        expect(opts).toHaveProperty('plugins', [
+            'graphql-tag',
+            [
+                '@babel/plugin-transform-runtime',
+                {
+                    corejs: true,
+                    useESModules: true,
+                },
+            ],
+        ]);
+    });
+
+    it('adds missing config to advanced runtime transform', async () => {
+        const pkg = {
+            name: 'add-config-transform-advanced',
+            dependencies: {
+                '@babel/runtime': '^7.0.0',
+            },
+        };
+        const cwd = createFixture({
+            '.babelrc': File({
+                presets: ['@babel/env'],
+                // admittedly weird...
+                plugins: [['@babel/transform-runtime']],
+            }),
+            'package.json': File(pkg),
+        });
+        const opts = await pectinBabelrc(pkg, cwd, { format: 'esm' });
+
+        expect(opts).toHaveProperty('plugins', [
+            ['@babel/plugin-transform-runtime', { useESModules: true }],
+        ]);
+    });
+
     it('throws an error when .babelrc preset is missing', async () => {
         const pkg = {
             name: 'no-presets',

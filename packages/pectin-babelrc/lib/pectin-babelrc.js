@@ -15,6 +15,14 @@ const explorer = cosmiconfig('babel', {
     ],
 });
 
+function hasSimpleTransform(plugin) {
+    return typeof plugin === 'string' && /@babel\/(plugin-)?transform-runtime/.test(plugin);
+}
+
+function hasAdvancedTransform(plugin) {
+    return Array.isArray(plugin) && /@babel\/(plugin-)?transform-runtime/.test(plugin[0]);
+}
+
 module.exports = async function pectinBabelrc(pkg, cwd, output) {
     const { format = 'cjs' } = output || {};
     const { config, filepath } = await explorer.search(cwd);
@@ -25,9 +33,33 @@ module.exports = async function pectinBabelrc(pkg, cwd, output) {
     // enable runtime transform when @babel/runtime found in dependencies
     if ('@babel/runtime' in (pkg.dependencies || {})) {
         rc.runtimeHelpers = true;
+
         // avoid mutating cached array
         rc.plugins = (rc.plugins || []).slice();
-        rc.plugins.push(['@babel/plugin-transform-runtime', { useESModules: format !== 'cjs' }]);
+
+        if (rc.plugins.some(hasSimpleTransform)) {
+            const idx = rc.plugins.findIndex(hasSimpleTransform);
+
+            rc.plugins.splice(idx, 1, [
+                '@babel/plugin-transform-runtime',
+                { useESModules: format === 'esm' },
+            ]);
+        } else if (rc.plugins.some(hasAdvancedTransform)) {
+            const idx = rc.plugins.findIndex(hasAdvancedTransform);
+            const cfg = rc.plugins[idx];
+
+            rc.plugins.splice(idx, 1, [
+                '@babel/plugin-transform-runtime',
+                Object.assign(cfg.length > 1 ? cfg[1] : {}, {
+                    useESModules: format === 'esm',
+                }),
+            ]);
+        } else {
+            rc.plugins.push([
+                '@babel/plugin-transform-runtime',
+                { useESModules: format === 'esm' },
+            ]);
+        }
     }
 
     // babel 7 doesn't need `{ modules: false }`, just verify a preset exists
