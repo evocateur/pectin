@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.2](https://github.com/evocateur/pectin/compare/v2.1.1...v2.1.2) (2018-10-19)
+
+
+### Bug Fixes
+
+* **babelrc:** Handle [@babel](https://github.com/babel)/runtime-corejs2 dependency correctly ([ffc9f19](https://github.com/evocateur/pectin/commit/ffc9f19))
+
+
+
+
+
 ## [2.1.1](https://github.com/evocateur/pectin/compare/v2.1.0...v2.1.1) (2018-10-16)
 
 
