@@ -254,6 +254,26 @@ Object {
         ]);
     });
 
+    it('passes { corejs: 2 } to runtime transform when alternate dependency detected', async () => {
+        const pkg = {
+            name: 'add-config-transform-advanced',
+            dependencies: {
+                '@babel/runtime-corejs2': '^7.0.0',
+            },
+        };
+        const cwd = createFixture({
+            '.babelrc': File({
+                presets: ['@babel/env'],
+            }),
+            'package.json': File(pkg),
+        });
+        const opts = await pectinBabelrc(pkg, cwd, { format: 'esm' });
+
+        expect(opts).toHaveProperty('plugins', [
+            ['@babel/plugin-transform-runtime', { useESModules: true, corejs: 2 }],
+        ]);
+    });
+
     it('throws an error when .babelrc preset is missing', async () => {
         const pkg = {
             name: 'no-presets',
