@@ -324,7 +324,7 @@ Object {
         expect.assertions(1);
     });
 
-    test('integration', async () => {
+    test.only('integration', async () => {
         const pkg1 = {
             name: 'pkg1',
         };
@@ -338,7 +338,7 @@ Object {
         const pkg3 = {
             name: 'pkg3',
             dependencies: {
-                '@babel/runtime': '*',
+                '@babel/runtime-corejs2': '*',
             },
         };
         const pkg4 = {
@@ -348,14 +348,22 @@ Object {
             },
         };
 
+        // resolve to absolute paths because we don't want to run npm install
+        const presetEnv = require.resolve('@babel/preset-env');
+        const transformRuntime = require.resolve('@babel/plugin-transform-runtime');
+        const objectRestSpread = require.resolve('@babel/plugin-proposal-object-rest-spread');
+        const classProperties = require.resolve('@babel/plugin-proposal-class-properties');
+
         const cwd = createFixture({
+            'babel.config.js': File(`
+                module.exports = {
+                    presets: ['${presetEnv}'],
+                    plugins: ['${objectRestSpread}'],
+                };
+            `),
             'package.json': File({
                 name: 'monorepo',
                 private: true,
-                babel: {
-                    presets: ['@babel/preset-env'],
-                    plugins: ['transform-object-rest-spread'],
-                },
             }),
             packages: Dir({
                 pkg1: Dir({
@@ -366,11 +374,20 @@ Object {
                 }),
                 pkg3: Dir({
                     '.babelrc': File({
-                        presets: ['@babel/preset-env'],
+                        presets: [`${presetEnv}`],
                     }),
                     'package.json': File(pkg3),
                 }),
                 pkg4: Dir({
+                    '.babelrc.js': File(`
+                        module.exports = {
+                            presets: ['${presetEnv}'],
+                            plugins: [
+                                ['${classProperties}', { loose: true }],
+                                ['${transformRuntime}', { regenerator: false }],
+                            ],
+                        };
+                    `),
                     'package.json': File(pkg4),
                 }),
             }),
@@ -388,66 +405,104 @@ Object {
             pectinBabelrc(pkg4, pkg4.cwd, { format: 'esm' }),
         ]);
 
-        expect(config1).toMatchInlineSnapshot(`
+        expect(config1).toMatchInlineSnapshot(
+            {
+                plugins: [expect.stringContaining('plugin-proposal-object-rest-spread')],
+                presets: [expect.stringContaining('preset-env')],
+            },
+            `
 Object {
   "babelrc": false,
   "exclude": "node_modules/**",
   "plugins": Array [
-    "transform-object-rest-spread",
+    StringContaining "plugin-proposal-object-rest-spread",
   ],
   "presets": Array [
-    "@babel/preset-env",
+    StringContaining "preset-env",
   ],
 }
-`);
-        expect(config2).toMatchInlineSnapshot(`
+`
+        );
+        expect(config2).toMatchInlineSnapshot(
+            {
+                plugins: [expect.stringContaining('lodash')],
+                presets: [expect.stringContaining('env')],
+            },
+            `
 Object {
   "babelrc": false,
   "exclude": "node_modules/**",
   "plugins": Array [
-    "lodash",
+    StringContaining "lodash",
   ],
   "presets": Array [
-    "@babel/env",
+    StringContaining "env",
   ],
 }
-`);
-        expect(config3).toMatchInlineSnapshot(`
+`
+        );
+        expect(config3).toMatchInlineSnapshot(
+            {
+                plugins: [
+                    [expect.stringContaining('plugin-transform-runtime'), { useESModules: false }],
+                ],
+                presets: [expect.stringContaining('preset-env')],
+            },
+            `
 Object {
   "babelrc": false,
   "exclude": "node_modules/**",
   "plugins": Array [
     Array [
-      "@babel/plugin-transform-runtime",
+      StringContaining "plugin-transform-runtime",
       Object {
         "useESModules": false,
       },
     ],
   ],
   "presets": Array [
-    "@babel/preset-env",
+    StringContaining "preset-env",
   ],
   "runtimeHelpers": true,
 }
-`);
-        expect(config4).toMatchInlineSnapshot(`
+`
+        );
+        expect(config4).toMatchInlineSnapshot(
+            {
+                plugins: [
+                    [expect.stringContaining('plugin-proposal-class-properties'), { loose: true }],
+                    [
+                        expect.stringContaining('plugin-transform-runtime'),
+                        { useESModules: true, regenerator: false },
+                    ],
+                ],
+                presets: [expect.stringContaining('preset-env')],
+            },
+            `
 Object {
   "babelrc": false,
   "exclude": "node_modules/**",
   "plugins": Array [
-    "transform-object-rest-spread",
     Array [
-      "@babel/plugin-transform-runtime",
+      StringContaining "plugin-proposal-class-properties",
       Object {
+        "loose": true,
+      },
+    ],
+    Array [
+      StringContaining "plugin-transform-runtime",
+      Object {
+        "regenerator": false,
         "useESModules": true,
       },
     ],
   ],
   "presets": Array [
-    "@babel/preset-env",
+    StringContaining "preset-env",
   ],
   "runtimeHelpers": true,
 }
-`);
+`
+        );
     });
 });
