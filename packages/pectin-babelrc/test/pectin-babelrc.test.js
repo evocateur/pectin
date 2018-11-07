@@ -396,7 +396,7 @@ Object {
                 private: true,
                 babel: {
                     presets: ['@babel/preset-env'],
-                    plugins: ['transform-object-rest-spread'],
+                    plugins: ['@babel/plugin-proposal-object-rest-spread'],
                 },
             }),
             packages: Dir({
@@ -435,7 +435,7 @@ Object {
   "babelrc": false,
   "exclude": "node_modules/**",
   "plugins": Array [
-    "transform-object-rest-spread",
+    "@babel/plugin-proposal-object-rest-spread",
   ],
   "presets": Array [
     "@babel/preset-env",
@@ -478,7 +478,7 @@ Object {
   "exclude": "node_modules/**",
   "plugins": Array [
     "@babel/plugin-syntax-dynamic-import",
-    "transform-object-rest-spread",
+    "@babel/plugin-proposal-object-rest-spread",
     Array [
       "@babel/plugin-transform-runtime",
       Object {
