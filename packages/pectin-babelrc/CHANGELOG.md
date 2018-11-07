@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.2.0](https://github.com/evocateur/pectin/compare/v2.1.2...v2.2.0) (2018-11-07)
+
+
+### Features
+
+* **babelrc:** Ensure dynamic `import()` syntax is enabled for ESM format ([44626ad](https://github.com/evocateur/pectin/commit/44626ad))
+
+
+
+
+
 ## [2.1.2](https://github.com/evocateur/pectin/compare/v2.1.1...v2.1.2) (2018-10-19)
 
 

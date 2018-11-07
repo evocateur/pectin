@@ -1,6 +1,6 @@
 {
   "name": "@pectin/core",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "description": "Core implementation of pectin logic",
   "keywords": [
     "rollup",
