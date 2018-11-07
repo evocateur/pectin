@@ -191,6 +191,7 @@ Object {
         const opts = await pectinBabelrc(pkg, cwd, { format: 'esm' });
 
         expect(opts).toHaveProperty('plugins', [
+            '@babel/plugin-syntax-dynamic-import',
             ['@babel/plugin-transform-runtime', { useESModules: true }],
             'lodash',
         ]);
@@ -221,6 +222,7 @@ Object {
         const opts = await pectinBabelrc(pkg, cwd, { format: 'esm' });
 
         expect(opts).toHaveProperty('plugins', [
+            '@babel/plugin-syntax-dynamic-import',
             'graphql-tag',
             [
                 '@babel/plugin-transform-runtime',
@@ -250,6 +252,7 @@ Object {
         const opts = await pectinBabelrc(pkg, cwd, { format: 'esm' });
 
         expect(opts).toHaveProperty('plugins', [
+            '@babel/plugin-syntax-dynamic-import',
             ['@babel/plugin-transform-runtime', { useESModules: true }],
         ]);
     });
@@ -270,8 +273,47 @@ Object {
         const opts = await pectinBabelrc(pkg, cwd, { format: 'esm' });
 
         expect(opts).toHaveProperty('plugins', [
+            '@babel/plugin-syntax-dynamic-import',
             ['@babel/plugin-transform-runtime', { useESModules: true, corejs: 2 }],
         ]);
+    });
+
+    it('does not duplicate existing @babel/syntax-dynamic-import plugin', async () => {
+        const pkg = {
+            name: 'no-duplicate-syntax',
+            dependencies: {
+                lodash: '*',
+            },
+        };
+        const cwd = createFixture({
+            '.babelrc': File({
+                presets: ['@babel/preset-env'],
+                plugins: ['lodash', '@babel/syntax-dynamic-import'],
+            }),
+            'package.json': File(pkg),
+        });
+        const opts = await pectinBabelrc(pkg, cwd, { format: 'esm' });
+
+        expect(opts).toHaveProperty('plugins', ['lodash', '@babel/syntax-dynamic-import']);
+    });
+
+    it('does not add syntax-dynamic-import plugin to non-ESM format', async () => {
+        const pkg = {
+            name: 'no-cjs-dynamic-import',
+            dependencies: {
+                lodash: '*',
+            },
+        };
+        const cwd = createFixture({
+            '.babelrc': File({
+                presets: ['@babel/preset-env'],
+                plugins: ['lodash'],
+            }),
+            'package.json': File(pkg),
+        });
+        const opts = await pectinBabelrc(pkg, cwd, { format: 'cjs' });
+
+        expect(opts).toHaveProperty('plugins', ['lodash']);
     });
 
     it('throws an error when .babelrc preset is missing', async () => {
@@ -435,6 +477,7 @@ Object {
   "babelrc": false,
   "exclude": "node_modules/**",
   "plugins": Array [
+    "@babel/plugin-syntax-dynamic-import",
     "transform-object-rest-spread",
     Array [
       "@babel/plugin-transform-runtime",

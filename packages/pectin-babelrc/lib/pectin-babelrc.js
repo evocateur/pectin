@@ -49,6 +49,21 @@ function ensureRuntimeHelpers(rc, entryOptions) {
     });
 }
 
+function hasDynamicImportSyntax(plugin) {
+    return typeof plugin === 'string' && /@babel\/(plugin-)?syntax-dynamic-import/.test(plugin);
+}
+
+function ensureDynamicImportSyntax(rc) {
+    // avoid concatenating falsey value
+    const plugins = rc.plugins || [];
+
+    if (!plugins.some(hasDynamicImportSyntax)) {
+        Object.assign(rc, {
+            plugins: ['@babel/plugin-syntax-dynamic-import'].concat(plugins),
+        });
+    }
+}
+
 module.exports = async function pectinBabelrc(pkg, cwd, output) {
     const { format = 'cjs' } = output || {};
     const { config, filepath } = await explorer.search(cwd);
@@ -67,6 +82,11 @@ module.exports = async function pectinBabelrc(pkg, cwd, output) {
             useESModules: format === 'esm',
             corejs: 2,
         });
+    }
+
+    // ensure dynamic import syntax is available
+    if (format === 'esm') {
+        ensureDynamicImportSyntax(rc);
     }
 
     // babel 7 doesn't need `{ modules: false }`, just verify a preset exists
