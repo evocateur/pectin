@@ -3,8 +3,9 @@
 const path = require('path');
 const camelCase = require('camelcase');
 const npa = require('npm-package-arg');
+const dotProp = require('dot-prop');
 
-module.exports = function getOutput(pkg, cwd) {
+module.exports = function getOutput(pkg, cwd, isMultiConfig) {
     const output = [
         {
             file: path.resolve(cwd, pkg.main),
@@ -13,10 +14,19 @@ module.exports = function getOutput(pkg, cwd) {
     ];
 
     if (pkg.module) {
-        output.push({
-            file: path.resolve(cwd, pkg.module),
+        const cfg = {
             format: 'esm',
-        });
+        };
+
+        if (isMultiConfig) {
+            // code splitting is only enabled for multi-config output
+            cfg.dir = path.dirname(path.resolve(cwd, pkg.module));
+            cfg.entryFileNames = dotProp.get(pkg, 'rollup.entryFileNames', '[name].esm.js');
+        } else {
+            cfg.file = path.resolve(cwd, pkg.module);
+        }
+
+        output.push(cfg);
     }
 
     // @see https://github.com/defunctzombie/package-browser-field-spec

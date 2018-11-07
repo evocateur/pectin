@@ -17,6 +17,7 @@ function createFixture(pkgSpec) {
             // implicit resolution from repo root
             '.babelrc': File({
                 presets: ['@babel/env', '@babel/preset-react'],
+                plugins: ['@babel/plugin-syntax-dynamic-import'],
             }),
             ...pkgSpec,
         })
@@ -36,7 +37,17 @@ function generateResults(configs) {
     return pMap(configs, ({ output: outputOptions, ...inputOptions }) =>
         rollup(inputOptions).then(bundle => {
             if (Array.isArray(outputOptions)) {
-                return Promise.all(outputOptions.map(opts => bundle.generate(opts)));
+                return Promise.all(outputOptions.map(opts => bundle.generate(opts))).then(
+                    maybeChunked =>
+                        maybeChunked.reduce((arr, result) => {
+                            if (result.output) {
+                                // chunks stored as dictionary keyed by fileName
+                                return arr.concat(Object.values(result.output));
+                            }
+
+                            return arr.concat(result);
+                        }, [])
+                );
             }
 
             return bundle.generate(outputOptions);
@@ -130,7 +141,7 @@ describe('pectin-core', () => {
             'package.json': File({
                 name: 'pkg-module',
                 main: 'dist/index.js',
-                module: 'dist/index.module.js',
+                module: 'dist/index.esm.js',
             }),
         });
         const pkgPath = path.join(cwd, 'package.json');
@@ -142,11 +153,36 @@ describe('pectin-core', () => {
                 exports: 'auto',
             },
             {
-                file: path.join(cwd, 'dist/index.module.js'),
+                file: path.join(cwd, 'dist/index.esm.js'),
                 format: 'esm',
                 exports: 'named',
             },
         ]);
+    });
+
+    it('generates rollup multi-config with chunked modules output', async () => {
+        const pkg = {
+            name: 'pkg-module-chunked',
+            main: 'dist/index.js',
+            module: 'dist/index.esm.js',
+        };
+        const cwd = createFixture({
+            'package.json': File(pkg),
+        });
+        const [cjsConfig, esmConfig] = await pectinCore.createMultiConfig(pkg, { cwd });
+
+        expect(cjsConfig).toMatchObject({
+            experimentalCodeSplitting: false,
+        });
+        expect(esmConfig).toMatchObject({
+            experimentalCodeSplitting: true,
+            output: [
+                {
+                    dir: expect.stringMatching(/\/dist$/),
+                    entryFileNames: '[name].esm.js',
+                },
+            ],
+        });
     });
 
     it('customizes input with pkg.rollup.rootDir', async () => {
@@ -226,11 +262,78 @@ describe('pectin-core', () => {
         expect(typeof pectinCore.loadManifest).toBe('function');
     });
 
+    it('generates chunked module output', async () => {
+        const pkg = {
+            name: 'chunked-module-outputs',
+            main: './dist/index.js',
+            module: './dist/index.esm.js',
+        };
+        const cwd = createFixture({
+            'package.json': File(pkg),
+            src: Dir({
+                'chunky-bacon.js': File(`export default '_why';`),
+                'index.js': File(`
+export default function main() {
+    return import('./chunky-bacon');
+};
+`),
+            }),
+        });
+
+        const configs = await pectinCore.createMultiConfig(pkg, { cwd });
+        const results = await generateResults(configs);
+
+        const fileNames = results.map(result => `dist/${result.fileName}`);
+        const [cjsEntry, esmEntry, esmChunk] = results.map(
+            result => `// dist/${result.fileName}\n${result.code}`
+        );
+
+        expect(fileNames).toEqual([
+            'dist/index.js',
+            'dist/index.esm.js',
+            'dist/chunky-bacon.esm.js',
+        ]);
+
+        expect(cjsEntry).toMatchInlineSnapshot(`
+"// dist/index.js
+'use strict';
+
+function main() {
+  return Promise.resolve().then(function () { return chunkyBacon$1; });
+}
+
+var chunkyBacon = '_why';
+
+var chunkyBacon$1 = /*#__PURE__*/Object.freeze({
+    default: chunkyBacon
+});
+
+module.exports = main;
+"
+`);
+        expect(esmEntry).toMatchInlineSnapshot(`
+"// dist/index.esm.js
+function main() {
+  return import(\\"./chunky-bacon.esm.js\\");
+}
+
+export default main;
+"
+`);
+        expect(esmChunk).toMatchInlineSnapshot(`
+"// dist/chunky-bacon.esm.js
+var chunkyBacon = '_why';
+
+export default chunkyBacon;
+"
+`);
+    });
+
     it('generates basic pkg.browser output', async () => {
         const pkg = {
             name: 'basic-browser-outputs',
             main: './dist/index.js',
-            module: './dist/index.module.js',
+            module: './dist/index.esm.js',
             browser: './dist/index.browser.js',
         };
         const cwd = createFixture({
@@ -248,16 +351,13 @@ export default class Basic {
 
         const configs = await pectinCore.createMultiConfig(pkg, { cwd });
         const results = await generateResults(configs);
+
         const fileNames = results.map(result => `dist/${result.fileName}`);
         const [cjsMain, esmModule, cjsBrowser] = results.map(
             result => `// dist/${result.fileName}\n${result.code}`
         );
 
-        expect(fileNames).toEqual([
-            'dist/index.js',
-            'dist/index.module.js',
-            'dist/index.browser.js',
-        ]);
+        expect(fileNames).toEqual(['dist/index.js', 'dist/index.esm.js', 'dist/index.browser.js']);
         expect(cjsMain).toMatchInlineSnapshot(`
 "// dist/index.js
 'use strict';
@@ -278,7 +378,7 @@ module.exports = Basic;
 "
 `);
         expect(esmModule).toMatchInlineSnapshot(`
-"// dist/index.module.js
+"// dist/index.esm.js
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError(\\"Cannot call a class as a function\\");
@@ -319,10 +419,10 @@ module.exports = Basic;
         const pkg = {
             name: 'advanced-browser-outputs',
             main: './dist/index.js',
-            module: './dist/index.module.js',
+            module: './dist/index.esm.js',
             browser: {
                 './dist/index.js': './dist/index.browser.js',
-                './dist/index.module.js': './dist/index.module.browser.js',
+                './dist/index.esm.js': './dist/index.module.browser.js',
             },
             dependencies: {
                 '@babel/runtime': '^7.0.0',
@@ -349,7 +449,7 @@ export default class Advanced {
 
         expect(fileNames).toEqual([
             'dist/index.js',
-            'dist/index.module.js',
+            'dist/index.esm.js',
             'dist/index.browser.js',
             'dist/index.module.browser.js',
         ]);
@@ -372,7 +472,7 @@ module.exports = Advanced;
 "
 `);
         expect(esmModule).toMatchInlineSnapshot(`
-"// dist/index.module.js
+"// dist/index.esm.js
 import _classCallCheck from '@babel/runtime/helpers/esm/classCallCheck';
 
 var Advanced = function Advanced() {
@@ -420,7 +520,7 @@ export default Advanced;
         const pkg = {
             name: 'unpkg-umd-output',
             main: './dist/index.js',
-            module: './dist/index.module.js',
+            module: './dist/index.esm.js',
             unpkg: './dist/index.min.js',
             peerDependencies: {
                 react: '*',
@@ -521,7 +621,7 @@ return main;
             'package.json': File({
                 name: 'integration',
                 main: 'dist/index.js',
-                module: 'dist/index.module.js',
+                module: 'dist/index.esm.js',
                 rollup: {
                     inlineSVG: true,
                 },
