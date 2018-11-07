@@ -25,12 +25,18 @@ module.exports.loadManifest = loadManifest;
 
 async function createMultiConfig(pkg, { cwd }) {
     const input = getInput(pkg, cwd);
-    const outputs = getOutput(pkg, cwd);
+    const outputs = getOutput(pkg, cwd, true);
 
     return pMap(outputs, async output => {
         const plugins = await getPlugins(pkg, cwd, output);
 
-        // output array for consistency with createConfig()
-        return { input, output: [output], plugins };
+        return {
+            input,
+            // output array for consistency with createConfig()
+            output: [output],
+            plugins,
+            // TODO: remove when rollup 1.0 makes this the default
+            experimentalCodeSplitting: output.format === 'esm',
+        };
     });
 }
