@@ -69,23 +69,25 @@ module.exports = function getOutput(pkg, cwd, isMultiConfig) {
         });
     }
 
-    return output.filter(x => Boolean(x)).map(obj => {
-        const extra = {
-            exports: obj.format === 'esm' ? 'named' : 'auto',
-        };
+    return output
+        .filter(x => Boolean(x))
+        .map(obj => {
+            const extra = {
+                exports: obj.format === 'esm' ? 'named' : 'auto',
+            };
 
-        if (obj.format === 'umd') {
-            extra.name = nameToPascalCase(pkg.name);
-            extra.globals = Object.keys(pkg.peerDependencies || {}).reduce((acc, dep) => {
-                acc[dep] = nameToPascalCase(dep);
+            if (obj.format === 'umd') {
+                extra.name = nameToPascalCase(pkg.name);
+                extra.globals = Object.keys(pkg.peerDependencies || {}).reduce((acc, dep) => {
+                    acc[dep] = nameToPascalCase(dep);
 
-                return acc;
-            }, {});
-            extra.indent = false;
-        }
+                    return acc;
+                }, {});
+                extra.indent = false;
+            }
 
-        return Object.assign(obj, extra);
-    });
+            return Object.assign(obj, extra);
+        });
 };
 
 function safeName(name) {
