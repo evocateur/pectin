@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.3.0](https://github.com/evocateur/pectin/compare/v2.2.0...v2.3.0) (2018-11-13)
+
+
+### Features
+
+* **rollup-config-pectin:** Use advanced multi-config for better ESM output ([92be659](https://github.com/evocateur/pectin/commit/92be659))
+
+
+
+
+
 # [2.2.0](https://github.com/evocateur/pectin/compare/v2.1.2...v2.2.0) (2018-11-07)
 
 **Note:** Version bump only for package rollup-config-pectin
