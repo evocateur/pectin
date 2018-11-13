@@ -47,7 +47,7 @@ describe('rollup-plugin-subpath-externals', () => {
             ],
         });
 
-        expect(bundle.imports).toEqual(['lodash/trim']);
+        expect(bundle.imports).toStrictEqual(['lodash/trim']);
     });
 
     it('ignores local imports', async () => {
@@ -64,7 +64,7 @@ describe('rollup-plugin-subpath-externals', () => {
             ],
         });
 
-        expect(bundle.imports).toEqual([]);
+        expect(bundle.imports).toStrictEqual([]);
     });
 
     it('ignores devDependencies', async () => {
@@ -81,7 +81,7 @@ describe('rollup-plugin-subpath-externals', () => {
             ],
         });
 
-        expect(bundle.imports).toEqual([]);
+        expect(bundle.imports).toStrictEqual([]);
     });
 
     it('externalizes exact matches', async () => {
@@ -97,7 +97,7 @@ describe('rollup-plugin-subpath-externals', () => {
             ],
         });
 
-        expect(bundle.imports).toEqual(['lodash']);
+        expect(bundle.imports).toStrictEqual(['lodash']);
     });
 
     it('externalizes subpath imports', async () => {
@@ -113,7 +113,7 @@ describe('rollup-plugin-subpath-externals', () => {
             ],
         });
 
-        expect(bundle.imports).toEqual(['lodash/trim']);
+        expect(bundle.imports).toStrictEqual(['lodash/trim']);
     });
 
     it('externalizes peerDependencies', async () => {
@@ -135,7 +135,7 @@ describe('rollup-plugin-subpath-externals', () => {
             ],
         });
 
-        expect(bundle.imports).toEqual(['react']);
+        expect(bundle.imports).toStrictEqual(['react']);
     });
 
     it('externalizes _only_ peerDependencies when output.format is "umd"', async () => {
@@ -220,10 +220,10 @@ describe('rollup-plugin-subpath-externals', () => {
             ],
         });
 
-        expect(bundle.imports).toEqual(['url', 'querystring']);
+        expect(bundle.imports).toStrictEqual(['url', 'querystring']);
     });
 
-    test('integration', async () => {
+    it('works all together', async () => {
         const bundle = await rollup({
             plugins: [
                 stubInput(`
@@ -245,6 +245,6 @@ describe('rollup-plugin-subpath-externals', () => {
             ],
         });
 
-        expect(bundle.imports).toEqual(['url', 'lodash/get', 'a-peer-dependency']);
+        expect(bundle.imports).toStrictEqual(['url', 'lodash/get', 'a-peer-dependency']);
     });
 });

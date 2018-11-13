@@ -366,7 +366,7 @@ Object {
         expect.assertions(1);
     });
 
-    test('integration', async () => {
+    it('works all together', async () => {
         const pkg1 = {
             name: 'pkg1',
         };

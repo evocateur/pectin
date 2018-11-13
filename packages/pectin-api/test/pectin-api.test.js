@@ -430,7 +430,7 @@ describe('pectin-api', () => {
                 },
             ]);
             // options are not mutated
-            expect(opts).toEqual({});
+            expect(opts).toStrictEqual({});
         });
     });
 

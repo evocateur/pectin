@@ -109,7 +109,7 @@ describe('pectin-core', () => {
         const pkgPath = path.join(cwd, 'package.json');
         const config = await pectinCore(pkgPath);
 
-        expect(config.plugins).toEqual([
+        expect(config.plugins).toStrictEqual([
             expect.objectContaining({ name: 'main-entry' }),
             expect.objectContaining({ name: 'subpath-externals' }),
             expect.objectContaining({ name: 'node-resolve' }),
@@ -288,7 +288,7 @@ export default function main() {
             result => `// dist/${result.fileName}\n${result.code}`
         );
 
-        expect(fileNames).toEqual([
+        expect(fileNames).toStrictEqual([
             'dist/index.js',
             'dist/index.esm.js',
             'dist/chunky-bacon.esm.js',
@@ -357,7 +357,11 @@ export default class Basic {
             result => `// dist/${result.fileName}\n${result.code}`
         );
 
-        expect(fileNames).toEqual(['dist/index.js', 'dist/index.esm.js', 'dist/index.browser.js']);
+        expect(fileNames).toStrictEqual([
+            'dist/index.js',
+            'dist/index.esm.js',
+            'dist/index.browser.js',
+        ]);
         expect(cjsMain).toMatchInlineSnapshot(`
 "// dist/index.js
 'use strict';
@@ -447,7 +451,7 @@ export default class Advanced {
             result => `// dist/${result.fileName}\n${result.code}`
         );
 
-        expect(fileNames).toEqual([
+        expect(fileNames).toStrictEqual([
             'dist/index.js',
             'dist/index.esm.js',
             'dist/index.browser.js',
@@ -616,7 +620,7 @@ return main;
 `);
     });
 
-    test('integration', async () => {
+    it('works all together', async () => {
         const cwd = createFixture({
             'package.json': File({
                 name: 'integration',
