@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0](https://github.com/evocateur/pectin/compare/v2.3.0...v2.4.0) (2018-11-14)
+
+
+### Features
+
+* **subpath-externals:** Accept package props for fine-grained control ([b4f134b](https://github.com/evocateur/pectin/commit/b4f134b))
+
+
+
+
+
 # [2.1.0](https://github.com/evocateur/pectin/compare/v2.0.0...v2.1.0) (2018-10-16)
 
 
