@@ -223,6 +223,110 @@ describe('rollup-plugin-subpath-externals', () => {
         expect(bundle.imports).toStrictEqual(['url', 'querystring']);
     });
 
+    it('accepts explicit external config via package prop', async () => {
+        const bundle = await rollup({
+            plugins: [
+                {
+                    resolveId(id) {
+                        if (id === 'embedded') {
+                            return 'embedded';
+                        }
+
+                        return null;
+                    },
+                    load: id => {
+                        if (id === 'embedded') {
+                            return 'export default function embedded(k) { return k; };';
+                        }
+
+                        return null;
+                    },
+                },
+                stubInput(`
+                    import embedded from 'embedded';
+                    import trim from 'lodash/trim';
+                    export default (s) => embedded(trim(s));
+                `),
+                subpathExternals({
+                    rollup: {
+                        external: ['lodash'],
+                    },
+                    dependencies: {
+                        embedded: 'test',
+                        lodash: '*',
+                    },
+                }),
+            ],
+        });
+
+        expect(bundle.imports).toStrictEqual(['lodash/trim']);
+
+        const { code } = await bundle.generate({ format: 'esm' });
+
+        expect(code).toMatchInlineSnapshot(`
+"import trim from 'lodash/trim';
+
+function embedded(k) { return k; }
+
+var stub = (s) => embedded(trim(s));
+
+export default stub;
+"
+`);
+    });
+
+    it('accepts explicit bundle config via package prop', async () => {
+        const bundle = await rollup({
+            plugins: [
+                {
+                    resolveId(id) {
+                        if (id === 'inlined') {
+                            return 'inlined';
+                        }
+
+                        return null;
+                    },
+                    load: id => {
+                        if (id === 'inlined') {
+                            return 'export default function inlined(k) { return k; };';
+                        }
+
+                        return null;
+                    },
+                },
+                stubInput(`
+                    import inlined from 'inlined';
+                    import trim from 'lodash/trim';
+                    export default (s) => inlined(trim(s));
+                `),
+                subpathExternals({
+                    rollup: {
+                        bundle: ['inlined'],
+                    },
+                    dependencies: {
+                        inlined: 'test',
+                        lodash: '*',
+                    },
+                }),
+            ],
+        });
+
+        expect(bundle.imports).toStrictEqual(['lodash/trim']);
+
+        const { code } = await bundle.generate({ format: 'esm' });
+
+        expect(code).toMatchInlineSnapshot(`
+"import trim from 'lodash/trim';
+
+function inlined(k) { return k; }
+
+var stub = (s) => inlined(trim(s));
+
+export default stub;
+"
+`);
+    });
+
     it('works all together', async () => {
         const bundle = await rollup({
             plugins: [

@@ -1,15 +1,30 @@
 'use strict';
 
 const builtins = require('builtin-modules');
+const dotProp = require('dot-prop');
 
 // ensure subpath imports (lodash, babel-runtime) are also externalized
 module.exports = function subpathExternals(pkg, output) {
+    const external = dotProp.get(pkg, 'rollup.external');
+    const bundled = dotProp.get(pkg, 'rollup.bundle');
     const { format } = output || {};
     const { dependencies = {}, peerDependencies = {} } = pkg;
-    const pkgDeps =
-        format !== 'umd'
-            ? Object.keys(dependencies).concat(Object.keys(peerDependencies))
-            : Object.keys(peerDependencies);
+
+    let pkgDeps;
+
+    if (external) {
+        pkgDeps = external;
+    } else if (format === 'umd') {
+        pkgDeps = Object.keys(peerDependencies);
+    } else {
+        pkgDeps = Object.keys(dependencies).concat(Object.keys(peerDependencies));
+    }
+
+    if (bundled) {
+        const inlined = new Set(bundled);
+
+        pkgDeps = pkgDeps.filter(dep => !inlined.has(dep));
+    }
 
     // subpath imports always begin with module name (never on builtins)
     const subPathImport = new RegExp(`^(${pkgDeps.join('|')})/`);

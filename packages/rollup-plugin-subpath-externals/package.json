@@ -29,6 +29,7 @@
     "rollup": ">=0.65.0"
   },
   "dependencies": {
-    "builtin-modules": "^3.0.0"
+    "builtin-modules": "^3.0.0",
+    "dot-prop": "^4.2.0"
   }
 }
