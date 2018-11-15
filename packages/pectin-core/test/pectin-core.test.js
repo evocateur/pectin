@@ -91,6 +91,7 @@ describe('pectin-core', () => {
                 expect.objectContaining({ name: 'replace' }),
                 expect.objectContaining({ name: 'json' }),
                 expect.objectContaining({ name: 'babel' }),
+                expect.objectContaining({ name: 'inject' }),
                 expect.objectContaining({ name: 'commonjs' }),
             ],
         });
@@ -118,6 +119,7 @@ describe('pectin-core', () => {
             // order is important, must come before babel()
             expect.objectContaining({ name: 'svg' }),
             expect.objectContaining({ name: 'babel' }),
+            expect.objectContaining({ name: 'inject' }),
             expect.objectContaining({ name: 'commonjs' }),
         ]);
     });
@@ -438,6 +440,7 @@ module.exports = Basic;
                 'index.js': File(`
 export default class Advanced {
     constructor() {
+        global.console.log('woo');
         this.isBrowser = process.env.BROWSER;
     }
 };
@@ -466,9 +469,12 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 
 var _classCallCheck = _interopDefault(require('@babel/runtime/helpers/classCallCheck'));
 
+var global$1 = typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : typeof window !== 'undefined' ? window : {};
+
 var Advanced = function Advanced() {
   _classCallCheck(this, Advanced);
 
+  global$1.console.log('woo');
   this.isBrowser = false;
 };
 
@@ -479,9 +485,12 @@ module.exports = Advanced;
 "// dist/index.esm.js
 import _classCallCheck from '@babel/runtime/helpers/esm/classCallCheck';
 
+var global$1 = typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : typeof window !== 'undefined' ? window : {};
+
 var Advanced = function Advanced() {
   _classCallCheck(this, Advanced);
 
+  global$1.console.log('woo');
   this.isBrowser = false;
 };
 
@@ -496,9 +505,12 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 
 var _classCallCheck = _interopDefault(require('@babel/runtime/helpers/classCallCheck'));
 
+var global$1 = typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : typeof window !== 'undefined' ? window : {};
+
 var Advanced = function Advanced() {
   _classCallCheck(this, Advanced);
 
+  global$1.console.log('woo');
   this.isBrowser = true;
 };
 
@@ -509,9 +521,12 @@ module.exports = Advanced;
 "// dist/index.module.browser.js
 import _classCallCheck from '@babel/runtime/helpers/esm/classCallCheck';
 
+var global$1 = typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : typeof window !== 'undefined' ? window : {};
+
 var Advanced = function Advanced() {
   _classCallCheck(this, Advanced);
 
+  global$1.console.log('woo');
   this.isBrowser = true;
 };
 
@@ -645,6 +660,7 @@ import svgTest from './test.svg';
 
 export default class Foo extends React.Component {
     render() {
+        global.console.log('woo');
         return <div>{svgTest}</div>;
     }
 };
@@ -669,6 +685,8 @@ import _getPrototypeOf from '@babel/runtime/helpers/getPrototypeOf';
 import _inherits from '@babel/runtime/helpers/inherits';
 import React from 'react';
 
+var global$1 = typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : typeof window !== 'undefined' ? window : {};
+
 var svgTest = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pjxzdmcgdmlld0JveD0iMCAwIDE1MS41NyAxNTEuNTciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGxpbmUgeDE9IjQ3LjU3IiB4Mj0iMTAzLjk5IiB5MT0iMTAzLjk5IiB5Mj0iNDcuNTciLz48bGluZSB4MT0iNDUuOCIgeDI9IjEwNS43IiB5MT0iNDUuODciIHkyPSIxMDUuNzciLz48L3N2Zz4=';
 
 var Foo =
@@ -685,6 +703,7 @@ function (_React$Component) {
   _createClass(Foo, [{
     key: \\"render\\",
     value: function render() {
+      global$1.console.log('woo');
       return React.createElement(\\"div\\", null, svgTest);
     }
   }]);

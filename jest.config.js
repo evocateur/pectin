@@ -3,7 +3,7 @@
 // http://facebook.github.io/jest/docs/en/configuration.html#content
 module.exports = {
     clearMocks: true,
-    collectCoverageFrom: ['**/lib/*.js'],
+    collectCoverageFrom: ['**/lib/*.js', '!packages/pectin-core/lib/globalModule.js'],
     coverageDirectory: '<rootDir>/coverage',
     coverageReporters: ['cobertura', 'html', 'text'],
     coverageThreshold: {

@@ -1,5 +1,6 @@
 'use strict';
 
+const path = require('path');
 const dotProp = require('dot-prop');
 const babel = require('rollup-plugin-babel');
 const commonjs = require('rollup-plugin-commonjs');
@@ -7,10 +8,13 @@ const json = require('rollup-plugin-json');
 const nodeResolve = require('rollup-plugin-node-resolve');
 const mainEntry = require('rollup-plugin-main-entry');
 const replace = require('rollup-plugin-replace');
+const inject = require('rollup-plugin-inject');
 const subpathExternals = require('rollup-plugin-subpath-externals');
 const svg = require('rollup-plugin-svg');
 const { terser } = require('rollup-plugin-terser');
 const babelrc = require('@pectin/babelrc');
+
+const GLOBAL_PATH = path.resolve(__dirname, './globalModule.js');
 
 module.exports = async function getPlugins(pkg, cwd, output) {
     const env = dotProp.get(output, 'env');
@@ -41,6 +45,13 @@ module.exports = async function getPlugins(pkg, cwd, output) {
         dotProp.get(pkg, 'rollup.inlineSVG') && svg(),
         // https://github.com/rollup/rollup-plugin-babel#configuring-babel
         babel(rc),
+        // https://github.com/rollup/rollup-plugin-inject#usage
+        inject({
+            exclude: ['node_modules/**', GLOBAL_PATH],
+            modules: {
+                global: GLOBAL_PATH,
+            },
+        }),
         // https://github.com/rollup/rollup-plugin-commonjs#usage
         commonjs(),
         min &&

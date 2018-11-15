@@ -37,3 +37,12 @@
         # dev dependencies are hoisted to the root
         zillow/import/no-extraneous-dependencies: off
         node/no-extraneous-require: off
+    - files:
+        - "packages/pectin-core/lib/globalModule.js"
+      rules:
+        # a bunch of really special cases
+        node/no-unsupported-features: off
+        node/no-unsupported-features/es-syntax: off
+        no-nested-ternary: off
+        no-restricted-globals: off
+        no-undef: off
