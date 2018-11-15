@@ -6,9 +6,9 @@
 
 Use this plugin in your `rollup.config.js` to externalize all `dependencies`, even subpath imports (lodash, babel-runtime) and `peerDependencies`.
 
-```
+```js
 const subpathExternals = require('rollup-plugin-subpath-externals');
-const pkg = require('./package.json);
+const pkg = require('./package.json');
 
 module.exports = {
     plugins: [
