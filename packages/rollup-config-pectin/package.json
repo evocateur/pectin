@@ -1,6 +1,6 @@
 {
   "name": "rollup-config-pectin",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "description": "Rollup config for tree-shakeable libraries based on conventional patterns",
   "keywords": [
     "rollup",

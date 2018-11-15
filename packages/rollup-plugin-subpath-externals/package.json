@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-subpath-externals",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "description": "Externalize all dependencies, even subpath imports",
   "keywords": [
     "rollup",
