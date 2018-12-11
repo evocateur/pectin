@@ -59,6 +59,7 @@ describe('pectin-api', () => {
         createFixture({
             'no-output': Dir({
                 'package.json': File({
+                    name: '@test/no-output',
                     main: 'dist/index.js',
                 }),
                 src: Dir({
@@ -72,10 +73,42 @@ describe('pectin-api', () => {
         ]);
     });
 
+    it('builds packages in topological order', async () => {
+        createFixture({
+            'a-dependent': Dir({
+                'package.json': File({
+                    name: '@test/a-dependent',
+                    main: 'dist/index.js',
+                    dependencies: {
+                        '@test/their-dependency': 'file:../their-dependency',
+                    },
+                }),
+                src: Dir({
+                    'index.js': File('export default "test";'),
+                }),
+            }),
+            'their-dependency': Dir({
+                'package.json': File({
+                    name: '@test/their-dependency',
+                    main: 'dist/index.js',
+                }),
+                src: Dir({
+                    'index.js': File('export default "test";'),
+                }),
+            }),
+        });
+
+        await expect(findConfigs()).resolves.toMatchObject([
+            { input: 'modules/their-dependency/src/index.js' },
+            { input: 'modules/a-dependent/src/index.js' },
+        ]);
+    });
+
     it('builds packages when input files are newer than output', async () => {
         const updateFile = createFixture({
             'old-output': Dir({
                 'package.json': File({
+                    name: '@test/old-output',
                     main: 'lib/index.js',
                 }),
                 lib: Dir({
@@ -99,6 +132,7 @@ describe('pectin-api', () => {
         const updateFile = createFixture({
             'jsx-input': Dir({
                 'package.json': File({
+                    name: '@test/jsx-input',
                     main: 'dist/index.js',
                 }),
                 dist: Dir({
@@ -122,6 +156,7 @@ describe('pectin-api', () => {
         const updateFile = createFixture({
             'old-input': Dir({
                 'package.json': File({
+                    name: '@test/old-input',
                     main: 'lib/index.js',
                 }),
                 lib: Dir({
@@ -147,6 +182,7 @@ describe('pectin-api', () => {
         const updateFile = createFixture({
             'rooted-input': Dir({
                 'package.json': File({
+                    name: '@test/rooted-input',
                     main: 'dist/index.js',
                     rollup: {
                         input: 'app.js',
@@ -168,6 +204,7 @@ describe('pectin-api', () => {
         const updateFile = createFixture({
             'rooted-ignore': Dir({
                 'package.json': File({
+                    name: '@test/rooted-ignore',
                     main: 'dist/index.js',
                     rollup: {
                         input: 'app.js',
@@ -218,6 +255,7 @@ describe('pectin-api', () => {
         const updateFile = createFixture({
             unwatched: Dir({
                 'package.json': File({
+                    name: '@test/unwatched',
                     main: 'dist/index.js',
                     rollup: {
                         ignoreWatch: true,
@@ -244,6 +282,7 @@ describe('pectin-api', () => {
         createFixture({
             skipped: Dir({
                 'package.json': File({
+                    name: '@test/skipped',
                     main: 'dist/index.js',
                     rollup: {
                         skip: true,
@@ -262,7 +301,7 @@ describe('pectin-api', () => {
         createFixture({
             'no-pkg-main': Dir({
                 'package.json': File({
-                    name: 'no-pkg-main',
+                    name: '@test/no-pkg-main',
                 }),
                 lib: Dir({
                     'index.js': File('module.exports = "test";'),
@@ -277,6 +316,7 @@ describe('pectin-api', () => {
         const { cwd } = createFixture({
             'explicit-cwd': Dir({
                 'package.json': File({
+                    name: '@test/explicit-cwd',
                     main: 'dist/index.js',
                 }),
                 src: Dir({
@@ -299,6 +339,7 @@ describe('pectin-api', () => {
         const updateFile = createFixture({
             app: Dir({
                 'package.json': File({
+                    name: '@test/app',
                     main: 'dist/index.js',
                     dependencies: {
                         'missing-dist': '../lib/missing-dist',
@@ -318,6 +359,7 @@ describe('pectin-api', () => {
             lib: Dir({
                 'missing-dist': Dir({
                     'package.json': File({
+                        name: '@test/missing-dist',
                         main: 'dist/index.js',
                         module: 'dist/index.module.js',
                         dependencies: {
@@ -370,6 +412,7 @@ describe('pectin-api', () => {
         const updateFile = createFixture({
             'watch-existing': Dir({
                 'package.json': File({
+                    name: '@test/watch-existing',
                     main: 'lib/index.js',
                     module: 'lib/index.module.js',
                 }),
@@ -383,6 +426,7 @@ describe('pectin-api', () => {
             }),
             'watch-missing': Dir({
                 'package.json': File({
+                    name: '@test/watch-missing',
                     main: 'lib/index.js',
                 }),
                 src: Dir({

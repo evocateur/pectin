@@ -7,6 +7,7 @@ const util = require('util');
 const dotProp = require('dot-prop');
 const globby = require('globby');
 const pMap = require('p-map');
+const batchPackages = require('@lerna/batch-packages');
 const { getPackages } = require('@lerna/project');
 const { createMultiConfig } = require('@pectin/core');
 
@@ -24,7 +25,7 @@ async function findConfigs({
     const lernaPackages = await getPackages(startDir);
     const configs = await pMap(
         // clones internal JSON, maps synthetic location to cwd property
-        lernaPackages.map(pkg => [pkg.toJSON(), pkg.location]),
+        flatBatched(lernaPackages).map(pkg => [pkg.toJSON(), pkg.location]),
         ([pkg, cwd]) => generateConfig(pkg, { cwd, watch }),
         { concurrency }
     );
@@ -126,4 +127,11 @@ async function isUpToDate(opts, config) {
     const lastBuilt = outputStat.mtime.getTime();
 
     return fileStats.every(fileStat => fileStat.mtime.getTime() <= lastBuilt);
+}
+
+function flatBatched(pkgList) {
+    // ensures packages are built in topological order, dependencies before dependents
+    const batches = batchPackages(pkgList);
+
+    return batches.reduce((acc, batch) => acc.concat(batch), []);
 }

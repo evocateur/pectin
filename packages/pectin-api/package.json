@@ -33,6 +33,7 @@
     "rollup": ">=0.65.0"
   },
   "dependencies": {
+    "@lerna/batch-packages": "^3.0.0",
     "@lerna/project": "^3.0.0",
     "@pectin/core": "file:../pectin-core",
     "dot-prop": "^4.2.0",
