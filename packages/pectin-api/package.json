@@ -1,6 +1,6 @@
 {
   "name": "@pectin/api",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "description": "Conventional rollup builds for lerna monorepos",
   "keywords": [
     "rollup",
