@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.6.0](https://github.com/evocateur/pectin/compare/v2.5.2...v2.6.0) (2018-12-27)
+
+
+### Features
+
+* **cli:** Upgrade rollup to ^0.68.2 ([22a0411](https://github.com/evocateur/pectin/commit/22a0411))
+* **core:** Enable chunking for CommonJS ([480f20d](https://github.com/evocateur/pectin/commit/480f20d))
+
+
+
+
+
 ## [2.5.1](https://github.com/evocateur/pectin/compare/v2.5.0...v2.5.1) (2018-11-16)
 
 **Note:** Version bump only for package @pectin/core
