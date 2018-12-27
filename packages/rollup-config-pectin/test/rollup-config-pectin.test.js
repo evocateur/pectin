@@ -32,12 +32,15 @@ describe('rollup-config-pectin', () => {
             },
             `
 Object {
-  "experimentalCodeSplitting": false,
+  "experimentalCodeSplitting": true,
+  "inlineDynamicImports": false,
   "input": "<REPO_ROOT>/packages/rollup-config-pectin/src/rollup-config-pectin.js",
   "output": Array [
     Object {
+      "chunkFileNames": "[name]-[hash].[format].js",
+      "dir": "<REPO_ROOT>/packages/rollup-config-pectin/lib",
+      "entryFileNames": "rollup-config-pectin.js",
       "exports": "auto",
-      "file": "<REPO_ROOT>/packages/rollup-config-pectin/lib/rollup-config-pectin.js",
       "format": "cjs",
     },
   ],

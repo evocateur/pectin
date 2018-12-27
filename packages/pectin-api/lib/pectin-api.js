@@ -91,7 +91,9 @@ async function isUpToDate(opts, config) {
     }
 
     // only need to test one output since all are built simultaneously
-    const outFile = config.output[0].file;
+    const outFile = config.output[0].dir
+        ? path.join(config.output[0].dir, config.output[0].entryFileNames)
+        : config.output[0].file;
 
     // short-circuit if output hasn't been built yet
     let outputStat;

@@ -36,7 +36,8 @@ async function createMultiConfig(pkg, { cwd }) {
             output: [output],
             plugins,
             // TODO: remove when rollup 1.0 makes this the default
-            experimentalCodeSplitting: output.format === 'esm',
+            experimentalCodeSplitting: true,
+            inlineDynamicImports: output.browser === true || output.format === 'umd',
         };
     });
 }

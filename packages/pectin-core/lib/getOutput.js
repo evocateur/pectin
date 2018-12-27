@@ -6,30 +6,41 @@ const npa = require('npm-package-arg');
 const dotProp = require('dot-prop');
 
 module.exports = function getOutput(pkg, cwd, isMultiConfig) {
-    const output = [
-        {
-            file: path.resolve(cwd, pkg.main),
-            format: 'cjs',
-        },
-    ];
+    const output = [];
+
+    // generated chunks as of rollup v0.68.0 need chunkFileNames, not entryFileNames
+    const chunkFileNames = dotProp.get(pkg, 'rollup.chunkFileNames', '[name]-[hash].[format].js');
+    const entryFileNames = dotProp.get(pkg, 'rollup.entryFileNames', '[name].[format].js');
+
+    const cjsConfig = {
+        format: 'cjs',
+    };
+
+    if (isMultiConfig) {
+        cjsConfig.dir = path.dirname(path.resolve(cwd, pkg.main));
+        cjsConfig.chunkFileNames = chunkFileNames;
+        // only one entry point, thus no pattern is required
+        cjsConfig.entryFileNames = path.basename(pkg.main);
+    } else {
+        cjsConfig.file = path.resolve(cwd, pkg.main);
+    }
+
+    output.push(cjsConfig);
 
     if (pkg.module) {
-        const cfg = {
+        const esmConfig = {
             format: 'esm',
         };
 
         if (isMultiConfig) {
-            // code splitting is only enabled for multi-config output
-            cfg.dir = path.dirname(path.resolve(cwd, pkg.module));
-
-            // generated chunks as of rollup v0.68.0 need chunkFileNames, not entryFileNames
-            cfg.chunkFileNames = dotProp.get(pkg, 'rollup.chunkFileNames', '[name]-[hash].esm.js');
-            cfg.entryFileNames = dotProp.get(pkg, 'rollup.entryFileNames', '[name].esm.js');
+            esmConfig.dir = path.dirname(path.resolve(cwd, pkg.module));
+            esmConfig.chunkFileNames = chunkFileNames;
+            esmConfig.entryFileNames = entryFileNames;
         } else {
-            cfg.file = path.resolve(cwd, pkg.module);
+            esmConfig.file = path.resolve(cwd, pkg.module);
         }
 
-        output.push(cfg);
+        output.push(esmConfig);
     }
 
     // @see https://github.com/defunctzombie/package-browser-field-spec

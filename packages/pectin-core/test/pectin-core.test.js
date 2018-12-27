@@ -223,12 +223,13 @@ export default function main() {
         const results = await generateResults(configs);
 
         const fileNames = results.map(result => `dist/${result.fileName}`);
-        const [cjsEntry, esmEntry, esmChunk] = results.map(
+        const [cjsEntry, cjsChunk, esmEntry, esmChunk] = results.map(
             result => `// dist/${result.fileName}\n${result.code}`
         );
 
         expect(fileNames).toStrictEqual([
             'dist/index.js',
+            'dist/chunk-cbdffb19.cjs.js',
             'dist/index.esm.js',
             'dist/chunk-a2193cac.esm.js',
         ]);
@@ -238,16 +239,19 @@ export default function main() {
 'use strict';
 
 function main() {
-  return Promise.resolve().then(function () { return chunkyBacon$1; });
+  return Promise.resolve(require('./chunk-cbdffb19.cjs.js'));
 }
+
+module.exports = main;
+"
+`);
+        expect(cjsChunk).toMatchInlineSnapshot(`
+"// dist/chunk-cbdffb19.cjs.js
+'use strict';
 
 var chunkyBacon = '_why';
 
-var chunkyBacon$1 = /*#__PURE__*/Object.freeze({
-    default: chunkyBacon
-});
-
-module.exports = main;
+exports.default = chunkyBacon;
 "
 `);
         expect(esmEntry).toMatchInlineSnapshot(`
