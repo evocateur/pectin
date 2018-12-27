@@ -66,7 +66,7 @@ describe('pectin-core', () => {
         process.chdir(REPO_ROOT);
     });
 
-    it('adds svg plugin via opt-in pkg.rollup.inlineSVG', async () => {
+    it('inlines SVG via pkg.rollup.inlineSVG', async () => {
         const cwd = createFixture({
             'package.json': File({
                 name: 'inline-svg-data-uri',
@@ -75,21 +75,29 @@ describe('pectin-core', () => {
                     inlineSVG: true,
                 },
             }),
-        });
-        const pkgPath = path.join(cwd, 'package.json');
-        const config = await pectinCore(pkgPath);
+            src: Dir({
+                'test.svg': File(
+                    `<?xml version="1.0" ?><svg xmlns="http://www.w3.org/2000/svg" />`
+                ),
+                'index.js': File(`
+import svgTest from './test.svg';
 
-        expect(config.plugins).toStrictEqual([
-            expect.objectContaining({ name: 'main-entry' }),
-            expect.objectContaining({ name: 'subpath-externals' }),
-            expect.objectContaining({ name: 'node-resolve' }),
-            expect.objectContaining({ name: 'replace' }),
-            expect.objectContaining({ name: 'json' }),
-            // order is important, must come before babel()
-            expect.objectContaining({ name: 'svg' }),
-            expect.objectContaining({ name: 'babel' }),
-            expect.objectContaining({ name: 'commonjs' }),
-        ]);
+export default svgTest;
+`),
+            }),
+        });
+
+        const config = await pectinCore(path.join(cwd, 'package.json'));
+        const result = await generateResults(config);
+
+        expect(result[0].code).toMatchInlineSnapshot(`
+"'use strict';
+
+var svgTest = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiAvPg==';
+
+module.exports = svgTest;
+"
+`);
     });
 
     it('customizes input with pkg.rollup.rootDir', async () => {
@@ -101,13 +109,23 @@ describe('pectin-core', () => {
                     rootDir: 'modules',
                 },
             }),
+            modules: Dir({
+                'rollup-root-dir.js': File(`export default 'success';`),
+            }),
         });
-        const pkgPath = path.join(cwd, 'package.json');
 
-        await expect(pectinCore(pkgPath)).resolves.toHaveProperty(
-            'input',
-            path.join(cwd, 'modules/rollup-root-dir.js')
-        );
+        const config = await pectinCore(path.join(cwd, 'package.json'));
+        const result = await generateResults(config);
+
+        expect(result[0].fileName).toBe('rollup-root-dir.js');
+        expect(result[0].code).toMatchInlineSnapshot(`
+"'use strict';
+
+var rollupRootDir = 'success';
+
+module.exports = rollupRootDir;
+"
+`);
     });
 
     it('overrides input with pkg.rollup.input', async () => {
@@ -119,13 +137,20 @@ describe('pectin-core', () => {
                     input: 'app.js',
                 },
             }),
+            'app.js': File(`export default 'app';`),
         });
-        const pkgPath = path.join(cwd, 'package.json');
 
-        await expect(pectinCore(pkgPath)).resolves.toHaveProperty(
-            'input',
-            path.join(cwd, 'app.js')
-        );
+        const config = await pectinCore(path.join(cwd, 'package.json'));
+        const result = await generateResults(config);
+
+        expect(result[0].code).toMatchInlineSnapshot(`
+"'use strict';
+
+var app = 'app';
+
+module.exports = app;
+"
+`);
     });
 
     it('resolves pkgPath from cwd', async () => {
@@ -138,10 +163,10 @@ describe('pectin-core', () => {
 
         process.chdir(cwd);
 
-        await expect(pectinCore('package.json')).resolves.toHaveProperty(
-            'input',
-            path.join(cwd, 'src/index.js')
-        );
+        const config = await pectinCore('package.json');
+        // we can't build because the chdir just broke node_modules references
+
+        expect(config).toHaveProperty('input', path.join(cwd, 'src/index.js'));
     });
 
     it('throws an error when no pkg.main supplied', async () => {
@@ -150,14 +175,19 @@ describe('pectin-core', () => {
                 name: 'no-pkg-main',
             }),
         });
-        const pkgPath = path.join(cwd, 'package.json');
 
         // required to normalize snapshot
         process.chdir(cwd);
 
-        await expect(pectinCore(pkgPath)).rejects.toThrowErrorMatchingInlineSnapshot(
-            `"required field 'main' missing in package.json"`
-        );
+        try {
+            await pectinCore(path.join(cwd, 'package.json'));
+        } catch (err) {
+            expect(err).toMatchInlineSnapshot(
+                `[TypeError: required field 'main' missing in package.json]`
+            );
+        }
+
+        expect.assertions(1);
     });
 
     it('exports named helpers', () => {
