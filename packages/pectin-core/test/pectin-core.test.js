@@ -66,36 +66,6 @@ describe('pectin-core', () => {
         process.chdir(REPO_ROOT);
     });
 
-    it('generates rollup config from provided pkgPath', async () => {
-        const cwd = createFixture({
-            'package.json': File({
-                name: 'pkg-main',
-                main: 'dist/index.js',
-            }),
-        });
-        const pkgPath = path.join(cwd, 'package.json');
-
-        await expect(pectinCore(pkgPath)).resolves.toEqual({
-            input: path.join(cwd, 'src/index.js'),
-            output: [
-                {
-                    file: path.join(cwd, 'dist/index.js'),
-                    format: 'cjs',
-                    exports: 'auto',
-                },
-            ],
-            plugins: [
-                expect.objectContaining({ name: 'main-entry' }),
-                expect.objectContaining({ name: 'subpath-externals' }),
-                expect.objectContaining({ name: 'node-resolve' }),
-                expect.objectContaining({ name: 'replace' }),
-                expect.objectContaining({ name: 'json' }),
-                expect.objectContaining({ name: 'babel' }),
-                expect.objectContaining({ name: 'commonjs' }),
-            ],
-        });
-    });
-
     it('adds svg plugin via opt-in pkg.rollup.inlineSVG', async () => {
         const cwd = createFixture({
             'package.json': File({
@@ -120,69 +90,6 @@ describe('pectin-core', () => {
             expect.objectContaining({ name: 'babel' }),
             expect.objectContaining({ name: 'commonjs' }),
         ]);
-    });
-
-    it('adds terser plugin for env=production format=umd', async () => {
-        const pkg = {
-            name: 'inline-svg-data-uri',
-            main: 'dist/index.js',
-            unpkg: 'dist/index.min.js',
-        };
-        const cwd = createFixture({
-            'package.json': File(pkg),
-        });
-        const configs = await pectinCore.createMultiConfig(pkg, { cwd });
-
-        expect(configs.pop().plugins.pop()).toMatchObject({ name: 'terser' });
-    });
-
-    it('generates rollup config with modules output', async () => {
-        const cwd = createFixture({
-            'package.json': File({
-                name: 'pkg-module',
-                main: 'dist/index.js',
-                module: 'dist/index.esm.js',
-            }),
-        });
-        const pkgPath = path.join(cwd, 'package.json');
-
-        await expect(pectinCore(pkgPath)).resolves.toHaveProperty('output', [
-            {
-                file: path.join(cwd, 'dist/index.js'),
-                format: 'cjs',
-                exports: 'auto',
-            },
-            {
-                file: path.join(cwd, 'dist/index.esm.js'),
-                format: 'esm',
-                exports: 'named',
-            },
-        ]);
-    });
-
-    it('generates rollup multi-config with chunked modules output', async () => {
-        const pkg = {
-            name: 'pkg-module-chunked',
-            main: 'dist/index.js',
-            module: 'dist/index.esm.js',
-        };
-        const cwd = createFixture({
-            'package.json': File(pkg),
-        });
-        const [cjsConfig, esmConfig] = await pectinCore.createMultiConfig(pkg, { cwd });
-
-        expect(cjsConfig).toMatchObject({
-            experimentalCodeSplitting: false,
-        });
-        expect(esmConfig).toMatchObject({
-            experimentalCodeSplitting: true,
-            output: [
-                {
-                    dir: expect.stringMatching(/\/dist$/),
-                    entryFileNames: '[name].esm.js',
-                },
-            ],
-        });
     });
 
     it('customizes input with pkg.rollup.rootDir', async () => {
