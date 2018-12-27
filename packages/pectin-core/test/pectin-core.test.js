@@ -291,7 +291,7 @@ export default function main() {
         expect(fileNames).toStrictEqual([
             'dist/index.js',
             'dist/index.esm.js',
-            'dist/chunky-bacon.esm.js',
+            'dist/chunk-a2193cac.esm.js',
         ]);
 
         expect(cjsEntry).toMatchInlineSnapshot(`
@@ -314,14 +314,14 @@ module.exports = main;
         expect(esmEntry).toMatchInlineSnapshot(`
 "// dist/index.esm.js
 function main() {
-  return import(\\"./chunky-bacon.esm.js\\");
+  return import('./chunk-a2193cac.esm.js');
 }
 
 export default main;
 "
 `);
         expect(esmChunk).toMatchInlineSnapshot(`
-"// dist/chunky-bacon.esm.js
+"// dist/chunk-a2193cac.esm.js
 var chunkyBacon = '_why';
 
 export default chunkyBacon;
@@ -553,8 +553,8 @@ export default Advanced;
 "(function (global, factory) {
 typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('react')) :
 typeof define === 'function' && define.amd ? define(['react'], factory) :
-(global.UnpkgUmdOutput = factory(global.React));
-}(this, (function (React) { 'use strict';
+(global = global || self, global.UnpkgUmdOutput = factory(global.React));
+}(this, function (React) { 'use strict';
 
 React = React && React.hasOwnProperty('default') ? React['default'] : React;
 
@@ -564,11 +564,11 @@ var index = (function () {
 
 return index;
 
-})));
+}));
 "
 `);
         expect(minOutput).toMatchInlineSnapshot(`
-"!function(e,t){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?module.exports=t(require(\\"react\\")):\\"function\\"==typeof define&&define.amd?define([\\"react\\"],t):e.UnpkgUmdOutput=t(e.React)}(this,function(e){\\"use strict\\";e=e&&e.hasOwnProperty(\\"default\\")?e.default:e;return function(){return e.render(\\"woo\\")}});
+"!function(e,t){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?module.exports=t(require(\\"react\\")):\\"function\\"==typeof define&&define.amd?define([\\"react\\"],t):(e=e||self).UnpkgUmdOutput=t(e.React)}(this,function(e){\\"use strict\\";e=e&&e.hasOwnProperty(\\"default\\")?e.default:e;return function(){return e.render(\\"woo\\")}});
 "
 `);
     });
@@ -602,8 +602,8 @@ export default function main() {
 "(function (global, factory) {
 typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 typeof define === 'function' && define.amd ? define(factory) :
-(global.ScopedUmd = factory());
-}(this, (function () { 'use strict';
+(global = global || self, global.ScopedUmd = factory());
+}(this, function () { 'use strict';
 
 function main() {
   console.log(\\"yay\\");
@@ -611,11 +611,11 @@ function main() {
 
 return main;
 
-})));
+}));
 "
 `);
         expect(minOutput).toMatchInlineSnapshot(`
-"!function(e,o){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?module.exports=o():\\"function\\"==typeof define&&define.amd?define(o):e.ScopedUmd=o()}(this,function(){\\"use strict\\";return function(){console.log(\\"yay\\"),console.log(\\"hooray\\")}});
+"!function(e,o){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?module.exports=o():\\"function\\"==typeof define&&define.amd?define(o):(e=e||self).ScopedUmd=o()}(this,function(){\\"use strict\\";return function(){console.log(\\"yay\\"),console.log(\\"hooray\\")}});
 "
 `);
     });

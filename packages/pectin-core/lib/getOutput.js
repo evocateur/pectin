@@ -21,6 +21,9 @@ module.exports = function getOutput(pkg, cwd, isMultiConfig) {
         if (isMultiConfig) {
             // code splitting is only enabled for multi-config output
             cfg.dir = path.dirname(path.resolve(cwd, pkg.module));
+
+            // generated chunks as of rollup v0.68.0 need chunkFileNames, not entryFileNames
+            cfg.chunkFileNames = dotProp.get(pkg, 'rollup.chunkFileNames', '[name]-[hash].esm.js');
             cfg.entryFileNames = dotProp.get(pkg, 'rollup.entryFileNames', '[name].esm.js');
         } else {
             cfg.file = path.resolve(cwd, pkg.module);
