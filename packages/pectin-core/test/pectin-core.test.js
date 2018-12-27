@@ -383,8 +383,10 @@ export default class Advanced {
 `),
             }),
         });
+
         const configs = await pectinCore.createMultiConfig(pkg, { cwd });
         const results = await generateResults(configs);
+
         const fileNames = results.map(result => `dist/${result.fileName}`);
         const [cjsMain, esmModule, cjsBrowser, esmBrowser] = results.map(
             result => `// dist/${result.fileName}\n${result.code}`
@@ -480,8 +482,10 @@ export default Advanced;
                 ),
             }),
         });
+
         const configs = await pectinCore.createMultiConfig(pkg, { cwd });
         const results = await generateResults(configs);
+
         const fileNames = results.map(result => `dist/${result.fileName}`);
         const minOutput = results.pop().code;
         const umdOutput = results.pop().code;
@@ -532,8 +536,10 @@ export default function main() {
 `),
             }),
         });
+
         const configs = await pectinCore.createMultiConfig(pkg, { cwd });
         const results = await generateResults(configs);
+
         const minOutput = results.pop().code;
         const umdOutput = results.pop().code;
 
