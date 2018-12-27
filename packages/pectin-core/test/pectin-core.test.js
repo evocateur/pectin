@@ -155,7 +155,9 @@ describe('pectin-core', () => {
         // required to normalize snapshot
         process.chdir(cwd);
 
-        await expect(pectinCore(pkgPath)).rejects.toThrowErrorMatchingSnapshot();
+        await expect(pectinCore(pkgPath)).rejects.toThrowErrorMatchingInlineSnapshot(
+            `"required field 'main' missing in package.json"`
+        );
     });
 
     it('exports named helpers', () => {
