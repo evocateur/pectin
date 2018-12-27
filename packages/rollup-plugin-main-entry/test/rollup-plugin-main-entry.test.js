@@ -32,7 +32,9 @@ describe('rollup-plugin-main-entry', () => {
                 plugins: [mainEntry({ name: 'oops' })],
             });
         } catch (err) {
-            expect(err.message).toMatchSnapshot();
+            expect(err).toMatchInlineSnapshot(
+                `[TypeError: required field 'main' missing in package.json]`
+            );
         }
     });
 
