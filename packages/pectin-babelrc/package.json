@@ -1,6 +1,6 @@
 {
   "name": "@pectin/babelrc",
-  "version": "2.2.0",
+  "version": "3.0.0",
   "description": "Locate and prepare custom babel config for rollup-plugin-babel",
   "keywords": [
     "rollup",

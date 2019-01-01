@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.0.0](https://github.com/evocateur/pectin/compare/v2.6.0...v3.0.0) (2019-01-01)
+
+
+### Features
+
+* **core:** Simplify API ([0c74c73](https://github.com/evocateur/pectin/commit/0c74c73))
+
+
+### BREAKING CHANGES
+
+* **core:** There is only a default export on pectin-core now, load your own package.json.
+
+
+
+
+
 # [2.6.0](https://github.com/evocateur/pectin/compare/v2.5.2...v2.6.0) (2018-12-27)
 
 
