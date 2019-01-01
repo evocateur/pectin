@@ -50,14 +50,15 @@ describe('pectin-core', () => {
     });
 
     it('inlines SVG via pkg.rollup.inlineSVG', async () => {
+        const pkg = {
+            name: 'inline-svg-data-uri',
+            main: 'dist/index.js',
+            rollup: {
+                inlineSVG: true,
+            },
+        };
         const cwd = createFixture({
-            'package.json': File({
-                name: 'inline-svg-data-uri',
-                main: 'dist/index.js',
-                rollup: {
-                    inlineSVG: true,
-                },
-            }),
+            'package.json': File(pkg),
             src: Dir({
                 'test.svg': File(
                     `<?xml version="1.0" ?><svg xmlns="http://www.w3.org/2000/svg" />`
@@ -70,10 +71,11 @@ export default svgTest;
             }),
         });
 
-        const config = await pectinCore(path.join(cwd, 'package.json'));
-        const result = await generateResults([config]);
+        const configs = await pectinCore(pkg, { cwd });
+        const results = await generateResults(configs);
+        const [entry] = results;
 
-        expect(result[0].code).toMatchInlineSnapshot(`
+        expect(entry.code).toMatchInlineSnapshot(`
 "'use strict';
 
 var svgTest = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiAvPg==';
@@ -84,24 +86,26 @@ module.exports = svgTest;
     });
 
     it('customizes input with pkg.rollup.rootDir', async () => {
+        const pkg = {
+            name: 'rollup-root-dir',
+            main: 'dist/rollup-root-dir.js',
+            rollup: {
+                rootDir: 'modules',
+            },
+        };
         const cwd = createFixture({
-            'package.json': File({
-                name: 'rollup-root-dir',
-                main: 'dist/rollup-root-dir.js',
-                rollup: {
-                    rootDir: 'modules',
-                },
-            }),
+            'package.json': File(pkg),
             modules: Dir({
                 'rollup-root-dir.js': File(`export default 'success';`),
             }),
         });
 
-        const config = await pectinCore(path.join(cwd, 'package.json'));
-        const result = await generateResults([config]);
+        const configs = await pectinCore(pkg, { cwd });
+        const results = await generateResults(configs);
+        const [entry] = results;
 
-        expect(result[0].fileName).toBe('rollup-root-dir.js');
-        expect(result[0].code).toMatchInlineSnapshot(`
+        expect(entry.fileName).toBe('rollup-root-dir.js');
+        expect(entry.code).toMatchInlineSnapshot(`
 "'use strict';
 
 var rollupRootDir = 'success';
@@ -112,21 +116,23 @@ module.exports = rollupRootDir;
     });
 
     it('overrides input with pkg.rollup.input', async () => {
+        const pkg = {
+            name: 'rollup-input',
+            main: 'dist/rollup-input.js',
+            rollup: {
+                input: 'app.js',
+            },
+        };
         const cwd = createFixture({
-            'package.json': File({
-                name: 'rollup-input',
-                main: 'dist/rollup-input.js',
-                rollup: {
-                    input: 'app.js',
-                },
-            }),
+            'package.json': File(pkg),
             'app.js': File(`export default 'app';`),
         });
 
-        const config = await pectinCore(path.join(cwd, 'package.json'));
-        const result = await generateResults([config]);
+        const configs = await pectinCore(pkg, { cwd });
+        const results = await generateResults(configs);
+        const [entry] = results;
 
-        expect(result[0].code).toMatchInlineSnapshot(`
+        expect(entry.code).toMatchInlineSnapshot(`
 "'use strict';
 
 var app = 'app';
@@ -137,33 +143,35 @@ module.exports = app;
     });
 
     it('resolves pkgPath from cwd', async () => {
+        const pkg = {
+            name: 'from-cwd',
+            main: 'dist/index.js',
+        };
         const cwd = createFixture({
-            'package.json': File({
-                name: 'from-cwd',
-                main: 'dist/index.js',
-            }),
+            'package.json': File(pkg),
         });
 
         process.chdir(cwd);
 
-        const config = await pectinCore('package.json');
+        const [config] = await pectinCore(pkg, { cwd });
         // we can't build because the chdir just broke node_modules references
 
         expect(config).toHaveProperty('input', path.join(cwd, 'src/index.js'));
     });
 
     it('throws an error when no pkg.main supplied', async () => {
+        const pkg = {
+            name: 'no-pkg-main',
+        };
         const cwd = createFixture({
-            'package.json': File({
-                name: 'no-pkg-main',
-            }),
+            'package.json': File(pkg),
         });
 
         // required to normalize snapshot
         process.chdir(cwd);
 
         try {
-            await pectinCore(path.join(cwd, 'package.json'));
+            await pectinCore(pkg, { cwd });
         } catch (err) {
             expect(err).toMatchInlineSnapshot(
                 `[TypeError: required field 'main' missing in package.json]`
@@ -171,17 +179,6 @@ module.exports = app;
         }
 
         expect.assertions(1);
-    });
-
-    it('exports named helpers', () => {
-        expect(pectinCore).toHaveProperty('createConfig');
-        expect(typeof pectinCore.createConfig).toBe('function');
-
-        expect(pectinCore).toHaveProperty('createMultiConfig');
-        expect(typeof pectinCore.createMultiConfig).toBe('function');
-
-        expect(pectinCore).toHaveProperty('loadManifest');
-        expect(typeof pectinCore.loadManifest).toBe('function');
     });
 
     it('generates chunked module output', async () => {
@@ -202,7 +199,7 @@ export default function main() {
             }),
         });
 
-        const configs = await pectinCore.createMultiConfig(pkg, { cwd });
+        const configs = await pectinCore(pkg, { cwd });
         const results = await generateResults(configs);
 
         const fileNames = results.map(result => `dist/${result.fileName}`);
@@ -275,7 +272,7 @@ export default class Basic {
             }),
         });
 
-        const configs = await pectinCore.createMultiConfig(pkg, { cwd });
+        const configs = await pectinCore(pkg, { cwd });
         const results = await generateResults(configs);
 
         const fileNames = results.map(result => `dist/${result.fileName}`);
@@ -371,7 +368,7 @@ export default class Advanced {
             }),
         });
 
-        const configs = await pectinCore.createMultiConfig(pkg, { cwd });
+        const configs = await pectinCore(pkg, { cwd });
         const results = await generateResults(configs);
 
         const fileNames = results.map(result => `dist/${result.fileName}`);
@@ -470,7 +467,7 @@ export default Advanced;
             }),
         });
 
-        const configs = await pectinCore.createMultiConfig(pkg, { cwd });
+        const configs = await pectinCore(pkg, { cwd });
         const results = await generateResults(configs);
 
         const fileNames = results.map(result => `dist/${result.fileName}`);
@@ -524,7 +521,7 @@ export default function main() {
             }),
         });
 
-        const configs = await pectinCore.createMultiConfig(pkg, { cwd });
+        const configs = await pectinCore(pkg, { cwd });
         const results = await generateResults(configs);
 
         const minOutput = results.pop().code;
@@ -553,19 +550,20 @@ return main;
     });
 
     it('works all together', async () => {
+        const pkg = {
+            name: 'integration',
+            main: 'dist/index.js',
+            module: 'dist/index.esm.js',
+            rollup: {
+                inlineSVG: true,
+            },
+            dependencies: {
+                '@babel/runtime': '^7.0.0',
+                react: '*',
+            },
+        };
         const cwd = createFixture({
-            'package.json': File({
-                name: 'integration',
-                main: 'dist/index.js',
-                module: 'dist/index.esm.js',
-                rollup: {
-                    inlineSVG: true,
-                },
-                dependencies: {
-                    '@babel/runtime': '^7.0.0',
-                    react: '*',
-                },
-            }),
+            'package.json': File(pkg),
             src: Dir({
                 'test.svg': File(
                     `<?xml version="1.0" ?><svg viewBox="0 0 151.57 151.57" xmlns="http://www.w3.org/2000/svg"><line x1="47.57" x2="103.99" y1="103.99" y2="47.57"/><line x1="45.8" x2="105.7" y1="45.87" y2="105.77"/></svg>`
@@ -584,25 +582,16 @@ export default class Foo extends React.Component {
             }),
         });
 
-        const config = await pectinCore(path.join(cwd, 'package.json'));
-        const { output: outputOptions, ...inputOptions } = config;
-        const [cjsOutput, esmOutput] = outputOptions;
-
-        const bundle = await rollup(inputOptions);
-
-        const {
-            output: [esm],
-        } = await bundle.generate(esmOutput);
-        const {
-            output: [cjs],
-        } = await bundle.generate(cjsOutput);
+        const configs = await pectinCore(pkg, { cwd });
+        const results = await generateResults(configs);
+        const [cjs, esm] = results;
 
         expect(esm.code).toMatchInlineSnapshot(`
-"import _classCallCheck from '@babel/runtime/helpers/classCallCheck';
-import _createClass from '@babel/runtime/helpers/createClass';
-import _possibleConstructorReturn from '@babel/runtime/helpers/possibleConstructorReturn';
-import _getPrototypeOf from '@babel/runtime/helpers/getPrototypeOf';
-import _inherits from '@babel/runtime/helpers/inherits';
+"import _classCallCheck from '@babel/runtime/helpers/esm/classCallCheck';
+import _createClass from '@babel/runtime/helpers/esm/createClass';
+import _possibleConstructorReturn from '@babel/runtime/helpers/esm/possibleConstructorReturn';
+import _getPrototypeOf from '@babel/runtime/helpers/esm/getPrototypeOf';
+import _inherits from '@babel/runtime/helpers/esm/inherits';
 import React from 'react';
 
 var svgTest = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pjxzdmcgdmlld0JveD0iMCAwIDE1MS41NyAxNTEuNTciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGxpbmUgeDE9IjQ3LjU3IiB4Mj0iMTAzLjk5IiB5MT0iMTAzLjk5IiB5Mj0iNDcuNTciLz48bGluZSB4MT0iNDUuOCIgeDI9IjEwNS43IiB5MT0iNDUuODciIHkyPSIxMDUuNzciLz48L3N2Zz4=';

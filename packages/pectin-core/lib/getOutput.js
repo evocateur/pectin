@@ -5,42 +5,28 @@ const camelCase = require('camelcase');
 const npa = require('npm-package-arg');
 const dotProp = require('dot-prop');
 
-module.exports = function getOutput(pkg, cwd, isMultiConfig) {
+module.exports = function getOutput(pkg, cwd) {
     const output = [];
 
     // generated chunks as of rollup v0.68.0 need chunkFileNames, not entryFileNames
     const chunkFileNames = dotProp.get(pkg, 'rollup.chunkFileNames', '[name]-[hash].[format].js');
     const entryFileNames = dotProp.get(pkg, 'rollup.entryFileNames', '[name].[format].js');
 
-    const cjsConfig = {
+    output.push({
         format: 'cjs',
-    };
-
-    if (isMultiConfig) {
-        cjsConfig.dir = path.dirname(path.resolve(cwd, pkg.main));
-        cjsConfig.chunkFileNames = chunkFileNames;
+        dir: path.dirname(path.resolve(cwd, pkg.main)),
+        chunkFileNames,
         // only one entry point, thus no pattern is required
-        cjsConfig.entryFileNames = path.basename(pkg.main);
-    } else {
-        cjsConfig.file = path.resolve(cwd, pkg.main);
-    }
-
-    output.push(cjsConfig);
+        entryFileNames: path.basename(pkg.main),
+    });
 
     if (pkg.module) {
-        const esmConfig = {
+        output.push({
             format: 'esm',
-        };
-
-        if (isMultiConfig) {
-            esmConfig.dir = path.dirname(path.resolve(cwd, pkg.module));
-            esmConfig.chunkFileNames = chunkFileNames;
-            esmConfig.entryFileNames = entryFileNames;
-        } else {
-            esmConfig.file = path.resolve(cwd, pkg.module);
-        }
-
-        output.push(esmConfig);
+            dir: path.dirname(path.resolve(cwd, pkg.module)),
+            chunkFileNames,
+            entryFileNames,
+        });
     }
 
     // @see https://github.com/defunctzombie/package-browser-field-spec

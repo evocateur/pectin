@@ -9,7 +9,7 @@ const globby = require('globby');
 const pMap = require('p-map');
 const batchPackages = require('@lerna/batch-packages');
 const { getPackages } = require('@lerna/project');
-const { createMultiConfig } = require('@pectin/core');
+const pectin = require('@pectin/core');
 
 const statAsync = util.promisify(fs.stat);
 
@@ -56,7 +56,7 @@ async function generateConfig(pkg, opts) {
     }
 
     try {
-        config = await createMultiConfig(pkg, opts);
+        config = await pectin(pkg, opts);
 
         // improve the logging output by shortening the input path
         for (const obj of config) {
