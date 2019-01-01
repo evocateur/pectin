@@ -32,7 +32,6 @@ describe('rollup-config-pectin', () => {
             },
             `
 Object {
-  "experimentalCodeSplitting": true,
   "inlineDynamicImports": false,
   "input": "<REPO_ROOT>/packages/rollup-config-pectin/src/rollup-config-pectin.js",
   "output": Array [

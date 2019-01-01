@@ -25,6 +25,12 @@ function stubInput(relativeFilePath) {
     };
 }
 
+async function getEntryChunk(bundle, config = { format: 'esm' }) {
+    const { output } = await bundle.generate(config);
+
+    return output.find(chunk => chunk.isEntry);
+}
+
 describe('rollup-plugin-main-entry', () => {
     it('throws an error when no pkg.main supplied', async () => {
         try {
@@ -42,8 +48,9 @@ describe('rollup-plugin-main-entry', () => {
         const bundle = await rollup({
             plugins: [stubInput('src/foo.js'), mainEntry({ main: 'lib/foo.js' })],
         });
+        const chunk = await getEntryChunk(bundle);
 
-        expect(bundle.exports).toContain('theAnswer');
+        expect(chunk.exports).toContain('theAnswer');
     });
 
     it('accepts custom rootDir option', async () => {
@@ -56,8 +63,9 @@ describe('rollup-plugin-main-entry', () => {
                 }),
             ],
         });
+        const chunk = await getEntryChunk(bundle);
 
-        expect(bundle.exports).toContain('theAnswer');
+        expect(chunk.exports).toContain('theAnswer');
     });
 
     it('accepts custom rollup.rootDir option', async () => {
@@ -72,8 +80,9 @@ describe('rollup-plugin-main-entry', () => {
                 }),
             ],
         });
+        const chunk = await getEntryChunk(bundle);
 
-        expect(bundle.exports).toContain('theAnswer');
+        expect(chunk.exports).toContain('theAnswer');
     });
 
     it('preserves rootDir default in rollup package config', async () => {
@@ -88,8 +97,9 @@ describe('rollup-plugin-main-entry', () => {
                 }),
             ],
         });
+        const chunk = await getEntryChunk(bundle);
 
-        expect(bundle.exports).toContain('theAnswer');
+        expect(chunk.exports).toContain('theAnswer');
     });
 
     it('accepts custom cwd option', async () => {
@@ -102,8 +112,9 @@ describe('rollup-plugin-main-entry', () => {
                 }),
             ],
         });
+        const chunk = await getEntryChunk(bundle);
 
-        expect(bundle.exports).toContain('theAnswer');
+        expect(chunk.exports).toContain('theAnswer');
     });
 
     it('does not overwrite existing opts.input', async () => {
@@ -116,7 +127,8 @@ describe('rollup-plugin-main-entry', () => {
                 }),
             ],
         });
+        const chunk = await getEntryChunk(bundle);
 
-        expect(bundle.exports).toContain('theAnswer');
+        expect(chunk.exports).toContain('theAnswer');
     });
 });

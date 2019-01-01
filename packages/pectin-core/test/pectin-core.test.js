@@ -28,34 +28,17 @@ function createFixture(pkgSpec) {
     return cwd;
 }
 
-function generateResults(configs) {
-    if (!Array.isArray(configs)) {
-        // eslint-disable-next-line no-param-reassign
-        configs = [configs];
-    }
-
-    return pMap(configs, ({ output: outputOptions, ...inputOptions }) =>
-        rollup(inputOptions).then(bundle => {
-            if (Array.isArray(outputOptions)) {
-                return Promise.all(outputOptions.map(opts => bundle.generate(opts))).then(
-                    maybeChunked =>
-                        maybeChunked.reduce((arr, result) => {
-                            if (result.output) {
-                                // chunks stored as dictionary keyed by fileName
-                                return arr.concat(Object.values(result.output));
-                            }
-
-                            return arr.concat(result);
-                        }, [])
-                );
-            }
-
-            return bundle.generate(outputOptions);
-        })
-    ).then(results =>
-        // flatten results
-        results.reduce((arr, result) => arr.concat(result), [])
+async function generateResults(configs) {
+    const results = await pMap(configs, ({ output: outputOptions, ...inputOptions }) =>
+        rollup(inputOptions).then(bundle =>
+            Promise.all(outputOptions.map(opts => bundle.generate(opts))).then(generated =>
+                generated.reduce((arr, result) => arr.concat(result.output), [])
+            )
+        )
     );
+
+    // flatten results
+    return results.reduce((arr, result) => arr.concat(result), []);
 }
 
 describe('pectin-core', () => {
@@ -88,7 +71,7 @@ export default svgTest;
         });
 
         const config = await pectinCore(path.join(cwd, 'package.json'));
-        const result = await generateResults(config);
+        const result = await generateResults([config]);
 
         expect(result[0].code).toMatchInlineSnapshot(`
 "'use strict';
@@ -115,7 +98,7 @@ module.exports = svgTest;
         });
 
         const config = await pectinCore(path.join(cwd, 'package.json'));
-        const result = await generateResults(config);
+        const result = await generateResults([config]);
 
         expect(result[0].fileName).toBe('rollup-root-dir.js');
         expect(result[0].code).toMatchInlineSnapshot(`
@@ -141,7 +124,7 @@ module.exports = rollupRootDir;
         });
 
         const config = await pectinCore(path.join(cwd, 'package.json'));
-        const result = await generateResults(config);
+        const result = await generateResults([config]);
 
         expect(result[0].code).toMatchInlineSnapshot(`
 "'use strict';
@@ -607,8 +590,12 @@ export default class Foo extends React.Component {
 
         const bundle = await rollup(inputOptions);
 
-        const esm = await bundle.generate(esmOutput);
-        const cjs = await bundle.generate(cjsOutput);
+        const {
+            output: [esm],
+        } = await bundle.generate(esmOutput);
+        const {
+            output: [cjs],
+        } = await bundle.generate(cjsOutput);
 
         expect(esm.code).toMatchInlineSnapshot(`
 "import _classCallCheck from '@babel/runtime/helpers/classCallCheck';

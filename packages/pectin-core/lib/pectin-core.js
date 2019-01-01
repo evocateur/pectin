@@ -35,8 +35,6 @@ async function createMultiConfig(pkg, { cwd }) {
             // output array for consistency with createConfig()
             output: [output],
             plugins,
-            // TODO: remove when rollup 1.0 makes this the default
-            experimentalCodeSplitting: true,
             inlineDynamicImports: output.browser === true || output.format === 'umd',
         };
     });

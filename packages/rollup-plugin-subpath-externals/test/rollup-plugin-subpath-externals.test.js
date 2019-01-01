@@ -32,6 +32,12 @@ function stubInput(fileContent) {
     };
 }
 
+async function getEntryChunk(bundle, config = { format: 'esm' }) {
+    const { output } = await bundle.generate(config);
+
+    return output.find(chunk => chunk.isEntry);
+}
+
 describe('rollup-plugin-subpath-externals', () => {
     it('overwrites existing opts.external', async () => {
         const bundle = await rollup({
@@ -46,8 +52,9 @@ describe('rollup-plugin-subpath-externals', () => {
                 }),
             ],
         });
+        const chunk = await getEntryChunk(bundle);
 
-        expect(bundle.imports).toStrictEqual(['lodash/trim']);
+        expect(chunk.imports).toStrictEqual(['lodash/trim']);
     });
 
     it('ignores local imports', async () => {
@@ -63,8 +70,9 @@ describe('rollup-plugin-subpath-externals', () => {
                 }),
             ],
         });
+        const chunk = await getEntryChunk(bundle);
 
-        expect(bundle.imports).toStrictEqual([]);
+        expect(chunk.imports).toStrictEqual([]);
     });
 
     it('ignores devDependencies', async () => {
@@ -80,8 +88,9 @@ describe('rollup-plugin-subpath-externals', () => {
                 }),
             ],
         });
+        const chunk = await getEntryChunk(bundle);
 
-        expect(bundle.imports).toStrictEqual([]);
+        expect(chunk.imports).toStrictEqual([]);
     });
 
     it('externalizes exact matches', async () => {
@@ -97,7 +106,9 @@ describe('rollup-plugin-subpath-externals', () => {
             ],
         });
 
-        expect(bundle.imports).toStrictEqual(['lodash']);
+        const chunk = await getEntryChunk(bundle);
+
+        expect(chunk.imports).toStrictEqual(['lodash']);
     });
 
     it('externalizes subpath imports', async () => {
@@ -113,7 +124,9 @@ describe('rollup-plugin-subpath-externals', () => {
             ],
         });
 
-        expect(bundle.imports).toStrictEqual(['lodash/trim']);
+        const chunk = await getEntryChunk(bundle);
+
+        expect(chunk.imports).toStrictEqual(['lodash/trim']);
     });
 
     it('externalizes peerDependencies', async () => {
@@ -135,7 +148,9 @@ describe('rollup-plugin-subpath-externals', () => {
             ],
         });
 
-        expect(bundle.imports).toStrictEqual(['react']);
+        const chunk = await getEntryChunk(bundle);
+
+        expect(chunk.imports).toStrictEqual(['react']);
     });
 
     it('externalizes _only_ peerDependencies when output.format is "umd"', async () => {
@@ -179,7 +194,7 @@ describe('rollup-plugin-subpath-externals', () => {
             ],
         });
 
-        const { code } = await bundle.generate({
+        const { code } = await getEntryChunk(bundle, {
             format: 'umd',
             name: 'StubComponent',
             globals: {
@@ -220,7 +235,9 @@ describe('rollup-plugin-subpath-externals', () => {
             ],
         });
 
-        expect(bundle.imports).toStrictEqual(['url', 'querystring']);
+        const chunk = await getEntryChunk(bundle);
+
+        expect(chunk.imports).toStrictEqual(['url', 'querystring']);
     });
 
     it('accepts explicit external config via package prop', async () => {
@@ -259,11 +276,11 @@ describe('rollup-plugin-subpath-externals', () => {
             ],
         });
 
-        expect(bundle.imports).toStrictEqual(['lodash/trim']);
+        const chunk = await getEntryChunk(bundle);
 
-        const { code } = await bundle.generate({ format: 'esm' });
+        expect(chunk.imports).toStrictEqual(['lodash/trim']);
 
-        expect(code).toMatchInlineSnapshot(`
+        expect(chunk.code).toMatchInlineSnapshot(`
 "import trim from 'lodash/trim';
 
 function embedded(k) { return k; }
@@ -311,11 +328,11 @@ export default stub;
             ],
         });
 
-        expect(bundle.imports).toStrictEqual(['lodash/trim']);
+        const chunk = await getEntryChunk(bundle);
 
-        const { code } = await bundle.generate({ format: 'esm' });
+        expect(chunk.imports).toStrictEqual(['lodash/trim']);
 
-        expect(code).toMatchInlineSnapshot(`
+        expect(chunk.code).toMatchInlineSnapshot(`
 "import trim from 'lodash/trim';
 
 function inlined(k) { return k; }
@@ -349,6 +366,8 @@ export default stub;
             ],
         });
 
-        expect(bundle.imports).toStrictEqual(['url', 'lodash/get', 'a-peer-dependency']);
+        const chunk = await getEntryChunk(bundle);
+
+        expect(chunk.imports).toStrictEqual(['url', 'lodash/get', 'a-peer-dependency']);
     });
 });
