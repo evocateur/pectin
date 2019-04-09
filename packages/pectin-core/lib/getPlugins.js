@@ -26,8 +26,13 @@ module.exports = async function getPlugins(pkg, cwd, output) {
             preferBuiltins: true,
             // https://github.com/rollup/rollup-plugin-node-resolve/pull/151
             extensions: ['.mjs', '.js', '.jsx', '.json', '.node'],
-            // just in case dependencies have missed the memo
-            jsnext: true,
+            // https://github.com/rollup/rollup-plugin-node-resolve/pull/182
+            mainFields: [
+                'module',
+                // just in case dependencies have missed the memo
+                'jsnext:main',
+                'main',
+            ],
         }),
         // https://github.com/rollup/rollup-plugin-replace#usage
         replace(
