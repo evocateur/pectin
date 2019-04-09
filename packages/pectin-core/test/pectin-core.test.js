@@ -186,6 +186,10 @@ module.exports = app;
             name: 'chunked-module-outputs',
             main: './dist/index.js',
             module: './dist/index.esm.js',
+            rollup: {
+                // can't use [hash] in chunks because it changes _every_ execution
+                chunkFileNames: '[name].[format].js',
+            },
         };
         const cwd = createFixture({
             'package.json': File(pkg),
@@ -209,9 +213,9 @@ export default function main() {
 
         expect(fileNames).toStrictEqual([
             'dist/index.js',
-            'dist/chunk-cbdffb19.cjs.js',
+            'dist/chunk.cjs.js',
             'dist/index.esm.js',
-            'dist/chunk-a2193cac.esm.js',
+            'dist/chunk.esm.js',
         ]);
 
         expect(cjsEntry).toMatchInlineSnapshot(`
@@ -219,14 +223,14 @@ export default function main() {
 'use strict';
 
 function main() {
-  return Promise.resolve(require('./chunk-cbdffb19.cjs.js'));
+  return Promise.resolve(require('./chunk.cjs.js'));
 }
 
 module.exports = main;
 "
 `);
         expect(cjsChunk).toMatchInlineSnapshot(`
-"// dist/chunk-cbdffb19.cjs.js
+"// dist/chunk.cjs.js
 'use strict';
 
 var chunkyBacon = '_why';
@@ -237,14 +241,14 @@ exports.default = chunkyBacon;
         expect(esmEntry).toMatchInlineSnapshot(`
 "// dist/index.esm.js
 function main() {
-  return import('./chunk-a2193cac.esm.js');
+  return import('./chunk.esm.js');
 }
 
 export default main;
 "
 `);
         expect(esmChunk).toMatchInlineSnapshot(`
-"// dist/chunk-a2193cac.esm.js
+"// dist/chunk.esm.js
 var chunkyBacon = '_why';
 
 export default chunkyBacon;
