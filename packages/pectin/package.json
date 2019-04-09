@@ -9,7 +9,7 @@
     "monorepo"
   ],
   "author": "Daniel Stockman <daniel.stockman@gmail.com>",
-  "homepage": "https://github.com/evocateur/pectin/tree/latest/packages/pectin-cli#readme",
+  "homepage": "https://github.com/evocateur/pectin/tree/latest/packages/pectin#readme",
   "license": "ISC",
   "main": "lib/pectin-cli.js",
   "bin": {
