@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0](https://github.com/evocateur/pectin/compare/v3.0.1...v3.1.0) (2019-04-09)
+
+
+### Features
+
+* **core:** Migrate to new `mainFields` config for `rollup-plugin-node-resolve` ([f251e1f](https://github.com/evocateur/pectin/commit/f251e1f))
+* **core:** Update dependencies ([e5901ca](https://github.com/evocateur/pectin/commit/e5901ca))
+
+
+
+
+
 ## [3.0.1](https://github.com/evocateur/pectin/compare/v3.0.0...v3.0.1) (2019-01-14)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0](https://github.com/evocateur/pectin/compare/v3.0.1...v3.1.0) (2019-04-09)
+
+
+### Features
+
+* **pectin:** Rename CLI `@pectin/cli` -> `pectin` ([0a81cfe](https://github.com/evocateur/pectin/commit/0a81cfe))
+
+
+
+
+
 ## [3.0.1](https://github.com/evocateur/pectin/compare/v3.0.0...v3.0.1) (2019-01-14)
 
 **Note:** Version bump only for package @pectin/cli
