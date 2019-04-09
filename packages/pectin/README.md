@@ -1,4 +1,4 @@
-# `@pectin/cli`
+# `pectin`
 
 > Lightweight CLI for running convention-based rollup builds in lerna monorepos
 
@@ -7,7 +7,7 @@
 Add it to your local build by running the following command:
 
 ```sh
-npm i -D @pectin/cli
+npm i -D pectin
 ```
 
 ## Usage

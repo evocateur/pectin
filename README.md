@@ -2,7 +2,7 @@
 
 > [Rollup][]-related tools for incremental transpilation of packages in [Lerna][]-based monorepos
 
-[![npm version](https://img.shields.io/npm/v/@pectin/cli.svg)](https://www.npmjs.com/package/@pectin/cli)
+[![npm version](https://img.shields.io/npm/v/pectin.svg)](https://www.npmjs.com/package/pectin)
 [![Build Status](https://travis-ci.org/evocateur/pectin.svg?branch=latest)](https://travis-ci.org/evocateur/pectin)
 
 ## Getting Started
@@ -10,7 +10,7 @@
 The easiest way to start using Pectin is to install the CLI and run it during an npm lifecycle, such as `"prerelease"`:
 
 ```sh
-npm i -D @pectin/cli
+npm i -D pectin
 ```
 
 In your monorepo's root `package.json` (aka "manifest"):
@@ -61,8 +61,8 @@ By participating in this project you agree to abide by its terms.
 
 -   [`@pectin/api`](./packages/pectin-api#readme)
 -   [`@pectin/babelrc`](./packages/pectin-babelrc#readme)
--   [`@pectin/cli`](./packages/pectin-cli#readme)
 -   [`@pectin/core`](./packages/pectin-core#readme)
+-   [`pectin`](./packages/pectin#readme)
 -   [`rollup-config-pectin`](./packages/rollup-config-pectin#readme)
 -   [`rollup-plugin-main-entry`](./packages/rollup-plugin-main-entry#readme)
 -   [`rollup-plugin-subpath-externals`](./packages/rollup-plugin-subpath-externals#readme)

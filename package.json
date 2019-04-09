@@ -25,8 +25,8 @@
   "dependencies": {
     "@pectin/api": "file:packages/pectin-api",
     "@pectin/babelrc": "file:packages/pectin-babelrc",
-    "@pectin/cli": "file:packages/pectin-cli",
     "@pectin/core": "file:packages/pectin-core",
+    "pectin": "file:packages/pectin",
     "rollup-config-pectin": "file:packages/rollup-config-pectin",
     "rollup-plugin-main-entry": "file:packages/rollup-plugin-main-entry",
     "rollup-plugin-subpath-externals": "file:packages/rollup-plugin-subpath-externals"
