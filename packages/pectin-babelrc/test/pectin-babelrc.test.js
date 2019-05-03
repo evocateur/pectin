@@ -278,6 +278,27 @@ Object {
         ]);
     });
 
+    it('passes { corejs: 3 } to runtime transform when alternate dependency detected', async () => {
+        const pkg = {
+            name: 'add-config-transform-advanced',
+            dependencies: {
+                '@babel/runtime-corejs3': '^7.4.0',
+            },
+        };
+        const cwd = createFixture({
+            '.babelrc': File({
+                presets: ['@babel/env'],
+            }),
+            'package.json': File(pkg),
+        });
+        const opts = await pectinBabelrc(pkg, cwd, { format: 'esm' });
+
+        expect(opts).toHaveProperty('plugins', [
+            '@babel/plugin-syntax-dynamic-import',
+            ['@babel/plugin-transform-runtime', { useESModules: true, corejs: 3 }],
+        ]);
+    });
+
     it('does not duplicate existing @babel/syntax-dynamic-import plugin', async () => {
         const pkg = {
             name: 'no-duplicate-syntax',

@@ -82,6 +82,11 @@ module.exports = async function pectinBabelrc(pkg, cwd, output) {
             useESModules: format === 'esm',
             corejs: 2,
         });
+    } else if (deps.has('@babel/runtime-corejs3')) {
+        ensureRuntimeHelpers(rc, {
+            useESModules: format === 'esm',
+            corejs: 3,
+        });
     }
 
     // ensure dynamic import syntax is available
