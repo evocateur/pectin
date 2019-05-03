@@ -1,6 +1,6 @@
 'use strict';
 
-const config = require('eslint-plugin-zillow/prettier.config');
+const config = require('prettier-config-zillow');
 
 // just here so the editor plugins don't get fired
 module.exports = Object.assign({}, config, {
