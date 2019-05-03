@@ -213,9 +213,9 @@ export default function main() {
 
         expect(fileNames).toStrictEqual([
             'dist/index.js',
-            'dist/chunk.cjs.js',
+            'dist/chunky-bacon.cjs.js',
             'dist/index.esm.js',
-            'dist/chunk.esm.js',
+            'dist/chunky-bacon.esm.js',
         ]);
 
         expect(cjsEntry).toMatchInlineSnapshot(`
@@ -223,14 +223,14 @@ export default function main() {
 'use strict';
 
 function main() {
-  return Promise.resolve(require('./chunk.cjs.js'));
+  return Promise.resolve(require('./chunky-bacon.cjs.js'));
 }
 
 module.exports = main;
 "
 `);
         expect(cjsChunk).toMatchInlineSnapshot(`
-"// dist/chunk.cjs.js
+"// dist/chunky-bacon.cjs.js
 'use strict';
 
 var chunkyBacon = '_why';
@@ -241,14 +241,14 @@ exports.default = chunkyBacon;
         expect(esmEntry).toMatchInlineSnapshot(`
 "// dist/index.esm.js
 function main() {
-  return import('./chunk.esm.js');
+  return import('./chunky-bacon.esm.js');
 }
 
 export default main;
 "
 `);
         expect(esmChunk).toMatchInlineSnapshot(`
-"// dist/chunk.esm.js
+"// dist/chunky-bacon.esm.js
 var chunkyBacon = '_why';
 
 export default chunkyBacon;
