@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0](https://github.com/evocateur/pectin/compare/v3.1.1...v3.2.0) (2019-05-03)
+
+
+### Bug Fixes
+
+* **main-entry:** Adapt to rollup v1.11.0 change to options.input default value ([232b9a8](https://github.com/evocateur/pectin/commit/232b9a8))
+
+
+
+
+
 # [3.0.0](https://github.com/evocateur/pectin/compare/v2.6.0...v3.0.0) (2019-01-01)
 
 

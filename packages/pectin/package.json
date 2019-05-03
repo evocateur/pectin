@@ -1,6 +1,6 @@
 {
   "name": "pectin",
-  "version": "3.1.1",
+  "version": "3.2.0",
   "description": "Lightweight CLI for running convention-based rollup builds in lerna monorepos",
   "keywords": [
     "rollup",
