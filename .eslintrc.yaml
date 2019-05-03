@@ -28,7 +28,8 @@
       # blank line before and after multi-line block-like statements
       - { blankLine: "always", prev: "*", next: "multiline-block-like" }
       - { blankLine: "always", prev: "multiline-block-like", next: "*" }
-    strict: off
+    prefer-object-spread: "off"
+    strict: "off"
   root: true
   overrides:
     - files:
