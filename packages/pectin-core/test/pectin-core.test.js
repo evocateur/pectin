@@ -59,7 +59,7 @@ describe('pectin-core', () => {
         };
         const cwd = createFixture({
             'package.json': File(pkg),
-            src: Dir({
+            'src': Dir({
                 'test.svg': File(
                     `<?xml version="1.0" ?><svg xmlns="http://www.w3.org/2000/svg" />`
                 ),
@@ -95,7 +95,7 @@ module.exports = svgTest;
         };
         const cwd = createFixture({
             'package.json': File(pkg),
-            modules: Dir({
+            'modules': Dir({
                 'rollup-root-dir.js': File(`export default 'success';`),
             }),
         });
@@ -193,7 +193,7 @@ module.exports = app;
         };
         const cwd = createFixture({
             'package.json': File(pkg),
-            src: Dir({
+            'src': Dir({
                 'chunky-bacon.js': File(`export default '_why';`),
                 'index.js': File(`
 export default function main() {
@@ -265,7 +265,7 @@ export default chunkyBacon;
         };
         const cwd = createFixture({
             'package.json': File(pkg),
-            src: Dir({
+            'src': Dir({
                 'index.js': File(`
 export default class Basic {
     constructor() {
@@ -361,7 +361,7 @@ module.exports = Basic;
         };
         const cwd = createFixture({
             'package.json': File(pkg),
-            src: Dir({
+            'src': Dir({
                 'index.js': File(`
 export default class Advanced {
     constructor() {
@@ -464,7 +464,7 @@ export default Advanced;
         };
         const cwd = createFixture({
             'package.json': File(pkg),
-            src: Dir({
+            'src': Dir({
                 'index.js': File(
                     'import React from "react"; export default () => React.render("woo");'
                 ),
@@ -512,7 +512,7 @@ return index;
         };
         const cwd = createFixture({
             'package.json': File(pkg),
-            src: Dir({
+            'src': Dir({
                 'index.js': File(`
 export default function main() {
     console.log("yay");
@@ -563,12 +563,12 @@ return main;
             },
             dependencies: {
                 '@babel/runtime': '^7.0.0',
-                react: '*',
+                'react': '*',
             },
         };
         const cwd = createFixture({
             'package.json': File(pkg),
-            src: Dir({
+            'src': Dir({
                 'test.svg': File(
                     `<?xml version="1.0" ?><svg viewBox="0 0 151.57 151.57" xmlns="http://www.w3.org/2000/svg"><line x1="47.57" x2="103.99" y1="103.99" y2="47.57"/><line x1="45.8" x2="105.7" y1="45.87" y2="105.77"/></svg>`
                 ),

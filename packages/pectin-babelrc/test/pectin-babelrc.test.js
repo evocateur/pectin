@@ -61,7 +61,7 @@ Object {
             name: 'helpers-runtime',
             dependencies: {
                 '@babel/runtime': '^7.0.0',
-                lodash: '^4.17.4',
+                'lodash': '^4.17.4',
             },
         };
         const cwd = createFixture({
@@ -420,7 +420,7 @@ Object {
                     plugins: ['@babel/plugin-proposal-object-rest-spread'],
                 },
             }),
-            packages: Dir({
+            'packages': Dir({
                 pkg1: Dir({
                     'package.json': File(pkg1),
                 }),

@@ -33,7 +33,7 @@ function createFixture(pkgSpec) {
                 name: 'monorepo',
                 private: true,
             }),
-            modules: Dir(pkgSpec),
+            'modules': Dir(pkgSpec),
         })
     );
 
@@ -62,7 +62,7 @@ describe('pectin-api', () => {
                     name: '@test/no-output',
                     main: 'dist/index.js',
                 }),
-                src: Dir({
+                'src': Dir({
                     'index.js': File('export default "test";'),
                 }),
             }),
@@ -83,7 +83,7 @@ describe('pectin-api', () => {
                         '@test/their-dependency': 'file:../their-dependency',
                     },
                 }),
-                src: Dir({
+                'src': Dir({
                     'index.js': File('export default "test";'),
                 }),
             }),
@@ -92,7 +92,7 @@ describe('pectin-api', () => {
                     name: '@test/their-dependency',
                     main: 'dist/index.js',
                 }),
-                src: Dir({
+                'src': Dir({
                     'index.js': File('export default "test";'),
                 }),
             }),
@@ -111,10 +111,10 @@ describe('pectin-api', () => {
                     name: '@test/old-output',
                     main: 'lib/index.js',
                 }),
-                lib: Dir({
+                'lib': Dir({
                     'index.js': File('module.exports = "test";'),
                 }),
-                src: Dir({
+                'src': Dir({
                     'index.js': File('export default from "./other";'),
                     'other.js': File('export default "test";'),
                 }),
@@ -135,10 +135,10 @@ describe('pectin-api', () => {
                     name: '@test/jsx-input',
                     main: 'dist/index.js',
                 }),
-                dist: Dir({
+                'dist': Dir({
                     'index.js': File('module.exports = "test";'),
                 }),
-                src: Dir({
+                'src': Dir({
                     'index.js': File('export default from "./other";'),
                     'other.jsx': File('export default "test";'),
                 }),
@@ -159,10 +159,10 @@ describe('pectin-api', () => {
                     name: '@test/old-input',
                     main: 'lib/index.js',
                 }),
-                lib: Dir({
+                'lib': Dir({
                     'index.js': File('module.exports = "test";'),
                 }),
-                src: Dir({
+                'src': Dir({
                     'index.js': File('export default from "./other";'),
                     'other.js': File('export default "test";'),
                 }),
@@ -189,7 +189,7 @@ describe('pectin-api', () => {
                     },
                 }),
                 'app.js': File('export default "test";'),
-                dist: Dir({
+                'dist': Dir({
                     'index.js': File('module.exports = "test";'),
                 }),
             }),
@@ -211,13 +211,13 @@ describe('pectin-api', () => {
                     },
                 }),
                 'app.js': File('export default "test";'),
-                __tests__: Dir({
+                '__tests__': Dir({
                     'ignored.js': File('ignored'),
                 }),
-                dist: Dir({
+                'dist': Dir({
                     'index.js': File('module.exports = "test";'),
                 }),
-                node_modules: Dir({
+                'node_modules': Dir({
                     foo: Dir({
                         'index.js': File('ignored'),
                         'package.json': File({
@@ -226,14 +226,14 @@ describe('pectin-api', () => {
                         }),
                     }),
                 }),
-                src: Dir({
-                    __tests__: Dir({
+                'src': Dir({
+                    '__tests__': Dir({
                         'ignored.js': File('ignored'),
                     }),
                     'ignored-test.js': File('ignored'),
                     'ignored.test.js': File('ignored'),
                 }),
-                test: Dir({
+                'test': Dir({
                     'ignored.js': File('ignored'),
                 }),
             }),
@@ -261,10 +261,10 @@ describe('pectin-api', () => {
                         ignoreWatch: true,
                     },
                 }),
-                dist: Dir({
+                'dist': Dir({
                     'index.js': File('module.exports = "test";'),
                 }),
-                src: Dir({
+                'src': Dir({
                     'index.js': File('export default "test";'),
                 }),
             }),
@@ -288,7 +288,7 @@ describe('pectin-api', () => {
                         skip: true,
                     },
                 }),
-                lib: Dir({
+                'lib': Dir({
                     'index.js': File('module.exports = "test";'),
                 }),
             }),
@@ -303,7 +303,7 @@ describe('pectin-api', () => {
                 'package.json': File({
                     name: '@test/no-pkg-main',
                 }),
-                lib: Dir({
+                'lib': Dir({
                     'index.js': File('module.exports = "test";'),
                 }),
             }),
@@ -319,7 +319,7 @@ describe('pectin-api', () => {
                     name: '@test/explicit-cwd',
                     main: 'dist/index.js',
                 }),
-                src: Dir({
+                'src': Dir({
                     'index.js': File('export default "test";'),
                 }),
             }),
@@ -345,13 +345,13 @@ describe('pectin-api', () => {
                         'missing-dist': '../lib/missing-dist',
                     },
                 }),
-                dist: Dir({
+                'dist': Dir({
                     'index.js': File('module.exports = "test";'),
                 }),
-                node_modules: Dir({
+                'node_modules': Dir({
                     'missing-dist': Symlink('../../lib/missing-dist'),
                 }),
-                src: Dir({
+                'src': Dir({
                     'index.js': File('export default from "./other";'),
                     'other.js': File('export default "test";'),
                 }),
@@ -366,21 +366,21 @@ describe('pectin-api', () => {
                             bar: '^1.0.0',
                         },
                     }),
-                    node_modules: Dir({
+                    'node_modules': Dir({
                         bar: Dir({
-                            lib: Dir({
+                            'lib': Dir({
                                 'index.js': File('ignored'),
                             }),
                             'package.json': File({
                                 name: 'bar',
                                 main: 'lib/index.js',
                             }),
-                            src: Dir({
+                            'src': Dir({
                                 'index.js': File('do not transpile node_modules :P'),
                             }),
                         }),
                     }),
-                    src: Dir({
+                    'src': Dir({
                         'index.js': File('export default "test";'),
                     }),
                 }),
@@ -416,10 +416,10 @@ describe('pectin-api', () => {
                     main: 'lib/index.js',
                     module: 'lib/index.module.js',
                 }),
-                lib: Dir({
+                'lib': Dir({
                     'index.js': File('module.exports = "test";'),
                 }),
-                src: Dir({
+                'src': Dir({
                     'index.js': File('export default from "./other";'),
                     'other.js': File('export default "test";'),
                 }),
@@ -429,7 +429,7 @@ describe('pectin-api', () => {
                     name: '@test/watch-missing',
                     main: 'lib/index.js',
                 }),
-                src: Dir({
+                'src': Dir({
                     'index.js': File('export default "unbuilt";'),
                 }),
             }),
@@ -455,7 +455,7 @@ describe('pectin-api', () => {
                     name: '@test/pkg-cwd',
                     main: 'dist/index.js',
                 }),
-                src: Dir({
+                'src': Dir({
                     'index.js': File('export default "test";'),
                 }),
             });
@@ -485,10 +485,10 @@ describe('pectin-api', () => {
                     name: '@test/up-to-date',
                     main: 'dist/index.js',
                 }),
-                dist: Dir({
+                'dist': Dir({
                     'index.js': File('module.exports = "test";'),
                 }),
-                src: Dir({
+                'src': Dir({
                     'index.js': File('export default "test";'),
                 }),
             });
