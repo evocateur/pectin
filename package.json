@@ -43,7 +43,7 @@
     "eslint-plugin-node": "^9.0.0",
     "eslint-plugin-zillow": "^3.2.0",
     "jest": "^24.7.1",
-    "lerna": "^3.13.4",
+    "lerna": "^3.14.1",
     "p-map": "^2.1.0",
     "prettier": "^1.17.0",
     "prettier-config-zillow": "^1.1.0",
