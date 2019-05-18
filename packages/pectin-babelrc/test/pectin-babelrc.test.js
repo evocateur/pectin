@@ -46,14 +46,23 @@ describe('pectin-babelrc', () => {
         const rc = await pectinBabelrc(pkg, cwd);
 
         expect(rc).toMatchInlineSnapshot(`
-Object {
-  "babelrc": false,
-  "exclude": "node_modules/**",
-  "presets": Array [
-    "@babel/env",
-  ],
-}
-`);
+            Object {
+              "babelrc": false,
+              "exclude": "node_modules/**",
+              "extensions": Array [
+                ".js",
+                ".jsx",
+                ".es6",
+                ".es",
+                ".mjs",
+                ".ts",
+                ".tsx",
+              ],
+              "presets": Array [
+                "@babel/env",
+              ],
+            }
+        `);
     });
 
     it('enables runtimeHelpers when @babel/runtime is a dependency', async () => {
@@ -116,14 +125,23 @@ Object {
         const rc = await pectinBabelrc(pkg, cwd);
 
         expect(rc).toMatchInlineSnapshot(`
-Object {
-  "babelrc": false,
-  "exclude": "node_modules/**",
-  "presets": Array [
-    "@babel/preset-env",
-  ],
-}
-`);
+            Object {
+              "babelrc": false,
+              "exclude": "node_modules/**",
+              "extensions": Array [
+                ".js",
+                ".jsx",
+                ".es6",
+                ".es",
+                ".mjs",
+                ".ts",
+                ".tsx",
+              ],
+              "presets": Array [
+                "@babel/preset-env",
+              ],
+            }
+        `);
     });
 
     it('finds .babelrc.js config', async () => {
@@ -141,14 +159,23 @@ Object {
         const rc = await pectinBabelrc(pkg, cwd);
 
         expect(rc).toMatchInlineSnapshot(`
-Object {
-  "babelrc": false,
-  "exclude": "node_modules/**",
-  "presets": Array [
-    "@babel/preset-env",
-  ],
-}
-`);
+            Object {
+              "babelrc": false,
+              "exclude": "node_modules/**",
+              "extensions": Array [
+                ".js",
+                ".jsx",
+                ".es6",
+                ".es",
+                ".mjs",
+                ".ts",
+                ".tsx",
+              ],
+              "presets": Array [
+                "@babel/preset-env",
+              ],
+            }
+        `);
     });
 
     it('finds pkg.babel config', async () => {
@@ -164,14 +191,23 @@ Object {
         const rc = await pectinBabelrc(pkg, cwd);
 
         expect(rc).toMatchInlineSnapshot(`
-Object {
-  "babelrc": false,
-  "exclude": "node_modules/**",
-  "presets": Array [
-    "@babel/preset-env",
-  ],
-}
-`);
+            Object {
+              "babelrc": false,
+              "exclude": "node_modules/**",
+              "extensions": Array [
+                ".js",
+                ".jsx",
+                ".es6",
+                ".es",
+                ".mjs",
+                ".ts",
+                ".tsx",
+              ],
+              "presets": Array [
+                "@babel/preset-env",
+              ],
+            }
+        `);
     });
 
     it('does not duplicate simple runtime transform', async () => {
@@ -452,66 +488,102 @@ Object {
         ]);
 
         expect(config1).toMatchInlineSnapshot(`
-Object {
-  "babelrc": false,
-  "exclude": "node_modules/**",
-  "plugins": Array [
-    "@babel/plugin-proposal-object-rest-spread",
-  ],
-  "presets": Array [
-    "@babel/preset-env",
-  ],
-}
-`);
+            Object {
+              "babelrc": false,
+              "exclude": "node_modules/**",
+              "extensions": Array [
+                ".js",
+                ".jsx",
+                ".es6",
+                ".es",
+                ".mjs",
+                ".ts",
+                ".tsx",
+              ],
+              "plugins": Array [
+                "@babel/plugin-proposal-object-rest-spread",
+              ],
+              "presets": Array [
+                "@babel/preset-env",
+              ],
+            }
+        `);
         expect(config2).toMatchInlineSnapshot(`
-Object {
-  "babelrc": false,
-  "exclude": "node_modules/**",
-  "plugins": Array [
-    "lodash",
-  ],
-  "presets": Array [
-    "@babel/env",
-  ],
-}
-`);
+            Object {
+              "babelrc": false,
+              "exclude": "node_modules/**",
+              "extensions": Array [
+                ".js",
+                ".jsx",
+                ".es6",
+                ".es",
+                ".mjs",
+                ".ts",
+                ".tsx",
+              ],
+              "plugins": Array [
+                "lodash",
+              ],
+              "presets": Array [
+                "@babel/env",
+              ],
+            }
+        `);
         expect(config3).toMatchInlineSnapshot(`
-Object {
-  "babelrc": false,
-  "exclude": "node_modules/**",
-  "plugins": Array [
-    Array [
-      "@babel/plugin-transform-runtime",
-      Object {
-        "useESModules": false,
-      },
-    ],
-  ],
-  "presets": Array [
-    "@babel/preset-env",
-  ],
-  "runtimeHelpers": true,
-}
-`);
+            Object {
+              "babelrc": false,
+              "exclude": "node_modules/**",
+              "extensions": Array [
+                ".js",
+                ".jsx",
+                ".es6",
+                ".es",
+                ".mjs",
+                ".ts",
+                ".tsx",
+              ],
+              "plugins": Array [
+                Array [
+                  "@babel/plugin-transform-runtime",
+                  Object {
+                    "useESModules": false,
+                  },
+                ],
+              ],
+              "presets": Array [
+                "@babel/preset-env",
+              ],
+              "runtimeHelpers": true,
+            }
+        `);
         expect(config4).toMatchInlineSnapshot(`
-Object {
-  "babelrc": false,
-  "exclude": "node_modules/**",
-  "plugins": Array [
-    "@babel/plugin-syntax-dynamic-import",
-    "@babel/plugin-proposal-object-rest-spread",
-    Array [
-      "@babel/plugin-transform-runtime",
-      Object {
-        "useESModules": true,
-      },
-    ],
-  ],
-  "presets": Array [
-    "@babel/preset-env",
-  ],
-  "runtimeHelpers": true,
-}
-`);
+            Object {
+              "babelrc": false,
+              "exclude": "node_modules/**",
+              "extensions": Array [
+                ".js",
+                ".jsx",
+                ".es6",
+                ".es",
+                ".mjs",
+                ".ts",
+                ".tsx",
+              ],
+              "plugins": Array [
+                "@babel/plugin-syntax-dynamic-import",
+                "@babel/plugin-proposal-object-rest-spread",
+                Array [
+                  "@babel/plugin-transform-runtime",
+                  Object {
+                    "useESModules": true,
+                  },
+                ],
+              ],
+              "presets": Array [
+                "@babel/preset-env",
+              ],
+              "runtimeHelpers": true,
+            }
+        `);
     });
 });
