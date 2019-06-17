@@ -108,6 +108,7 @@ module.exports = async function pectinBabelrc(pkg, cwd, output) {
     // rollup-specific babel config
     rc.babelrc = false;
     rc.exclude = 'node_modules/**';
+    rc.extensions = ['.js', '.jsx', '.es6', '.es', '.mjs', '.ts', '.tsx'];
 
     return rc;
 };

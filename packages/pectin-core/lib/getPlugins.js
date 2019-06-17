@@ -25,7 +25,7 @@ module.exports = async function getPlugins(pkg, cwd, output) {
         nodeResolve({
             preferBuiltins: true,
             // https://github.com/rollup/rollup-plugin-node-resolve/pull/151
-            extensions: ['.mjs', '.js', '.jsx', '.json', '.node'],
+            extensions: ['.mjs', '.js', '.jsx', '.json', '.node', '.ts', '.tsx'],
             // https://github.com/rollup/rollup-plugin-node-resolve/pull/182
             mainFields: [
                 'module',
