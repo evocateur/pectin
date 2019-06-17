@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.3.0](https://github.com/evocateur/pectin/compare/v3.2.0...v3.3.0) (2019-06-17)
+
+
+### Features
+
+* Ssupport typescript extensions ([#8](https://github.com/evocateur/pectin/issues/8)) ([b0ee9f9](https://github.com/evocateur/pectin/commit/b0ee9f9))
+
+
+
+
+
 # [3.2.0](https://github.com/evocateur/pectin/compare/v3.1.1...v3.2.0) (2019-05-03)
 
 
