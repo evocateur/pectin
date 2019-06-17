@@ -38,6 +38,7 @@ module.exports = async function getPlugins(pkg, cwd, output) {
         replace(
             Object.assign(env ? { 'process.env.NODE_ENV': JSON.stringify(env) } : {}, {
                 'process.env.BROWSER': JSON.stringify(output.browser || false),
+                'process.env.VERSION': JSON.stringify(pkg.version),
             })
         ),
         // https://github.com/rollup/rollup-plugin-json#usage

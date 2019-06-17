@@ -553,6 +553,30 @@ return main;
 `);
     });
 
+    it('interpolates process.env.VERSION with pkg.version', async () => {
+        const pkg = {
+            name: 'interpolates-version',
+            main: 'dist/index.js',
+            version: '1.2.3-alpha.0+deadbeef',
+        };
+        const cwd = createFixture({
+            'package.json': File(pkg),
+            'src': Dir({
+                'index.js': File(`
+export default function main() {
+    console.log(process.env.VERSION);
+}
+                `),
+            }),
+        });
+
+        const configs = await pectinCore(pkg, { cwd });
+        const results = await generateResults(configs);
+        const [cjs] = results;
+
+        expect(cjs.code).toMatch('console.log("1.2.3-alpha.0+deadbeef");');
+    });
+
     it('works all together', async () => {
         const pkg = {
             name: 'integration',
