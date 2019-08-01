@@ -3,6 +3,125 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 4.0.0 (2019-08-01)
+
+
+### Features
+
+* Upgrade `rollup-plugin-commonjs` & `rollup-plugin-node-resolve` ([979d7ec](https://github.com/evocateur/pectin/commit/979d7ec)), closes [/github.com/rollup/rollup-plugin-commonjs/blob/master/CHANGELOG.md#1000](https://github.com//github.com/rollup/rollup-plugin-commonjs/blob/master/CHANGELOG.md/issues/1000) [/github.com/rollup/rollup-plugin-node-resolve/blob/master/CHANGELOG.md#500-2019-05-15](https://github.com//github.com/rollup/rollup-plugin-node-resolve/blob/master/CHANGELOG.md/issues/500-2019-05-15) [/github.com/rollup/rollup/blob/master/CHANGELOG.md#1120](https://github.com//github.com/rollup/rollup/blob/master/CHANGELOG.md/issues/1120)
+
+
+### BREAKING CHANGES
+
+* The minimum version of the `rollup` peer dependency is now `^1.12.0`.
+
+
+
+# 3.4.0 (2019-08-01)
+
+
+
+# 3.3.0 (2019-06-17)
+
+
+
+# 3.2.0 (2019-05-03)
+
+
+
+# 3.1.0 (2019-04-09)
+
+
+
+## 3.0.1 (2019-01-14)
+
+
+
+# 3.0.0 (2019-01-01)
+
+
+### Features
+
+* Rollup 1.0 🎉 ([938db4e](https://github.com/evocateur/pectin/commit/938db4e))
+* **core:** Simplify API ([0c74c73](https://github.com/evocateur/pectin/commit/0c74c73))
+
+
+### BREAKING CHANGES
+
+* **core:** There is only a default export on pectin-core now, load your own package.json.
+* Rollup 0.x is no longer supported.
+
+
+
+# 2.6.0 (2018-12-27)
+
+
+### Features
+
+* **core:** Enable chunking for CommonJS ([480f20d](https://github.com/evocateur/pectin/commit/480f20d))
+
+
+
+## 2.5.1 (2018-11-16)
+
+
+
+# 2.5.0 (2018-11-15)
+
+
+
+## 2.4.1 (2018-11-15)
+
+
+
+# 2.4.0 (2018-11-14)
+
+
+
+# 2.3.0 (2018-11-13)
+
+
+### Features
+
+* **rollup-config-pectin:** Use advanced multi-config for better ESM output ([92be659](https://github.com/evocateur/pectin/commit/92be659))
+
+
+
+# 2.2.0 (2018-11-07)
+
+
+
+## 2.1.2 (2018-10-19)
+
+
+
+## 2.1.1 (2018-10-16)
+
+
+
+# 2.1.0 (2018-10-16)
+
+
+
+# 2.0.0 (2018-10-10)
+
+
+
+# 1.3.0 (2018-10-10)
+
+
+
+# 1.0.0 (2018-08-31)
+
+
+### Features
+
+* open source ([ce2d5cb](https://github.com/evocateur/pectin/commit/ce2d5cb))
+
+
+
+
+
 # [3.4.0](https://github.com/evocateur/pectin/compare/v3.3.0...v3.4.0) (2019-08-01)
 
 **Note:** Version bump only for package rollup-config-pectin
