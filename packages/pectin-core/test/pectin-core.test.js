@@ -223,7 +223,7 @@ export default function main() {
 'use strict';
 
 function main() {
-  return Promise.resolve(require('./chunky-bacon.cjs.js'));
+  return new Promise(function (resolve) { resolve(require('./chunky-bacon.cjs.js')); });
 }
 
 module.exports = main;
