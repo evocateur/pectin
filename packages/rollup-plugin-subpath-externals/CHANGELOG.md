@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.4.0](https://github.com/evocateur/pectin/compare/v3.3.0...v3.4.0) (2019-08-01)
+
+
+### Features
+
+* **deps:** Upgrade dependencies ([923f92f](https://github.com/evocateur/pectin/commit/923f92f))
+
+
+
+
+
 # [3.0.0](https://github.com/evocateur/pectin/compare/v2.6.0...v3.0.0) (2019-01-01)
 
 
