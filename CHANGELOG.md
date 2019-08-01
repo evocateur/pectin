@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# NOTE
+
+Since v3.4.0, packages in this repository are versioned independently.
+
+Please consult the [releases](https://github.com/evocateur/pectin/releases) page to read subseqent changelogs.
+
 # [3.4.0](https://github.com/evocateur/pectin/compare/v3.3.0...v3.4.0) (2019-08-01)
 
 

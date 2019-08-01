@@ -3,7 +3,7 @@
     "publish": {
       "allowBranch": "latest",
       "conventionalCommits": true,
-      "message": "chore(release): %s"
+      "message": "chore(release): Publish packages"
     }
   },
   "ignoreChanges": [
@@ -15,5 +15,5 @@
   "packages": [
     "packages/*"
   ],
-  "version": "3.4.0"
+  "version": "independent"
 }
