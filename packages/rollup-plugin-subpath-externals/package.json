@@ -30,6 +30,6 @@
   },
   "dependencies": {
     "builtin-modules": "^3.0.0",
-    "dot-prop": "^4.2.0"
+    "dot-prop": "^5.1.0"
   }
 }

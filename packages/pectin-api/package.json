@@ -36,8 +36,8 @@
     "@lerna/batch-packages": "^3.0.0",
     "@lerna/project": "^3.0.0",
     "@pectin/core": "file:../pectin-core",
-    "dot-prop": "^4.2.0",
-    "globby": "^8.0.1",
-    "p-map": "^2.0.0"
+    "dot-prop": "^5.1.0",
+    "globby": "^9.2.0",
+    "p-map": "^3.0.0"
   }
 }
