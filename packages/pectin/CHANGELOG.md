@@ -12,43 +12,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-# 3.4.0 (2019-08-01)
-
-
-### Features
-
-* **deps:** Upgrade dependencies ([923f92f](https://github.com/evocateur/pectin/commit/923f92f))
-
-
-
-# 3.3.0 (2019-06-17)
-
-
-
-# 3.2.0 (2019-05-03)
-
-
-
-## 3.1.1 (2019-04-09)
-
-
-### Bug Fixes
-
-* **cli:** Rename homepage, too ([d89fc16](https://github.com/evocateur/pectin/commit/d89fc16))
-
-
-
-# 3.1.0 (2019-04-09)
-
-
-### Features
-
-* **pectin:** Rename CLI `@pectin/cli` -> `pectin` ([0a81cfe](https://github.com/evocateur/pectin/commit/0a81cfe))
-
-
-
-
-
 # [3.4.0](https://github.com/evocateur/pectin/compare/v3.3.0...v3.4.0) (2019-08-01)
 
 
