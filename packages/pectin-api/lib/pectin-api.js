@@ -125,7 +125,8 @@ async function isUpToDate(opts, config) {
     }
 
     // gather fs.Stat objects for mtime comparison
-    const fileStats = await globby(matchers, { cwd, stats: true });
+    const results = await globby(matchers, { cwd, stats: true });
+    const fileStats = results.map(obj => obj.stats);
     const lastBuilt = outputStat.mtime.getTime();
 
     return fileStats.every(fileStat => fileStat.mtime.getTime() <= lastBuilt);

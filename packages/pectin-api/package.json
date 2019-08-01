@@ -37,7 +37,7 @@
     "@lerna/project": "^3.0.0",
     "@pectin/core": "file:../pectin-core",
     "dot-prop": "^5.1.0",
-    "globby": "^9.2.0",
+    "globby": "^10.0.1",
     "p-map": "^3.0.0"
   }
 }
