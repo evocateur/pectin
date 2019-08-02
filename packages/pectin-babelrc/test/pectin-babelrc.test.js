@@ -423,6 +423,28 @@ describe('pectin-babelrc', () => {
         expect.assertions(1);
     });
 
+    it('throws an error when no babel config found', async () => {
+        const pkg = {
+            name: 'no-babel-config',
+            dependencies: {
+                lodash: '^4.17.4',
+            },
+        };
+        const cwd = createFixture({
+            'package.json': File(pkg),
+        });
+
+        try {
+            await pectinBabelrc(pkg, cwd);
+        } catch (err) {
+            expect(err.message).toMatchInlineSnapshot(
+                `"Babel configuration is required for no-babel-config, but no config file was found."`
+            );
+        }
+
+        expect.assertions(1);
+    });
+
     it('works all together', async () => {
         const pkg1 = {
             name: 'pkg1',
