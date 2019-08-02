@@ -66,7 +66,15 @@ function ensureDynamicImportSyntax(rc) {
 
 module.exports = async function pectinBabelrc(pkg, cwd, output) {
     const { format = 'cjs' } = output || {};
-    const { config, filepath } = await explorer.search(cwd);
+    const searchResult = await explorer.search(cwd);
+
+    if (searchResult === null) {
+        throw new Error(
+            `Babel configuration is required for ${pkg.name}, but no config file was found.`
+        );
+    }
+
+    const { config, filepath } = searchResult;
     const deps = new Set(Object.keys(pkg.dependencies || {}));
 
     // don't mutate (potentially) cached config
