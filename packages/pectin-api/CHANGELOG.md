@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.1](https://github.com/evocateur/pectin/compare/@pectin/api@4.0.0...@pectin/api@4.0.1) (2019-08-02)
+
+
+### Bug Fixes
+
+* **api:** Log errors caught during config generation instead of completely swallowing them ([26ba75b](https://github.com/evocateur/pectin/commit/26ba75b))
+
+
+
+
+
 # 4.0.0 (2019-08-01)
 
 
