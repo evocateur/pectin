@@ -64,6 +64,10 @@ async function generateConfig(pkg, opts) {
         }
     } catch (ex) {
         // skip packages that throw errors (e.g., missing pkg.main)
+
+        // eslint-disable-next-line no-console
+        console.error(ex);
+
         // TODO: re-throw if this is an _unexpected_ error
         return null;
     }
