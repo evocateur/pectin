@@ -9,8 +9,8 @@
   "ignoreChanges": [
     "**/__tests__/**",
     "**/test/**",
-    "*.test.js",
-    "*.md"
+    "**/*.test.js",
+    "**/*.md"
   ],
   "packages": [
     "packages/*"
