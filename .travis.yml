@@ -2,6 +2,7 @@
 if: tag IS blank
 language: node_js
 node_js:
+  - '12'
   - '10'
   - '8'
 cache:
@@ -17,5 +18,6 @@ sudo: false
 env:
   global:
     - NO_UPDATE_NOTIFIER=1
+    - HUSKY_SKIP_INSTALL=1
 matrix:
   fast_finish: true
