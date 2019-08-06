@@ -151,14 +151,25 @@ module.exports = app;
         };
         const cwd = createFixture({
             'package.json': File(pkg),
+            'src': Dir({
+                'index.js': File(`export default 'cwd';`),
+            }),
         });
 
         process.chdir(cwd);
 
-        const [config] = await pectinCore(pkg, { cwd });
-        // we can't build because the chdir just broke node_modules references
+        const configs = await pectinCore(pkg /* , { cwd } */);
+        const results = await generateResults(configs);
+        const [entry] = results;
 
-        expect(config).toHaveProperty('input', path.join(cwd, 'src/index.js'));
+        expect(entry.code).toMatchInlineSnapshot(`
+            "'use strict';
+
+            var index = 'cwd';
+
+            module.exports = index;
+            "
+        `);
     });
 
     it('throws an error when no pkg.main supplied', async () => {
