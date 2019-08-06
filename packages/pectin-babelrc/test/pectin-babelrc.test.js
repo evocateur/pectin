@@ -58,6 +58,7 @@ describe('pectin-babelrc', () => {
                 ".ts",
                 ".tsx",
               ],
+              "plugins": Array [],
               "presets": Array [
                 "@babel/env",
               ],
@@ -137,6 +138,7 @@ describe('pectin-babelrc', () => {
                 ".ts",
                 ".tsx",
               ],
+              "plugins": Array [],
               "presets": Array [
                 "@babel/preset-env",
               ],
@@ -171,6 +173,7 @@ describe('pectin-babelrc', () => {
                 ".ts",
                 ".tsx",
               ],
+              "plugins": Array [],
               "presets": Array [
                 "@babel/preset-env",
               ],
@@ -203,6 +206,7 @@ describe('pectin-babelrc', () => {
                 ".ts",
                 ".tsx",
               ],
+              "plugins": Array [],
               "presets": Array [
                 "@babel/preset-env",
               ],
@@ -220,7 +224,7 @@ describe('pectin-babelrc', () => {
         const cwd = createFixture({
             '.babelrc': File({
                 presets: ['@babel/preset-env'],
-                plugins: ['@babel/transform-runtime', 'lodash'],
+                plugins: ['@babel/plugin-transform-runtime', 'lodash'],
             }),
             'package.json': File(pkg),
         });
@@ -261,7 +265,7 @@ describe('pectin-babelrc', () => {
             '@babel/plugin-syntax-dynamic-import',
             'graphql-tag',
             [
-                '@babel/plugin-transform-runtime',
+                '@babel/transform-runtime',
                 {
                     corejs: true,
                     useESModules: true,
@@ -281,7 +285,7 @@ describe('pectin-babelrc', () => {
             '.babelrc': File({
                 presets: ['@babel/env'],
                 // admittedly weird...
-                plugins: [['@babel/transform-runtime']],
+                plugins: [['@babel/plugin-transform-runtime']],
             }),
             'package.json': File(pkg),
         });

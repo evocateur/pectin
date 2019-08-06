@@ -1,6 +1,7 @@
 'use strict';
 
 const path = require('path');
+const cloneDeep = require('clone-deep');
 const cosmiconfig = require('cosmiconfig');
 
 const explorer = cosmiconfig('babel', {
@@ -24,44 +25,26 @@ function hasAdvancedTransform(plugin) {
 }
 
 function ensureRuntimeHelpers(rc, entryOptions) {
-    // avoid mutating cached array
-    const plugins = (rc.plugins || []).slice();
+    if (rc.plugins.some(hasSimpleTransform)) {
+        const idx = rc.plugins.findIndex(hasSimpleTransform);
+        const name = rc.plugins[idx];
 
-    if (plugins.some(hasSimpleTransform)) {
-        const idx = plugins.findIndex(hasSimpleTransform);
+        rc.plugins.splice(idx, 1, [name, entryOptions]);
+    } else if (rc.plugins.some(hasAdvancedTransform)) {
+        const idx = rc.plugins.findIndex(hasAdvancedTransform);
+        const [name, config = {}] = rc.plugins[idx];
 
-        plugins.splice(idx, 1, ['@babel/plugin-transform-runtime', entryOptions]);
-    } else if (plugins.some(hasAdvancedTransform)) {
-        const idx = plugins.findIndex(hasAdvancedTransform);
-        const cfg = plugins[idx];
-
-        plugins.splice(idx, 1, [
-            '@babel/plugin-transform-runtime',
-            Object.assign(cfg.length > 1 ? cfg[1] : {}, entryOptions),
-        ]);
+        rc.plugins.splice(idx, 1, [name, { ...config, ...entryOptions }]);
     } else {
-        plugins.push(['@babel/plugin-transform-runtime', entryOptions]);
+        rc.plugins.push(['@babel/plugin-transform-runtime', entryOptions]);
     }
 
-    Object.assign(rc, {
-        runtimeHelpers: true,
-        plugins,
-    });
+    // eslint-disable-next-line no-param-reassign
+    rc.runtimeHelpers = true;
 }
 
 function hasDynamicImportSyntax(plugin) {
     return typeof plugin === 'string' && /@babel\/(plugin-)?syntax-dynamic-import/.test(plugin);
-}
-
-function ensureDynamicImportSyntax(rc) {
-    // avoid concatenating falsey value
-    const plugins = rc.plugins || [];
-
-    if (!plugins.some(hasDynamicImportSyntax)) {
-        Object.assign(rc, {
-            plugins: ['@babel/plugin-syntax-dynamic-import'].concat(plugins),
-        });
-    }
 }
 
 module.exports = async function pectinBabelrc(pkg, cwd, output) {
@@ -78,7 +61,12 @@ module.exports = async function pectinBabelrc(pkg, cwd, output) {
     const deps = new Set(Object.keys(pkg.dependencies || {}));
 
     // don't mutate (potentially) cached config
-    const rc = Object.assign({}, config);
+    const rc = cloneDeep(config);
+
+    // always ensure plugins array exists
+    if (!rc.plugins) {
+        rc.plugins = [];
+    }
 
     // enable runtime transform when @babel/runtime found in dependencies
     if (deps.has('@babel/runtime')) {
@@ -98,8 +86,8 @@ module.exports = async function pectinBabelrc(pkg, cwd, output) {
     }
 
     // ensure dynamic import syntax is available
-    if (format === 'esm') {
-        ensureDynamicImportSyntax(rc);
+    if (format === 'esm' && !rc.plugins.some(hasDynamicImportSyntax)) {
+        rc.plugins.unshift('@babel/plugin-syntax-dynamic-import');
     }
 
     // babel 7 doesn't need `{ modules: false }`, just verify a preset exists
