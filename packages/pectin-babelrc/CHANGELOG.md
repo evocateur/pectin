@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.3.2](https://github.com/evocateur/pectin/compare/@pectin/babelrc@3.3.1...@pectin/babelrc@3.3.2) (2019-08-06)
+
+
+### Bug Fixes
+
+* **babelrc:** Assign explicit cwd to rollup-specific config ([e8fb759](https://github.com/evocateur/pectin/commit/e8fb759))
+* **babelrc:** Never mutate require-cached config ([88da621](https://github.com/evocateur/pectin/commit/88da621))
+
+
+
+
+
 ## [3.3.1](https://github.com/evocateur/pectin/compare/@pectin/babelrc@3.3.0...@pectin/babelrc@3.3.1) (2019-08-02)
 
 
