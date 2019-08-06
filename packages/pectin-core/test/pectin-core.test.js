@@ -7,7 +7,14 @@ const tempy = require('tempy');
 const pMap = require('p-map');
 const pectinCore = require('../');
 
-const { Dir, File } = Tacks;
+const { Dir, File, Symlink } = Tacks;
+
+// avoid polluting other test state
+const REPO_ROOT = path.resolve('.');
+
+afterEach(() => {
+    process.chdir(REPO_ROOT);
+});
 
 function createFixture(pkgSpec) {
     const cwd = tempy.directory();
@@ -19,6 +26,8 @@ function createFixture(pkgSpec) {
                 presets: ['@babel/env', '@babel/preset-react'],
                 plugins: ['@babel/plugin-syntax-dynamic-import'],
             }),
+            // spicy symlink necessary due to explicit cwd config
+            'node_modules': Symlink(path.relative(cwd, path.join(REPO_ROOT, 'node_modules'))),
             ...pkgSpec,
         })
     );
@@ -42,13 +51,6 @@ async function generateResults(configs) {
 }
 
 describe('pectin-core', () => {
-    // avoid polluting other test state
-    const REPO_ROOT = path.resolve('.');
-
-    afterEach(() => {
-        process.chdir(REPO_ROOT);
-    });
-
     it('inlines SVG via pkg.rollup.inlineSVG', async () => {
         const pkg = {
             name: 'inline-svg-data-uri',
