@@ -15,14 +15,18 @@ function createFixture(spec) {
     return cwd;
 }
 
-const REPO_ROOT = path.resolve(__dirname, '../../..');
+// tempy creates subdirectories with hexadecimal names that are 32 characters long
+const TEMP_DIR_REGEXP = /([^\s"]*[\\/][0-9a-f]{32})([^\s"]*)/g;
+// the excluded quotes are due to other snapshot serializers mutating the raw input
 
 expect.addSnapshotSerializer({
     test(val) {
-        return typeof val === 'string' && val.indexOf(REPO_ROOT) > -1;
+        return typeof val === 'string' && TEMP_DIR_REGEXP.test(val);
     },
     serialize(val, config, indentation, depth) {
-        const str = val.replace(REPO_ROOT, '<REPO_ROOT>');
+        const str = val.replace(TEMP_DIR_REGEXP, (match, cwd, subPath) =>
+            path.join('<REPO_ROOT>', subPath)
+        );
 
         // top-level strings don't need quotes, but nested ones do (object properties, etc)
         return depth ? `"${str}"` : str;
@@ -48,6 +52,7 @@ describe('pectin-babelrc', () => {
         expect(rc).toMatchInlineSnapshot(`
             Object {
               "babelrc": false,
+              "cwd": "<REPO_ROOT>",
               "exclude": "node_modules/**",
               "extensions": Array [
                 ".js",
@@ -128,6 +133,7 @@ describe('pectin-babelrc', () => {
         expect(rc).toMatchInlineSnapshot(`
             Object {
               "babelrc": false,
+              "cwd": "<REPO_ROOT>",
               "exclude": "node_modules/**",
               "extensions": Array [
                 ".js",
@@ -163,6 +169,7 @@ describe('pectin-babelrc', () => {
         expect(rc).toMatchInlineSnapshot(`
             Object {
               "babelrc": false,
+              "cwd": "<REPO_ROOT>",
               "exclude": "node_modules/**",
               "extensions": Array [
                 ".js",
@@ -196,6 +203,7 @@ describe('pectin-babelrc', () => {
         expect(rc).toMatchInlineSnapshot(`
             Object {
               "babelrc": false,
+              "cwd": "<REPO_ROOT>",
               "exclude": "node_modules/**",
               "extensions": Array [
                 ".js",
@@ -516,6 +524,7 @@ describe('pectin-babelrc', () => {
         expect(config1).toMatchInlineSnapshot(`
             Object {
               "babelrc": false,
+              "cwd": "<REPO_ROOT>/packages/pkg1",
               "exclude": "node_modules/**",
               "extensions": Array [
                 ".js",
@@ -537,6 +546,7 @@ describe('pectin-babelrc', () => {
         expect(config2).toMatchInlineSnapshot(`
             Object {
               "babelrc": false,
+              "cwd": "<REPO_ROOT>/packages/pkg2",
               "exclude": "node_modules/**",
               "extensions": Array [
                 ".js",
@@ -558,6 +568,7 @@ describe('pectin-babelrc', () => {
         expect(config3).toMatchInlineSnapshot(`
             Object {
               "babelrc": false,
+              "cwd": "<REPO_ROOT>/packages/pkg3",
               "exclude": "node_modules/**",
               "extensions": Array [
                 ".js",
@@ -585,6 +596,7 @@ describe('pectin-babelrc', () => {
         expect(config4).toMatchInlineSnapshot(`
             Object {
               "babelrc": false,
+              "cwd": "<REPO_ROOT>/packages/pkg4",
               "exclude": "node_modules/**",
               "extensions": Array [
                 ".js",
