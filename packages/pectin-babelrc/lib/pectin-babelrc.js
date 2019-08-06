@@ -16,12 +16,16 @@ const explorer = cosmiconfig('babel', {
     ],
 });
 
+function isRuntimeTransform(plugin) {
+    return /@babel\/(plugin-)?transform-runtime/.test(plugin);
+}
+
 function hasSimpleTransform(plugin) {
-    return typeof plugin === 'string' && /@babel\/(plugin-)?transform-runtime/.test(plugin);
+    return typeof plugin === 'string' && isRuntimeTransform(plugin);
 }
 
 function hasAdvancedTransform(plugin) {
-    return Array.isArray(plugin) && /@babel\/(plugin-)?transform-runtime/.test(plugin[0]);
+    return Array.isArray(plugin) && isRuntimeTransform(plugin[0]);
 }
 
 function ensureRuntimeHelpers(rc, entryOptions) {
