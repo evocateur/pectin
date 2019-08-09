@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.5.3](https://github.com/evocateur/pectin/compare/pectin@3.5.2...pectin@3.5.3) (2019-08-09)
+
+
+### Bug Fixes
+
+* **cli:** Resolve rollup bin from package metadata instead of hard-coded subpath ([dca84fc](https://github.com/evocateur/pectin/commit/dca84fc))
+
+
+
+
+
 ## [3.5.2](https://github.com/evocateur/pectin/compare/pectin@3.5.1...pectin@3.5.2) (2019-08-06)
 
 **Note:** Version bump only for package pectin
