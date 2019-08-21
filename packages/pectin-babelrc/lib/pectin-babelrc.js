@@ -3,6 +3,7 @@
 const path = require('path');
 const cloneDeep = require('clone-deep');
 const cosmiconfig = require('cosmiconfig');
+const resolveFrom = require('resolve-from');
 
 const explorer = cosmiconfig('babel', {
     // we cannot cache transform because per-package dependencies affect result
@@ -26,6 +27,18 @@ function hasSimpleTransform(plugin) {
 
 function hasAdvancedTransform(plugin) {
     return Array.isArray(plugin) && isRuntimeTransform(plugin[0]);
+}
+
+// @see https://github.com/babel/babel/issues/10261
+// @see https://github.com/babel/babel/pull/10325
+function resolveDependencyVersion(cwd, depName) {
+    // we can't do a straight-up `require('@babel/runtime/package.json')`
+    // because that doesn't respect the target package's cwd
+    const pkgPath = resolveFrom(cwd, `${depName}/package.json`);
+
+    // istanbul ignore next: undefined doesn't matter, we tried our best
+    // eslint-disable-next-line global-require, zillow/import/no-dynamic-require
+    return pkgPath ? require(pkgPath).version : undefined;
 }
 
 function ensureRuntimeHelpers(rc, entryOptions) {
@@ -76,15 +89,18 @@ module.exports = async function pectinBabelrc(pkg, cwd, output) {
     if (deps.has('@babel/runtime')) {
         ensureRuntimeHelpers(rc, {
             useESModules: format === 'esm',
+            version: resolveDependencyVersion(cwd, '@babel/runtime'),
         });
     } else if (deps.has('@babel/runtime-corejs2')) {
         ensureRuntimeHelpers(rc, {
             useESModules: format === 'esm',
+            version: resolveDependencyVersion(cwd, '@babel/runtime-corejs2'),
             corejs: 2,
         });
     } else if (deps.has('@babel/runtime-corejs3')) {
         ensureRuntimeHelpers(rc, {
             useESModules: format === 'esm',
+            version: resolveDependencyVersion(cwd, '@babel/runtime-corejs3'),
             corejs: 3,
         });
     }

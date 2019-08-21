@@ -5,12 +5,24 @@ const Tacks = require('tacks');
 const tempy = require('tempy');
 const pectinBabelrc = require('../');
 
-const { Dir, File } = Tacks;
+const { Dir, File, Symlink } = Tacks;
+
+// spicy symlink prep
+const REPO_ROOT = path.resolve('.');
+const BABEL_RUNTIME_DEFAULT_VERSION = require('@babel/runtime/package.json').version;
+const BABEL_RUNTIME_COREJS2_VERSION = require('@babel/runtime-corejs2/package.json').version;
+const BABEL_RUNTIME_COREJS3_VERSION = require('@babel/runtime-corejs3/package.json').version;
 
 function createFixture(spec) {
     const cwd = tempy.directory();
 
-    new Tacks(Dir({ ...spec })).create(cwd);
+    new Tacks(
+        Dir({
+            // spicy symlink necessary due to potential runtime package resolution
+            node_modules: Symlink(path.relative(cwd, path.join(REPO_ROOT, 'node_modules'))),
+            ...spec,
+        })
+    ).create(cwd);
 
     return cwd;
 }
@@ -240,7 +252,10 @@ describe('pectin-babelrc', () => {
 
         expect(opts).toHaveProperty('plugins', [
             '@babel/plugin-syntax-dynamic-import',
-            ['@babel/plugin-transform-runtime', { useESModules: true }],
+            [
+                '@babel/plugin-transform-runtime',
+                { useESModules: true, version: BABEL_RUNTIME_DEFAULT_VERSION },
+            ],
             'lodash',
         ]);
     });
@@ -277,6 +292,7 @@ describe('pectin-babelrc', () => {
                 {
                     corejs: true,
                     useESModules: true,
+                    version: BABEL_RUNTIME_DEFAULT_VERSION,
                 },
             ],
         ]);
@@ -301,7 +317,10 @@ describe('pectin-babelrc', () => {
 
         expect(opts).toHaveProperty('plugins', [
             '@babel/plugin-syntax-dynamic-import',
-            ['@babel/plugin-transform-runtime', { useESModules: true }],
+            [
+                '@babel/plugin-transform-runtime',
+                { useESModules: true, version: BABEL_RUNTIME_DEFAULT_VERSION },
+            ],
         ]);
     });
 
@@ -322,7 +341,10 @@ describe('pectin-babelrc', () => {
 
         expect(opts).toHaveProperty('plugins', [
             '@babel/plugin-syntax-dynamic-import',
-            ['@babel/plugin-transform-runtime', { useESModules: true, corejs: 2 }],
+            [
+                '@babel/plugin-transform-runtime',
+                { useESModules: true, corejs: 2, version: BABEL_RUNTIME_COREJS2_VERSION },
+            ],
         ]);
     });
 
@@ -343,7 +365,10 @@ describe('pectin-babelrc', () => {
 
         expect(opts).toHaveProperty('plugins', [
             '@babel/plugin-syntax-dynamic-import',
-            ['@babel/plugin-transform-runtime', { useESModules: true, corejs: 3 }],
+            [
+                '@babel/plugin-transform-runtime',
+                { useESModules: true, corejs: 3, version: BABEL_RUNTIME_COREJS3_VERSION },
+            ],
         ]);
     });
 
@@ -584,6 +609,7 @@ describe('pectin-babelrc', () => {
                   "@babel/plugin-transform-runtime",
                   Object {
                     "useESModules": false,
+                    "version": "${BABEL_RUNTIME_DEFAULT_VERSION}",
                   },
                 ],
               ],
@@ -614,6 +640,7 @@ describe('pectin-babelrc', () => {
                   "@babel/plugin-transform-runtime",
                   Object {
                     "useESModules": true,
+                    "version": "${BABEL_RUNTIME_DEFAULT_VERSION}",
                   },
                 ],
               ],
