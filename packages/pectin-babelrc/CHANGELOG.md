@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.3.3](https://github.com/evocateur/pectin/compare/@pectin/babelrc@3.3.2...@pectin/babelrc@3.3.3) (2019-08-21)
+
+
+### Bug Fixes
+
+* **babelrc:** Provide version to runtime transform config ([16affba](https://github.com/evocateur/pectin/commit/16affba))
+
+
+
+
+
 ## [3.3.2](https://github.com/evocateur/pectin/compare/@pectin/babelrc@3.3.1...@pectin/babelrc@3.3.2) (2019-08-06)
 
 
