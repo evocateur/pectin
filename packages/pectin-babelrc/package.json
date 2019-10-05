@@ -1,6 +1,6 @@
 {
   "name": "@pectin/babelrc",
-  "version": "3.2.0",
+  "version": "3.3.3",
   "description": "Locate and prepare custom babel config for rollup-plugin-babel",
   "keywords": [
     "rollup",
@@ -32,6 +32,8 @@
   "dependencies": {
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/plugin-transform-runtime": "^7.2.0",
-    "cosmiconfig": "^5.2.0"
+    "clone-deep": "^4.0.1",
+    "cosmiconfig": "^5.2.0",
+    "resolve-from": "^5.0.0"
   }
 }

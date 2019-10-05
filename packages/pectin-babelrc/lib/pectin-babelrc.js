@@ -1,7 +1,9 @@
 'use strict';
 
 const path = require('path');
+const cloneDeep = require('clone-deep');
 const cosmiconfig = require('cosmiconfig');
+const resolveFrom = require('resolve-from');
 
 const explorer = cosmiconfig('babel', {
     // we cannot cache transform because per-package dependencies affect result
@@ -15,83 +17,97 @@ const explorer = cosmiconfig('babel', {
     ],
 });
 
+function isRuntimeTransform(plugin) {
+    return /@babel\/(plugin-)?transform-runtime/.test(plugin);
+}
+
 function hasSimpleTransform(plugin) {
-    return typeof plugin === 'string' && /@babel\/(plugin-)?transform-runtime/.test(plugin);
+    return typeof plugin === 'string' && isRuntimeTransform(plugin);
 }
 
 function hasAdvancedTransform(plugin) {
-    return Array.isArray(plugin) && /@babel\/(plugin-)?transform-runtime/.test(plugin[0]);
+    return Array.isArray(plugin) && isRuntimeTransform(plugin[0]);
+}
+
+// @see https://github.com/babel/babel/issues/10261
+// @see https://github.com/babel/babel/pull/10325
+function resolveDependencyVersion(cwd, depName) {
+    // we can't do a straight-up `require('@babel/runtime/package.json')`
+    // because that doesn't respect the target package's cwd
+    const pkgPath = resolveFrom(cwd, `${depName}/package.json`);
+
+    // istanbul ignore next: undefined doesn't matter, we tried our best
+    // eslint-disable-next-line global-require, zillow/import/no-dynamic-require
+    return pkgPath ? require(pkgPath).version : undefined;
 }
 
 function ensureRuntimeHelpers(rc, entryOptions) {
-    // avoid mutating cached array
-    const plugins = (rc.plugins || []).slice();
+    if (rc.plugins.some(hasSimpleTransform)) {
+        const idx = rc.plugins.findIndex(hasSimpleTransform);
+        const name = rc.plugins[idx];
 
-    if (plugins.some(hasSimpleTransform)) {
-        const idx = plugins.findIndex(hasSimpleTransform);
+        rc.plugins.splice(idx, 1, [name, entryOptions]);
+    } else if (rc.plugins.some(hasAdvancedTransform)) {
+        const idx = rc.plugins.findIndex(hasAdvancedTransform);
+        const [name, config = {}] = rc.plugins[idx];
 
-        plugins.splice(idx, 1, ['@babel/plugin-transform-runtime', entryOptions]);
-    } else if (plugins.some(hasAdvancedTransform)) {
-        const idx = plugins.findIndex(hasAdvancedTransform);
-        const cfg = plugins[idx];
-
-        plugins.splice(idx, 1, [
-            '@babel/plugin-transform-runtime',
-            Object.assign(cfg.length > 1 ? cfg[1] : {}, entryOptions),
-        ]);
+        rc.plugins.splice(idx, 1, [name, { ...config, ...entryOptions }]);
     } else {
-        plugins.push(['@babel/plugin-transform-runtime', entryOptions]);
+        rc.plugins.push(['@babel/plugin-transform-runtime', entryOptions]);
     }
 
-    Object.assign(rc, {
-        runtimeHelpers: true,
-        plugins,
-    });
+    // eslint-disable-next-line no-param-reassign
+    rc.runtimeHelpers = true;
 }
 
 function hasDynamicImportSyntax(plugin) {
     return typeof plugin === 'string' && /@babel\/(plugin-)?syntax-dynamic-import/.test(plugin);
 }
 
-function ensureDynamicImportSyntax(rc) {
-    // avoid concatenating falsey value
-    const plugins = rc.plugins || [];
-
-    if (!plugins.some(hasDynamicImportSyntax)) {
-        Object.assign(rc, {
-            plugins: ['@babel/plugin-syntax-dynamic-import'].concat(plugins),
-        });
-    }
-}
-
 module.exports = async function pectinBabelrc(pkg, cwd, output) {
     const { format = 'cjs' } = output || {};
-    const { config, filepath } = await explorer.search(cwd);
+    const searchResult = await explorer.search(cwd);
+
+    if (searchResult === null) {
+        throw new Error(
+            `Babel configuration is required for ${pkg.name}, but no config file was found.`
+        );
+    }
+
+    const { config, filepath } = searchResult;
     const deps = new Set(Object.keys(pkg.dependencies || {}));
 
     // don't mutate (potentially) cached config
-    const rc = Object.assign({}, config);
+    const rc = cloneDeep(config);
+
+    // always ensure plugins array exists
+    if (!rc.plugins) {
+        rc.plugins = [];
+    }
 
     // enable runtime transform when @babel/runtime found in dependencies
     if (deps.has('@babel/runtime')) {
         ensureRuntimeHelpers(rc, {
             useESModules: format === 'esm',
+            version: resolveDependencyVersion(cwd, '@babel/runtime'),
         });
     } else if (deps.has('@babel/runtime-corejs2')) {
         ensureRuntimeHelpers(rc, {
             useESModules: format === 'esm',
+            version: resolveDependencyVersion(cwd, '@babel/runtime-corejs2'),
             corejs: 2,
         });
     } else if (deps.has('@babel/runtime-corejs3')) {
         ensureRuntimeHelpers(rc, {
             useESModules: format === 'esm',
+            version: resolveDependencyVersion(cwd, '@babel/runtime-corejs3'),
             corejs: 3,
         });
     }
 
     // ensure dynamic import syntax is available
-    if (format === 'esm') {
-        ensureDynamicImportSyntax(rc);
+    if (format === 'esm' && !rc.plugins.some(hasDynamicImportSyntax)) {
+        rc.plugins.unshift('@babel/plugin-syntax-dynamic-import');
     }
 
     // babel 7 doesn't need `{ modules: false }`, just verify a preset exists
@@ -108,6 +124,8 @@ module.exports = async function pectinBabelrc(pkg, cwd, output) {
     // rollup-specific babel config
     rc.babelrc = false;
     rc.exclude = 'node_modules/**';
+    rc.extensions = ['.js', '.jsx', '.es6', '.es', '.mjs', '.ts', '.tsx'];
+    rc.cwd = cwd;
 
     return rc;
 };

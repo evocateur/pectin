@@ -2,6 +2,7 @@
 
 // http://facebook.github.io/jest/docs/en/configuration.html#content
 module.exports = {
+    cacheDirectory: '<rootDir>/node_modules/.cache/jest',
     clearMocks: true,
     collectCoverageFrom: ['**/lib/*.js'],
     coverageDirectory: '<rootDir>/coverage',

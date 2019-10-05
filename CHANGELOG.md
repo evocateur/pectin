@@ -3,6 +3,35 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# NOTE
+
+Since v3.4.0, packages in this repository are versioned independently.
+
+Please consult the [releases](https://github.com/evocateur/pectin/releases) page to read subseqent changelogs.
+
+# [3.4.0](https://github.com/evocateur/pectin/compare/v3.3.0...v3.4.0) (2019-08-01)
+
+
+### Features
+
+* **deps:** Upgrade dependencies ([923f92f](https://github.com/evocateur/pectin/commit/923f92f))
+
+
+
+
+
+# [3.3.0](https://github.com/evocateur/pectin/compare/v3.2.0...v3.3.0) (2019-06-17)
+
+
+### Features
+
+* **core:** Interpolate `process.env.VERSION` with `pkg.version` ([0a0ac4e](https://github.com/evocateur/pectin/commit/0a0ac4e))
+* Ssupport typescript extensions ([#8](https://github.com/evocateur/pectin/issues/8)) ([b0ee9f9](https://github.com/evocateur/pectin/commit/b0ee9f9))
+
+
+
+
+
 # [3.2.0](https://github.com/evocateur/pectin/compare/v3.1.1...v3.2.0) (2019-05-03)
 
 

@@ -5,24 +5,40 @@ const Tacks = require('tacks');
 const tempy = require('tempy');
 const pectinBabelrc = require('../');
 
-const { Dir, File } = Tacks;
+const { Dir, File, Symlink } = Tacks;
+
+// spicy symlink prep
+const REPO_ROOT = path.resolve('.');
+const BABEL_RUNTIME_DEFAULT_VERSION = require('@babel/runtime/package.json').version;
+const BABEL_RUNTIME_COREJS2_VERSION = require('@babel/runtime-corejs2/package.json').version;
+const BABEL_RUNTIME_COREJS3_VERSION = require('@babel/runtime-corejs3/package.json').version;
 
 function createFixture(spec) {
     const cwd = tempy.directory();
 
-    new Tacks(Dir({ ...spec })).create(cwd);
+    new Tacks(
+        Dir({
+            // spicy symlink necessary due to potential runtime package resolution
+            node_modules: Symlink(path.relative(cwd, path.join(REPO_ROOT, 'node_modules'))),
+            ...spec,
+        })
+    ).create(cwd);
 
     return cwd;
 }
 
-const REPO_ROOT = path.resolve(__dirname, '../../..');
+// tempy creates subdirectories with hexadecimal names that are 32 characters long
+const TEMP_DIR_REGEXP = /([^\s"]*[\\/][0-9a-f]{32})([^\s"]*)/g;
+// the excluded quotes are due to other snapshot serializers mutating the raw input
 
 expect.addSnapshotSerializer({
     test(val) {
-        return typeof val === 'string' && val.indexOf(REPO_ROOT) > -1;
+        return typeof val === 'string' && TEMP_DIR_REGEXP.test(val);
     },
     serialize(val, config, indentation, depth) {
-        const str = val.replace(REPO_ROOT, '<REPO_ROOT>');
+        const str = val.replace(TEMP_DIR_REGEXP, (match, cwd, subPath) =>
+            path.join('<REPO_ROOT>', subPath)
+        );
 
         // top-level strings don't need quotes, but nested ones do (object properties, etc)
         return depth ? `"${str}"` : str;
@@ -46,14 +62,25 @@ describe('pectin-babelrc', () => {
         const rc = await pectinBabelrc(pkg, cwd);
 
         expect(rc).toMatchInlineSnapshot(`
-Object {
-  "babelrc": false,
-  "exclude": "node_modules/**",
-  "presets": Array [
-    "@babel/env",
-  ],
-}
-`);
+            Object {
+              "babelrc": false,
+              "cwd": "<REPO_ROOT>",
+              "exclude": "node_modules/**",
+              "extensions": Array [
+                ".js",
+                ".jsx",
+                ".es6",
+                ".es",
+                ".mjs",
+                ".ts",
+                ".tsx",
+              ],
+              "plugins": Array [],
+              "presets": Array [
+                "@babel/env",
+              ],
+            }
+        `);
     });
 
     it('enables runtimeHelpers when @babel/runtime is a dependency', async () => {
@@ -116,14 +143,25 @@ Object {
         const rc = await pectinBabelrc(pkg, cwd);
 
         expect(rc).toMatchInlineSnapshot(`
-Object {
-  "babelrc": false,
-  "exclude": "node_modules/**",
-  "presets": Array [
-    "@babel/preset-env",
-  ],
-}
-`);
+            Object {
+              "babelrc": false,
+              "cwd": "<REPO_ROOT>",
+              "exclude": "node_modules/**",
+              "extensions": Array [
+                ".js",
+                ".jsx",
+                ".es6",
+                ".es",
+                ".mjs",
+                ".ts",
+                ".tsx",
+              ],
+              "plugins": Array [],
+              "presets": Array [
+                "@babel/preset-env",
+              ],
+            }
+        `);
     });
 
     it('finds .babelrc.js config', async () => {
@@ -141,14 +179,25 @@ Object {
         const rc = await pectinBabelrc(pkg, cwd);
 
         expect(rc).toMatchInlineSnapshot(`
-Object {
-  "babelrc": false,
-  "exclude": "node_modules/**",
-  "presets": Array [
-    "@babel/preset-env",
-  ],
-}
-`);
+            Object {
+              "babelrc": false,
+              "cwd": "<REPO_ROOT>",
+              "exclude": "node_modules/**",
+              "extensions": Array [
+                ".js",
+                ".jsx",
+                ".es6",
+                ".es",
+                ".mjs",
+                ".ts",
+                ".tsx",
+              ],
+              "plugins": Array [],
+              "presets": Array [
+                "@babel/preset-env",
+              ],
+            }
+        `);
     });
 
     it('finds pkg.babel config', async () => {
@@ -164,14 +213,25 @@ Object {
         const rc = await pectinBabelrc(pkg, cwd);
 
         expect(rc).toMatchInlineSnapshot(`
-Object {
-  "babelrc": false,
-  "exclude": "node_modules/**",
-  "presets": Array [
-    "@babel/preset-env",
-  ],
-}
-`);
+            Object {
+              "babelrc": false,
+              "cwd": "<REPO_ROOT>",
+              "exclude": "node_modules/**",
+              "extensions": Array [
+                ".js",
+                ".jsx",
+                ".es6",
+                ".es",
+                ".mjs",
+                ".ts",
+                ".tsx",
+              ],
+              "plugins": Array [],
+              "presets": Array [
+                "@babel/preset-env",
+              ],
+            }
+        `);
     });
 
     it('does not duplicate simple runtime transform', async () => {
@@ -184,7 +244,7 @@ Object {
         const cwd = createFixture({
             '.babelrc': File({
                 presets: ['@babel/preset-env'],
-                plugins: ['@babel/transform-runtime', 'lodash'],
+                plugins: ['@babel/plugin-transform-runtime', 'lodash'],
             }),
             'package.json': File(pkg),
         });
@@ -192,7 +252,10 @@ Object {
 
         expect(opts).toHaveProperty('plugins', [
             '@babel/plugin-syntax-dynamic-import',
-            ['@babel/plugin-transform-runtime', { useESModules: true }],
+            [
+                '@babel/plugin-transform-runtime',
+                { useESModules: true, version: BABEL_RUNTIME_DEFAULT_VERSION },
+            ],
             'lodash',
         ]);
     });
@@ -225,10 +288,11 @@ Object {
             '@babel/plugin-syntax-dynamic-import',
             'graphql-tag',
             [
-                '@babel/plugin-transform-runtime',
+                '@babel/transform-runtime',
                 {
                     corejs: true,
                     useESModules: true,
+                    version: BABEL_RUNTIME_DEFAULT_VERSION,
                 },
             ],
         ]);
@@ -245,7 +309,7 @@ Object {
             '.babelrc': File({
                 presets: ['@babel/env'],
                 // admittedly weird...
-                plugins: [['@babel/transform-runtime']],
+                plugins: [['@babel/plugin-transform-runtime']],
             }),
             'package.json': File(pkg),
         });
@@ -253,7 +317,10 @@ Object {
 
         expect(opts).toHaveProperty('plugins', [
             '@babel/plugin-syntax-dynamic-import',
-            ['@babel/plugin-transform-runtime', { useESModules: true }],
+            [
+                '@babel/plugin-transform-runtime',
+                { useESModules: true, version: BABEL_RUNTIME_DEFAULT_VERSION },
+            ],
         ]);
     });
 
@@ -274,7 +341,10 @@ Object {
 
         expect(opts).toHaveProperty('plugins', [
             '@babel/plugin-syntax-dynamic-import',
-            ['@babel/plugin-transform-runtime', { useESModules: true, corejs: 2 }],
+            [
+                '@babel/plugin-transform-runtime',
+                { useESModules: true, corejs: 2, version: BABEL_RUNTIME_COREJS2_VERSION },
+            ],
         ]);
     });
 
@@ -295,7 +365,10 @@ Object {
 
         expect(opts).toHaveProperty('plugins', [
             '@babel/plugin-syntax-dynamic-import',
-            ['@babel/plugin-transform-runtime', { useESModules: true, corejs: 3 }],
+            [
+                '@babel/plugin-transform-runtime',
+                { useESModules: true, corejs: 3, version: BABEL_RUNTIME_COREJS3_VERSION },
+            ],
         ]);
     });
 
@@ -387,6 +460,28 @@ Object {
         expect.assertions(1);
     });
 
+    it('throws an error when no babel config found', async () => {
+        const pkg = {
+            name: 'no-babel-config',
+            dependencies: {
+                lodash: '^4.17.4',
+            },
+        };
+        const cwd = createFixture({
+            'package.json': File(pkg),
+        });
+
+        try {
+            await pectinBabelrc(pkg, cwd);
+        } catch (err) {
+            expect(err.message).toMatchInlineSnapshot(
+                `"Babel configuration is required for no-babel-config, but no config file was found."`
+            );
+        }
+
+        expect.assertions(1);
+    });
+
     it('works all together', async () => {
         const pkg1 = {
             name: 'pkg1',
@@ -452,66 +547,108 @@ Object {
         ]);
 
         expect(config1).toMatchInlineSnapshot(`
-Object {
-  "babelrc": false,
-  "exclude": "node_modules/**",
-  "plugins": Array [
-    "@babel/plugin-proposal-object-rest-spread",
-  ],
-  "presets": Array [
-    "@babel/preset-env",
-  ],
-}
-`);
+            Object {
+              "babelrc": false,
+              "cwd": "<REPO_ROOT>/packages/pkg1",
+              "exclude": "node_modules/**",
+              "extensions": Array [
+                ".js",
+                ".jsx",
+                ".es6",
+                ".es",
+                ".mjs",
+                ".ts",
+                ".tsx",
+              ],
+              "plugins": Array [
+                "@babel/plugin-proposal-object-rest-spread",
+              ],
+              "presets": Array [
+                "@babel/preset-env",
+              ],
+            }
+        `);
         expect(config2).toMatchInlineSnapshot(`
-Object {
-  "babelrc": false,
-  "exclude": "node_modules/**",
-  "plugins": Array [
-    "lodash",
-  ],
-  "presets": Array [
-    "@babel/env",
-  ],
-}
-`);
+            Object {
+              "babelrc": false,
+              "cwd": "<REPO_ROOT>/packages/pkg2",
+              "exclude": "node_modules/**",
+              "extensions": Array [
+                ".js",
+                ".jsx",
+                ".es6",
+                ".es",
+                ".mjs",
+                ".ts",
+                ".tsx",
+              ],
+              "plugins": Array [
+                "lodash",
+              ],
+              "presets": Array [
+                "@babel/env",
+              ],
+            }
+        `);
         expect(config3).toMatchInlineSnapshot(`
-Object {
-  "babelrc": false,
-  "exclude": "node_modules/**",
-  "plugins": Array [
-    Array [
-      "@babel/plugin-transform-runtime",
-      Object {
-        "useESModules": false,
-      },
-    ],
-  ],
-  "presets": Array [
-    "@babel/preset-env",
-  ],
-  "runtimeHelpers": true,
-}
-`);
+            Object {
+              "babelrc": false,
+              "cwd": "<REPO_ROOT>/packages/pkg3",
+              "exclude": "node_modules/**",
+              "extensions": Array [
+                ".js",
+                ".jsx",
+                ".es6",
+                ".es",
+                ".mjs",
+                ".ts",
+                ".tsx",
+              ],
+              "plugins": Array [
+                Array [
+                  "@babel/plugin-transform-runtime",
+                  Object {
+                    "useESModules": false,
+                    "version": "${BABEL_RUNTIME_DEFAULT_VERSION}",
+                  },
+                ],
+              ],
+              "presets": Array [
+                "@babel/preset-env",
+              ],
+              "runtimeHelpers": true,
+            }
+        `);
         expect(config4).toMatchInlineSnapshot(`
-Object {
-  "babelrc": false,
-  "exclude": "node_modules/**",
-  "plugins": Array [
-    "@babel/plugin-syntax-dynamic-import",
-    "@babel/plugin-proposal-object-rest-spread",
-    Array [
-      "@babel/plugin-transform-runtime",
-      Object {
-        "useESModules": true,
-      },
-    ],
-  ],
-  "presets": Array [
-    "@babel/preset-env",
-  ],
-  "runtimeHelpers": true,
-}
-`);
+            Object {
+              "babelrc": false,
+              "cwd": "<REPO_ROOT>/packages/pkg4",
+              "exclude": "node_modules/**",
+              "extensions": Array [
+                ".js",
+                ".jsx",
+                ".es6",
+                ".es",
+                ".mjs",
+                ".ts",
+                ".tsx",
+              ],
+              "plugins": Array [
+                "@babel/plugin-syntax-dynamic-import",
+                "@babel/plugin-proposal-object-rest-spread",
+                Array [
+                  "@babel/plugin-transform-runtime",
+                  Object {
+                    "useESModules": true,
+                    "version": "${BABEL_RUNTIME_DEFAULT_VERSION}",
+                  },
+                ],
+              ],
+              "presets": Array [
+                "@babel/preset-env",
+              ],
+              "runtimeHelpers": true,
+            }
+        `);
     });
 });

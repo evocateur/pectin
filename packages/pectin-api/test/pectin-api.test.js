@@ -52,6 +52,7 @@ describe('pectin-api', () => {
     });
 
     afterEach(() => {
+        jest.restoreAllMocks();
         delete process.env.ROLLUP_WATCH;
     });
 
@@ -298,6 +299,9 @@ describe('pectin-api', () => {
     });
 
     it('does not build a module with missing pkg.main', async () => {
+        // avoid console spam when error is logged
+        jest.spyOn(console, 'error').mockImplementation(() => {});
+
         createFixture({
             'no-pkg-main': Dir({
                 'package.json': File({
@@ -310,6 +314,9 @@ describe('pectin-api', () => {
         });
 
         await expect(findConfigs()).resolves.toEqual([]);
+
+        // eslint-disable-next-line no-console
+        expect(console.error).toHaveBeenCalled();
     });
 
     it('uses cwd argument instead of implicit process.cwd()', async () => {

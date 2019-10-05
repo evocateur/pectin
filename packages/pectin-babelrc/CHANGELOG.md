@@ -3,6 +3,51 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.3.3](https://github.com/evocateur/pectin/compare/@pectin/babelrc@3.3.2...@pectin/babelrc@3.3.3) (2019-08-21)
+
+
+### Bug Fixes
+
+* **babelrc:** Provide version to runtime transform config ([16affba](https://github.com/evocateur/pectin/commit/16affba))
+
+
+
+
+
+## [3.3.2](https://github.com/evocateur/pectin/compare/@pectin/babelrc@3.3.1...@pectin/babelrc@3.3.2) (2019-08-06)
+
+
+### Bug Fixes
+
+* **babelrc:** Assign explicit cwd to rollup-specific config ([e8fb759](https://github.com/evocateur/pectin/commit/e8fb759))
+* **babelrc:** Never mutate require-cached config ([88da621](https://github.com/evocateur/pectin/commit/88da621))
+
+
+
+
+
+## [3.3.1](https://github.com/evocateur/pectin/compare/@pectin/babelrc@3.3.0...@pectin/babelrc@3.3.1) (2019-08-02)
+
+
+### Bug Fixes
+
+* **config:** Throw an error if a Babel config cannot be located ([99c3f43](https://github.com/evocateur/pectin/commit/99c3f43))
+
+
+
+
+
+# [3.3.0](https://github.com/evocateur/pectin/compare/v3.2.0...v3.3.0) (2019-06-17)
+
+
+### Features
+
+* Ssupport typescript extensions ([#8](https://github.com/evocateur/pectin/issues/8)) ([b0ee9f9](https://github.com/evocateur/pectin/commit/b0ee9f9))
+
+
+
+
+
 # [3.2.0](https://github.com/evocateur/pectin/compare/v3.1.1...v3.2.0) (2019-05-03)
 
 

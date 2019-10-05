@@ -7,7 +7,14 @@ const tempy = require('tempy');
 const pMap = require('p-map');
 const pectinCore = require('../');
 
-const { Dir, File } = Tacks;
+const { Dir, File, Symlink } = Tacks;
+
+// avoid polluting other test state
+const REPO_ROOT = path.resolve('.');
+
+afterEach(() => {
+    process.chdir(REPO_ROOT);
+});
 
 function createFixture(pkgSpec) {
     const cwd = tempy.directory();
@@ -19,6 +26,8 @@ function createFixture(pkgSpec) {
                 presets: ['@babel/env', '@babel/preset-react'],
                 plugins: ['@babel/plugin-syntax-dynamic-import'],
             }),
+            // spicy symlink necessary due to explicit cwd config
+            'node_modules': Symlink(path.relative(cwd, path.join(REPO_ROOT, 'node_modules'))),
             ...pkgSpec,
         })
     );
@@ -42,13 +51,6 @@ async function generateResults(configs) {
 }
 
 describe('pectin-core', () => {
-    // avoid polluting other test state
-    const REPO_ROOT = path.resolve('.');
-
-    afterEach(() => {
-        process.chdir(REPO_ROOT);
-    });
-
     it('inlines SVG via pkg.rollup.inlineSVG', async () => {
         const pkg = {
             name: 'inline-svg-data-uri',
@@ -149,14 +151,25 @@ module.exports = app;
         };
         const cwd = createFixture({
             'package.json': File(pkg),
+            'src': Dir({
+                'index.js': File(`export default 'cwd';`),
+            }),
         });
 
         process.chdir(cwd);
 
-        const [config] = await pectinCore(pkg, { cwd });
-        // we can't build because the chdir just broke node_modules references
+        const configs = await pectinCore(pkg /* , { cwd } */);
+        const results = await generateResults(configs);
+        const [entry] = results;
 
-        expect(config).toHaveProperty('input', path.join(cwd, 'src/index.js'));
+        expect(entry.code).toMatchInlineSnapshot(`
+            "'use strict';
+
+            var index = 'cwd';
+
+            module.exports = index;
+            "
+        `);
     });
 
     it('throws an error when no pkg.main supplied', async () => {
@@ -223,7 +236,7 @@ export default function main() {
 'use strict';
 
 function main() {
-  return Promise.resolve(require('./chunky-bacon.cjs.js'));
+  return new Promise(function (resolve) { resolve(require('./chunky-bacon.cjs.js')); });
 }
 
 module.exports = main;
@@ -551,6 +564,30 @@ return main;
 "!function(e,o){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?module.exports=o():\\"function\\"==typeof define&&define.amd?define(o):(e=e||self).ScopedUmd=o()}(this,function(){\\"use strict\\";return function(){console.log(\\"yay\\"),console.log(\\"hooray\\")}});
 "
 `);
+    });
+
+    it('interpolates process.env.VERSION with pkg.version', async () => {
+        const pkg = {
+            name: 'interpolates-version',
+            main: 'dist/index.js',
+            version: '1.2.3-alpha.0+deadbeef',
+        };
+        const cwd = createFixture({
+            'package.json': File(pkg),
+            'src': Dir({
+                'index.js': File(`
+export default function main() {
+    console.log(process.env.VERSION);
+}
+                `),
+            }),
+        });
+
+        const configs = await pectinCore(pkg, { cwd });
+        const results = await generateResults(configs);
+        const [cjs] = results;
+
+        expect(cjs.code).toMatch('console.log("1.2.3-alpha.0+deadbeef");');
     });
 
     it('works all together', async () => {

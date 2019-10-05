@@ -3,6 +3,69 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.3](https://github.com/evocateur/pectin/compare/@pectin/api@4.0.2...@pectin/api@4.0.3) (2019-08-21)
+
+**Note:** Version bump only for package @pectin/api
+
+
+
+
+
+## [4.0.2](https://github.com/evocateur/pectin/compare/@pectin/api@4.0.1...@pectin/api@4.0.2) (2019-08-06)
+
+**Note:** Version bump only for package @pectin/api
+
+
+
+
+
+## [4.0.1](https://github.com/evocateur/pectin/compare/@pectin/api@4.0.0...@pectin/api@4.0.1) (2019-08-02)
+
+
+### Bug Fixes
+
+* **api:** Log errors caught during config generation instead of completely swallowing them ([26ba75b](https://github.com/evocateur/pectin/commit/26ba75b))
+
+
+
+
+
+# 4.0.0 (2019-08-01)
+
+
+### Features
+
+* Upgrade `globby` to `^10.0.1` ([c9a4475](https://github.com/evocateur/pectin/commit/c9a4475))
+* Upgrade `rollup-plugin-commonjs` & `rollup-plugin-node-resolve` ([979d7ec](https://github.com/evocateur/pectin/commit/979d7ec))
+
+
+### BREAKING CHANGES
+
+* The minimum version of the `rollup` peer dependency is now `^1.12.0`.
+
+  The latest versions of `rollup-plugin-commonjs` ([changelog](https://github.com/rollup/rollup-plugin-commonjs/blob/master/CHANGELOG.md#1000)) and `rollup-plugin-node-resolve` ([changelog](https://github.com/rollup/rollup-plugin-node-resolve/blob/master/CHANGELOG.md#500-2019-05-15)) require core Rollup methods only available after [`rollup@v1.12.0`](https://github.com/rollup/rollup/blob/master/CHANGELOG.md#1120).
+
+
+
+# [3.4.0](https://github.com/evocateur/pectin/compare/v3.3.0...v3.4.0) (2019-08-01)
+
+
+### Features
+
+* **deps:** Upgrade dependencies ([923f92f](https://github.com/evocateur/pectin/commit/923f92f))
+
+
+
+
+
+# [3.3.0](https://github.com/evocateur/pectin/compare/v3.2.0...v3.3.0) (2019-06-17)
+
+**Note:** Version bump only for package @pectin/api
+
+
+
+
+
 # [3.2.0](https://github.com/evocateur/pectin/compare/v3.1.1...v3.2.0) (2019-05-03)
 
 **Note:** Version bump only for package @pectin/api

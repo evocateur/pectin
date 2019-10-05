@@ -1,6 +1,6 @@
 {
   "name": "@pectin/api",
-  "version": "3.2.0",
+  "version": "4.0.3",
   "description": "Conventional rollup builds for lerna monorepos",
   "keywords": [
     "rollup",
@@ -30,14 +30,14 @@
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "peerDependencies": {
-    "rollup": ">=0.65.0"
+    "rollup": ">=1.12.0"
   },
   "dependencies": {
     "@lerna/batch-packages": "^3.0.0",
     "@lerna/project": "^3.0.0",
     "@pectin/core": "file:../pectin-core",
-    "dot-prop": "^4.2.0",
-    "globby": "^8.0.1",
-    "p-map": "^2.0.0"
+    "dot-prop": "^5.1.0",
+    "globby": "^10.0.1",
+    "p-map": "^3.0.0"
   }
 }

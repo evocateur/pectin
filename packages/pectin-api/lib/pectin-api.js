@@ -64,6 +64,10 @@ async function generateConfig(pkg, opts) {
         }
     } catch (ex) {
         // skip packages that throw errors (e.g., missing pkg.main)
+
+        // eslint-disable-next-line no-console
+        console.error(ex);
+
         // TODO: re-throw if this is an _unexpected_ error
         return null;
     }
@@ -125,7 +129,8 @@ async function isUpToDate(opts, config) {
     }
 
     // gather fs.Stat objects for mtime comparison
-    const fileStats = await globby(matchers, { cwd, stats: true });
+    const results = await globby(matchers, { cwd, stats: true });
+    const fileStats = results.map(obj => obj.stats);
     const lastBuilt = outputStat.mtime.getTime();
 
     return fileStats.every(fileStat => fileStat.mtime.getTime() <= lastBuilt);

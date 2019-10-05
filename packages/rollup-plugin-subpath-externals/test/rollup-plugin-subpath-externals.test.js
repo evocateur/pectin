@@ -166,7 +166,7 @@ describe('rollup-plugin-subpath-externals', () => {
                     },
                     load: id => {
                         if (id === 'whackadoodle') {
-                            return 'export default function whackaDoodle() {};';
+                            return 'export default function whackaDoodle(props) { return props.children; };';
                         }
 
                         return null;
@@ -212,7 +212,7 @@ describe('rollup-plugin-subpath-externals', () => {
 
     React = React && React.hasOwnProperty('default') ? React['default'] : React;
 
-    function whackaDoodle() {}
+    function whackaDoodle(props) { return props.children; }
 
     var stub = (s) => React.render(whackaDoodle(s));
 

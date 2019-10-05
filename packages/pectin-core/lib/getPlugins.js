@@ -25,7 +25,7 @@ module.exports = async function getPlugins(pkg, cwd, output) {
         nodeResolve({
             preferBuiltins: true,
             // https://github.com/rollup/rollup-plugin-node-resolve/pull/151
-            extensions: ['.mjs', '.js', '.jsx', '.json', '.node'],
+            extensions: ['.mjs', '.js', '.jsx', '.json', '.node', '.ts', '.tsx'],
             // https://github.com/rollup/rollup-plugin-node-resolve/pull/182
             mainFields: [
                 'module',
@@ -38,6 +38,7 @@ module.exports = async function getPlugins(pkg, cwd, output) {
         replace(
             Object.assign(env ? { 'process.env.NODE_ENV': JSON.stringify(env) } : {}, {
                 'process.env.BROWSER': JSON.stringify(output.browser || false),
+                'process.env.VERSION': JSON.stringify(pkg.version),
             })
         ),
         // https://github.com/rollup/rollup-plugin-json#usage
