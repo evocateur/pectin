@@ -111,7 +111,7 @@ async function isUpToDate(opts, config) {
 
     const matchers = [
         // include all .js and .jsx files
-        '**/*.@(js|jsx)',
+        '**/*.@(js|jsx|ts|tsx)',
         // except *.test.js and *-test.js
         '!**/*@(.|-)test.js',
         // ignoring anything under __tests__
