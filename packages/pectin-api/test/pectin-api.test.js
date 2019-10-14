@@ -176,7 +176,7 @@ describe('pectin-api', () => {
             updateFile('old-input/src/other.js'),
         ];
 
-        await expect(findConfigs()).resolves.toEqual([]);
+        await expect(findConfigs()).resolves.toStrictEqual([]);
     });
 
     it('does not compare build output with itself', async () => {
@@ -198,7 +198,7 @@ describe('pectin-api', () => {
 
         await updateFile('rooted-input/dist/index.js');
 
-        await expect(findConfigs()).resolves.toEqual([]);
+        await expect(findConfigs()).resolves.toStrictEqual([]);
     });
 
     it('does not compare tests or node_modules with last build', async () => {
@@ -249,7 +249,7 @@ describe('pectin-api', () => {
             updateFile('rooted-ignore/test/ignored.js'),
         ];
 
-        await expect(findConfigs()).resolves.toEqual([]);
+        await expect(findConfigs()).resolves.toStrictEqual([]);
     });
 
     it('does not watch a module with pkg.rollup.ignoreWatch', async () => {
@@ -276,7 +276,7 @@ describe('pectin-api', () => {
         // simulate `rollup --watch`
         process.env.ROLLUP_WATCH = true;
 
-        await expect(findConfigs()).resolves.toEqual([]);
+        await expect(findConfigs()).resolves.toStrictEqual([]);
     });
 
     it('does not build a module with pkg.rollup.skip', async () => {
@@ -295,7 +295,7 @@ describe('pectin-api', () => {
             }),
         });
 
-        await expect(findConfigs()).resolves.toEqual([]);
+        await expect(findConfigs()).resolves.toStrictEqual([]);
     });
 
     it('does not build a module with missing pkg.main', async () => {
@@ -313,7 +313,7 @@ describe('pectin-api', () => {
             }),
         });
 
-        await expect(findConfigs()).resolves.toEqual([]);
+        await expect(findConfigs()).resolves.toStrictEqual([]);
 
         // eslint-disable-next-line no-console
         expect(console.error).toHaveBeenCalled();
