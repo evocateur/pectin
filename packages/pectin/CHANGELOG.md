@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.6.0](https://github.com/evocateur/pectin/compare/pectin@3.5.4...pectin@3.6.0) (2019-10-15)
+
+
+### Features
+
+* **cli:** Bump rollup dependency to ^1.23.1 ([8072762](https://github.com/evocateur/pectin/commit/807276246814fe39377d61f2ea93be28e14301a7))
+* **cli:** Upgrade yargs to v14 ([f424830](https://github.com/evocateur/pectin/commit/f42483070a5a08f1893d0852d64e8d949c8c70f3))
+
+
+
+
+
 ## [3.5.4](https://github.com/evocateur/pectin/compare/pectin@3.5.3...pectin@3.5.4) (2019-08-21)
 
 **Note:** Version bump only for package pectin

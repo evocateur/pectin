@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.4](https://github.com/evocateur/pectin/compare/@pectin/api@4.0.3...@pectin/api@4.0.4) (2019-10-15)
+
+
+### Bug Fixes
+
+* **isUpToDate:** add ts and tsx to isUpToDate matchers ([#12](https://github.com/evocateur/pectin/issues/12)) ([6accaf8](https://github.com/evocateur/pectin/commit/6accaf82555b25047d234c2854b67536efa1d99a))
+
+
+
+
+
 ## [4.0.3](https://github.com/evocateur/pectin/compare/@pectin/api@4.0.2...@pectin/api@4.0.3) (2019-08-21)
 
 **Note:** Version bump only for package @pectin/api
