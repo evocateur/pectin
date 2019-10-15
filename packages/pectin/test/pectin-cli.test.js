@@ -24,6 +24,7 @@ jest.mock('../lib/invoke-rollup');
 const run = (...args) =>
     new Promise((resolve, reject) =>
         cli()
+            .exitProcess(false)
             .fail((msg, err) => {
                 setImmediate(() => reject(err));
             })
@@ -74,6 +75,13 @@ describe('pectin-cli', () => {
         const argv = await run('--concurrency', '1');
 
         expect(argv).toHaveProperty('concurrency', 1);
+        expect(invokeRollup).lastCalledWith(argv);
+    });
+
+    it('passes unknown arguments to rollup', async () => {
+        const argv = await run('--foo', '--bar', '--watch');
+
+        expect(argv).toHaveProperty('_', ['--foo', '--bar']);
         expect(invokeRollup).lastCalledWith(argv);
     });
 });

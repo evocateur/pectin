@@ -15,6 +15,10 @@ function invokeRollup(argv) {
         opts.unshift('--watch');
     }
 
+    if (argv._.length) {
+        opts.push(...argv._);
+    }
+
     /* eslint-disable global-require, zillow/import/no-dynamic-require */
     // @see https://github.com/zkat/npx/blob/b7c8b9f07605b9f41931ad3ef8e74a65d2f062bb/index.js#L258-L268
     const Module = require('module');

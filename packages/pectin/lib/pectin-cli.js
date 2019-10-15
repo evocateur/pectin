@@ -29,10 +29,14 @@ module.exports = function CLI(argv, cwd) {
     return yargs(argv, cwd)
         .usage(
             '$0',
-            'Execute incremental rollup builds on all monorepo packages.',
+            'Execute incremental rollup builds on all monorepo packages.\n' +
+                'Any additional (unknown) arguments are passed to the rollup CLI.',
             () => {},
             handler
         )
+        .parserConfiguration({
+            'unknown-options-as-args': true,
+        })
         .options({
             w: {
                 alias: 'watch',
