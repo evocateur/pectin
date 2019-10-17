@@ -401,16 +401,16 @@ describe('pectin-api', () => {
 
         await expect(findConfigs()).resolves.toMatchObject([
             {
-                input: 'modules/app/src/index.js',
-                output: [{ format: 'cjs', exports: 'auto' }],
-            },
-            {
                 input: 'modules/lib/missing-dist/src/index.js',
                 output: [{ format: 'cjs', exports: 'auto' }],
             },
             {
                 input: 'modules/lib/missing-dist/src/index.js',
                 output: [{ format: 'esm', exports: 'named' }],
+            },
+            {
+                input: 'modules/app/src/index.js',
+                output: [{ format: 'cjs', exports: 'auto' }],
             },
         ]);
     });

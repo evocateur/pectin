@@ -33,11 +33,10 @@
     "rollup": ">=1.12.0"
   },
   "dependencies": {
-    "@lerna/batch-packages": "^3.0.0",
     "@lerna/project": "^3.0.0",
+    "@lerna/run-topologically": "^3.16.0",
     "@pectin/core": "file:../pectin-core",
     "dot-prop": "^5.1.0",
-    "globby": "^10.0.1",
-    "p-map": "^3.0.0"
+    "globby": "^10.0.1"
   }
 }
