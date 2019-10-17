@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.5](https://github.com/evocateur/pectin/compare/@pectin/api@4.0.4...@pectin/api@4.0.5) (2019-10-17)
+
+
+### Bug Fixes
+
+* **api:** Generate configs in _proper_ topological order ([9ea4aa3](https://github.com/evocateur/pectin/commit/9ea4aa322884d1c1d4960154b8245307866cef77))
+
+
+
+
+
 ## [4.0.4](https://github.com/evocateur/pectin/compare/@pectin/api@4.0.3...@pectin/api@4.0.4) (2019-10-15)
 
 
