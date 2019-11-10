@@ -1,0 +1,18 @@
+/**
+ * This is a "solution" file that points to all of the leaves, as suggested at
+ * https://www.typescriptlang.org/docs/handbook/project-references.html
+ */
+{
+    "references": [
+        { "path": "packages/pectin" },
+        { "path": "packages/pectin-api" },
+        { "path": "packages/pectin-babelrc" },
+        { "path": "packages/pectin-core" },
+        { "path": "packages/rollup-config-pectin" },
+        { "path": "packages/rollup-plugin-main-entry" },
+        { "path": "packages/rollup-plugin-subpath-externals" }
+    ],
+    /* The remaining fields are necessary to prevent double compilation */
+    "files": [],
+    "include": []
+}
