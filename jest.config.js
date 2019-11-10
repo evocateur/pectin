@@ -17,4 +17,8 @@ module.exports = {
     },
     roots: ['<rootDir>/packages'],
     testEnvironment: 'node',
+    transform: {
+        '^.+\\.js$': 'babel-jest',
+        '^.+\\.ts$': 'ts-jest',
+    },
 };
