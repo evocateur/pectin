@@ -38,3 +38,12 @@
         # dev dependencies are hoisted to the root
         zillow/import/no-extraneous-dependencies: off
         node/no-extraneous-require: off
+    - files:
+        - 'packages/**/*.ts'
+      parser: '@typescript-eslint/parser'
+      parserOptions:
+        project: './tsconfig.json'
+      plugins:
+        - '@typescript-eslint'
+      extends:
+        - 'plugin:@typescript-eslint/recommended'
