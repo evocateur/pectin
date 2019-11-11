@@ -1,14 +1,19 @@
 'use strict';
 
+const fs = require('fs');
+const path = require('path');
 const log = require('npmlog');
 const yargs = require('yargs/yargs');
 const { findConfigs } = require('@pectin/api');
 const invokeRollup = require('./invoke-rollup');
-const { version } = require('../package.json');
 
 log.heading = 'pectin';
 
 async function handler(argv) {
+    const { version } = JSON.parse(
+        fs.readFileSync(path.resolve(__dirname, '../package.json'), 'utf8')
+    );
+
     log.notice('cli', `v${version}`);
 
     if (argv.watch) {

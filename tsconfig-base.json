@@ -26,7 +26,6 @@
         "moduleResolution": "node",
         "esModuleInterop": true,
         // "preserveSymlinks": true,              /* Do not resolve the real path of symlinks. */
-        "resolveJsonModule": true,
 
         /* Advanced Options */
         "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */
