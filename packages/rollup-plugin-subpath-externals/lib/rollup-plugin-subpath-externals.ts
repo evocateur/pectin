@@ -1,10 +1,8 @@
-'use strict';
-
-const builtins = require('builtin-modules');
-const dotProp = require('dot-prop');
+import builtins = require('builtin-modules');
+import dotProp = require('dot-prop');
 
 // ensure subpath imports (lodash, babel-runtime) are also externalized
-module.exports = function subpathExternals(pkg, output) {
+export default function subpathExternals(pkg, output) {
     const external = dotProp.get(pkg, 'rollup.external');
     const bundled = dotProp.get(pkg, 'rollup.bundle');
     const { format } = output || {};
@@ -65,4 +63,4 @@ module.exports = function subpathExternals(pkg, output) {
             opts.external = externalPredicate;
         },
     };
-};
+}

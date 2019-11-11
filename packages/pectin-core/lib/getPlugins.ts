@@ -1,18 +1,16 @@
-'use strict';
+import dotProp = require('dot-prop');
+import babel = require('rollup-plugin-babel');
+import commonjs = require('rollup-plugin-commonjs');
+import json = require('rollup-plugin-json');
+import nodeResolve = require('rollup-plugin-node-resolve');
+import mainEntry = require('rollup-plugin-main-entry');
+import replace = require('rollup-plugin-replace');
+import subpathExternals = require('rollup-plugin-subpath-externals');
+import svg = require('rollup-plugin-svg');
+import { terser } from 'rollup-plugin-terser';
+import babelrc from '@pectin/babelrc';
 
-const dotProp = require('dot-prop');
-const babel = require('rollup-plugin-babel');
-const commonjs = require('rollup-plugin-commonjs');
-const json = require('rollup-plugin-json');
-const nodeResolve = require('rollup-plugin-node-resolve');
-const mainEntry = require('rollup-plugin-main-entry');
-const replace = require('rollup-plugin-replace');
-const subpathExternals = require('rollup-plugin-subpath-externals');
-const svg = require('rollup-plugin-svg');
-const { terser } = require('rollup-plugin-terser');
-const babelrc = require('@pectin/babelrc');
-
-module.exports = async function getPlugins(pkg, cwd, output) {
+export async function getPlugins(pkg, cwd, output) {
     const env = dotProp.get(output, 'env');
     const fmt = dotProp.get(output, 'format');
     const min = fmt === 'umd' && env === 'production';
@@ -66,4 +64,4 @@ module.exports = async function getPlugins(pkg, cwd, output) {
                 },
             }),
     ].filter(x => Boolean(x));
-};
+}

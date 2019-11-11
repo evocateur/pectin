@@ -1,11 +1,9 @@
-'use strict';
+import path = require('path');
+import camelCase = require('camelcase');
+import npa = require('npm-package-arg');
+import dotProp = require('dot-prop');
 
-const path = require('path');
-const camelCase = require('camelcase');
-const npa = require('npm-package-arg');
-const dotProp = require('dot-prop');
-
-module.exports = function getOutput(pkg, cwd) {
+export function getOutput(pkg, cwd) {
     const output = [];
 
     // generated chunks as of rollup v0.68.0 need chunkFileNames, not entryFileNames
@@ -88,7 +86,7 @@ module.exports = function getOutput(pkg, cwd) {
 
             return Object.assign(obj, extra);
         });
-};
+}
 
 function safeName(name) {
     const spec = npa(name);

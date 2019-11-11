@@ -1,9 +1,7 @@
-'use strict';
-
-const path = require('path');
-const cloneDeep = require('clone-deep');
-const cosmiconfig = require('cosmiconfig');
-const resolveFrom = require('resolve-from');
+import path = require('path');
+import cloneDeep = require('clone-deep');
+import cosmiconfig = require('cosmiconfig');
+import resolveFrom = require('resolve-from');
 
 const explorer = cosmiconfig('babel', {
     // we cannot cache transform because per-package dependencies affect result
@@ -64,7 +62,7 @@ function hasDynamicImportSyntax(plugin) {
     return typeof plugin === 'string' && /@babel\/(plugin-)?syntax-dynamic-import/.test(plugin);
 }
 
-module.exports = async function pectinBabelrc(pkg, cwd, output) {
+export default async function babelrc(pkg, cwd, output) {
     const { format = 'cjs' } = output || {};
     const searchResult = await explorer.search(cwd);
 
@@ -128,4 +126,4 @@ module.exports = async function pectinBabelrc(pkg, cwd, output) {
     rc.cwd = cwd;
 
     return rc;
-};
+}

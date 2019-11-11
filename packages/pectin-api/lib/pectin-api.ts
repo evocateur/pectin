@@ -1,22 +1,16 @@
-'use strict';
-
-const os = require('os');
-const fs = require('fs');
-const path = require('path');
-const util = require('util');
-const dotProp = require('dot-prop');
-const globby = require('globby');
-const { getPackages } = require('@lerna/project');
-const runTopologically = require('@lerna/run-topologically');
-const pectin = require('@pectin/core');
+import os = require('os');
+import fs = require('fs');
+import path = require('path');
+import util = require('util');
+import dotProp = require('dot-prop');
+import globby = require('globby');
+import { getPackages } from '@lerna/project';
+import runTopologically from '@lerna/run-topologically';
+import pectin from '@pectin/core';
 
 const statAsync = util.promisify(fs.stat);
 
-exports.findConfigs = findConfigs;
-exports.generateConfig = generateConfig;
-exports.isUpToDate = isUpToDate;
-
-async function findConfigs({
+export async function findConfigs({
     cwd: startDir = undefined,
     concurrency = os.cpus().length,
     watch = !!process.env.ROLLUP_WATCH,
@@ -33,7 +27,7 @@ async function findConfigs({
     return configs.reduce((acc, val) => acc.concat(val), []).filter(x => Boolean(x));
 }
 
-async function generateConfig(pkg, opts) {
+export async function generateConfig(pkg, opts) {
     let config;
 
     // completely ignore packages that opt-out
@@ -87,7 +81,7 @@ async function generateConfig(pkg, opts) {
     return config;
 }
 
-async function isUpToDate(opts, config) {
+export async function isUpToDate(opts, config) {
     // back-compat for old signature
     if (Array.isArray(config)) {
         // eslint-disable-next-line no-param-reassign

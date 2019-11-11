@@ -1,7 +1,5 @@
-'use strict';
-
-const path = require('path');
-const dotProp = require('dot-prop');
+import path = require('path');
+import dotProp = require('dot-prop');
 
 /**
  * By convention, entry points live in the 'src' directory with
@@ -14,7 +12,7 @@ const dotProp = require('dot-prop');
  * @param {Object} pkg
  * @return {String} input path resolved to cwd
  */
-module.exports = function getInput(pkg, cwd) {
+export function getInput(pkg, cwd) {
     if (!pkg.main) {
         const location = path.relative('.', path.join(cwd, 'package.json'));
 
@@ -25,7 +23,7 @@ module.exports = function getInput(pkg, cwd) {
     const input = dotProp.get(pkg, 'rollup.input', rebaseInput(rootDir, pkg.main));
 
     return path.resolve(cwd, input);
-};
+}
 
 function rebaseInput(rootDir, filePath) {
     return path.join(rootDir, path.basename(filePath));

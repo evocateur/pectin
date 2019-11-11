@@ -1,11 +1,9 @@
-'use strict';
-
-const fs = require('fs');
-const path = require('path');
-const log = require('npmlog');
-const yargs = require('yargs/yargs');
-const { findConfigs } = require('@pectin/api');
-const invokeRollup = require('./invoke-rollup');
+import fs = require('fs');
+import path = require('path');
+import log = require('npmlog');
+import yargs = require('yargs/yargs');
+import { findConfigs } from '@pectin/api';
+import { invokeRollup } from './invoke-rollup';
 
 log.heading = 'pectin';
 
@@ -30,7 +28,7 @@ async function handler(argv) {
     }
 }
 
-module.exports = function CLI(argv, cwd) {
+export default function CLI(argv, cwd) {
     return yargs(argv, cwd)
         .usage(
             '$0',
@@ -62,4 +60,4 @@ module.exports = function CLI(argv, cwd) {
         })
         .alias('h', 'help')
         .alias('v', 'version');
-};
+}

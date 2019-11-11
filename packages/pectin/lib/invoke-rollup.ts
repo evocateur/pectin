@@ -1,12 +1,8 @@
-'use strict';
-
-const path = require('path');
-const resolveFrom = require('resolve-from');
-
-module.exports = invokeRollup;
+import path = require('path');
+import resolveFrom = require('resolve-from');
 
 // istanbul ignore next
-function invokeRollup(argv) {
+export function invokeRollup(argv) {
     const corePath = resolveFrom(__dirname, '@pectin/api/package.json');
     const autoPath = path.join(path.dirname(corePath), 'auto.js');
     const opts = ['--config', autoPath];

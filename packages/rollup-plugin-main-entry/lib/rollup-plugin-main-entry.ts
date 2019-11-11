@@ -1,8 +1,6 @@
-'use strict';
+import path = require('path');
 
-const path = require('path');
-
-module.exports = function rollupPluginMainEntry({
+export default function rollupPluginMainEntry({
     main,
     rollup = {},
     rootDir = rollup.rootDir || 'src',
@@ -31,4 +29,4 @@ module.exports = function rollupPluginMainEntry({
             return opts;
         },
     };
-};
+}
