@@ -6,5 +6,16 @@
   },
   "include": [
     "lib/**/*"
+  ],
+  "references": [
+    {
+      "path": "../pectin-babelrc"
+    },
+    {
+      "path": "../rollup-plugin-main-entry"
+    },
+    {
+      "path": "../rollup-plugin-subpath-externals"
+    }
   ]
 }

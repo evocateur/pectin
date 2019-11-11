@@ -6,5 +6,10 @@
   },
   "include": [
     "lib/**/*"
+  ],
+  "references": [
+    {
+      "path": "../pectin-api"
+    }
   ]
 }
