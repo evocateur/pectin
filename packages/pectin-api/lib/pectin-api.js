@@ -17,7 +17,7 @@ exports.generateConfig = generateConfig;
 exports.isUpToDate = isUpToDate;
 
 async function findConfigs({
-    cwd: startDir,
+    cwd: startDir = undefined,
     concurrency = os.cpus().length,
     watch = !!process.env.ROLLUP_WATCH,
 } = {}) {
