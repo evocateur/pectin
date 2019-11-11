@@ -32,7 +32,7 @@ module.exports = function subpathExternals(pkg, output) {
     // rollup-plugin-node-resolve emits silly warnings even with preferBuiltins: true
     const resolvedExternals = new Set(pkgDeps.concat(builtins));
 
-    function externalPredicate(id, parentId, isResolved) {
+    function externalPredicate(id, _parentId, isResolved) {
         if (isResolved === true) {
             // early return when the work has already been done
             return resolvedExternals.has(id);
