@@ -31,6 +31,9 @@
     prefer-object-spread: "off"
     strict: "off"
   root: true
+  settings:
+    'import/resolver':
+      'eslint-import-resolver-typescript': true
   overrides:
     - files:
         - "packages/*/test/**"
@@ -38,11 +41,8 @@
         # dev dependencies are hoisted to the root
         zillow/import/no-extraneous-dependencies: off
         node/no-extraneous-require: off
-    - files:
-        - 'packages/**/*.ts'
+    - files: '*.ts'
       parser: '@typescript-eslint/parser'
-      parserOptions:
-        project: './tsconfig.json'
       plugins:
         - '@typescript-eslint'
       extends:
