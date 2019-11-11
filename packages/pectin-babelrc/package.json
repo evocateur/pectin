@@ -9,9 +9,9 @@
   "author": "Daniel Stockman <daniel.stockman@gmail.com>",
   "homepage": "https://github.com/evocateur/pectin/tree/latest/packages/pectin-babelrc#readme",
   "license": "ISC",
-  "main": "lib/pectin-babelrc.js",
+  "main": "dist/pectin-babelrc.js",
   "files": [
-    "lib"
+    "dist"
   ],
   "engines": {
     "node": ">=8.9"

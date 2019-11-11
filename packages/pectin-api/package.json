@@ -11,10 +11,10 @@
   "author": "Daniel Stockman <daniel.stockman@gmail.com>",
   "homepage": "https://github.com/evocateur/pectin/tree/latest/packages/pectin-api#readme",
   "license": "ISC",
-  "main": "lib/pectin-api.js",
+  "main": "dist/pectin-api.js",
   "files": [
     "auto.js",
-    "lib"
+    "dist"
   ],
   "engines": {
     "node": ">=8.9"

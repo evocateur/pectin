@@ -11,13 +11,13 @@
   "author": "Daniel Stockman <daniel.stockman@gmail.com>",
   "homepage": "https://github.com/evocateur/pectin/tree/latest/packages/pectin#readme",
   "license": "ISC",
-  "main": "lib/pectin-cli.js",
+  "main": "dist/pectin-cli.js",
   "bin": {
     "pectin": "bin/pectin"
   },
   "files": [
     "bin",
-    "lib"
+    "dist"
   ],
   "engines": {
     "node": ">=8.9"

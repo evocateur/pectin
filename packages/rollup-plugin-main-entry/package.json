@@ -11,9 +11,9 @@
   "author": "Daniel Stockman <daniel.stockman@gmail.com>",
   "homepage": "https://github.com/evocateur/pectin/tree/latest/packages/rollup-plugin-main-entry#readme",
   "license": "ISC",
-  "main": "lib/rollup-plugin-main-entry.js",
+  "main": "dist/rollup-plugin-main-entry.js",
   "files": [
-    "lib"
+    "dist"
   ],
   "engines": {
     "node": ">=8.9"
