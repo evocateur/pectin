@@ -1,7 +1,7 @@
 'use strict';
 
 const { rollup } = require('rollup');
-const subpathExternals = require('../');
+const subpathExternals = require('../lib/rollup-plugin-subpath-externals');
 
 function stubFile(fileName, fileContent) {
     return {
