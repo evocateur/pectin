@@ -15,9 +15,6 @@
       # allows ForOfStatement
       - LabeledStatement
       - WithStatement
-    node/no-unsupported-features:
-      - error
-      # version controlled by "engines" field in package.json
     padding-line-between-statements:
       - error
       # blank line before return statements
@@ -47,3 +44,8 @@
         - '@typescript-eslint'
       extends:
         - 'plugin:@typescript-eslint/recommended'
+      rules:
+        node/no-unsupported-features/es-syntax:
+          - error
+          - ignores:
+              - modules
