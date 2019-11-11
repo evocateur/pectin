@@ -52,6 +52,8 @@
     "@babel/runtime-corejs3": "^7.6.3",
     "@lerna/project": "^3.18.0",
     "@lerna/run-topologically": "^3.18.0",
+    "@types/clone-deep": "^4.0.1",
+    "@types/cosmiconfig": "^5.0.3",
     "@types/jest": "^24.0.22",
     "@typescript-eslint/eslint-plugin": "^2.6.1",
     "@typescript-eslint/parser": "^2.6.1",
