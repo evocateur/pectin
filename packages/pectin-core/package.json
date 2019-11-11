@@ -12,6 +12,7 @@
   "homepage": "https://github.com/evocateur/pectin/tree/latest/packages/pectin-core#readme",
   "license": "ISC",
   "main": "dist/pectin-core.js",
+  "types": "dist/pectin-core.d.ts",
   "files": [
     "dist"
   ],

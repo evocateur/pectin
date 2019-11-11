@@ -12,6 +12,7 @@
   "homepage": "https://github.com/evocateur/pectin/tree/latest/packages/pectin#readme",
   "license": "ISC",
   "main": "dist/pectin-cli.js",
+  "types": "dist/pectin-cli.d.ts",
   "bin": {
     "pectin": "bin/pectin"
   },

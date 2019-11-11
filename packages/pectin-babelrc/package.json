@@ -10,6 +10,7 @@
   "homepage": "https://github.com/evocateur/pectin/tree/latest/packages/pectin-babelrc#readme",
   "license": "ISC",
   "main": "dist/pectin-babelrc.js",
+  "types": "dist/pectin-babelrc.d.ts",
   "files": [
     "dist"
   ],

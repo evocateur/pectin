@@ -12,6 +12,7 @@
   "homepage": "https://github.com/evocateur/pectin/tree/latest/packages/rollup-plugin-subpath-externals#readme",
   "license": "ISC",
   "main": "dist/rollup-plugin-subpath-externals.js",
+  "types": "dist/rollup-plugin-subpath-externals.d.ts",
   "files": [
     "dist"
   ],

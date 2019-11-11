@@ -12,6 +12,7 @@
   "homepage": "https://github.com/evocateur/pectin/tree/latest/packages/rollup-config-pectin#readme",
   "license": "ISC",
   "main": "dist/rollup-config-pectin.js",
+  "types": "dist/rollup-config-pectin.d.ts",
   "files": [
     "dist"
   ],

@@ -12,6 +12,7 @@
   "homepage": "https://github.com/evocateur/pectin/tree/latest/packages/pectin-api#readme",
   "license": "ISC",
   "main": "dist/pectin-api.js",
+  "types": "dist/pectin-api.d.ts",
   "files": [
     "auto.js",
     "dist"
