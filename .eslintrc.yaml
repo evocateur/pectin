@@ -2,6 +2,7 @@
   extends:
     - plugin:zillow/recommended
     - plugin:zillow/jest
+    - plugin:import/typescript
     - plugin:node/recommended
   env:
     browser: false
