@@ -34,6 +34,7 @@ module.exports = function CLI(argv, cwd) {
     return yargs(argv, cwd)
         .usage(
             '$0',
+            // @ts-ignore (typescript can't handle ...string concatenation?!?)
             'Execute incremental rollup builds on all monorepo packages.\n' +
                 'Any additional (unknown) arguments are passed to the rollup CLI.',
             () => {},

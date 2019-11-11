@@ -22,6 +22,7 @@ module.exports = async function getPlugins(pkg, cwd, output) {
         mainEntry(pkg),
         subpathExternals(pkg, output),
         // https://github.com/rollup/rollup-plugin-node-resolve#usage
+        // @ts-ignore
         nodeResolve({
             preferBuiltins: true,
             // https://github.com/rollup/rollup-plugin-node-resolve/pull/151
@@ -35,6 +36,7 @@ module.exports = async function getPlugins(pkg, cwd, output) {
             ],
         }),
         // https://github.com/rollup/rollup-plugin-replace#usage
+        // @ts-ignore
         replace(
             Object.assign(env ? { 'process.env.NODE_ENV': JSON.stringify(env) } : {}, {
                 'process.env.BROWSER': JSON.stringify(output.browser || false),
@@ -48,6 +50,7 @@ module.exports = async function getPlugins(pkg, cwd, output) {
         // https://github.com/rollup/rollup-plugin-babel#configuring-babel
         babel(rc),
         // https://github.com/rollup/rollup-plugin-commonjs#usage
+        // @ts-ignore
         commonjs(),
         min &&
             terser({
