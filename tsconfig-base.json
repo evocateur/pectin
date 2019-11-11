@@ -25,7 +25,6 @@
 
         /* Module Resolution Options */
         "moduleResolution": "node",
-        "esModuleInterop": true,
         // "preserveSymlinks": true,              /* Do not resolve the real path of symlinks. */
 
         /* Advanced Options */
