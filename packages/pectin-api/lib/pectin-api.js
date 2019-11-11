@@ -74,6 +74,7 @@ async function generateConfig(pkg, opts) {
     if (opts.watch) {
         // don't clear the screen during watch
         for (const obj of config) {
+            // @ts-ignore (missing rollup type, totally works mr. typescript)
             obj.watch = {
                 clearScreen: false,
             };
