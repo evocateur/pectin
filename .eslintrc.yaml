@@ -50,3 +50,7 @@
           - error
           - ignores:
               - modules
+        # typescript completely bamboozles these rules
+        zillow/import/newline-after-import: "off"
+        zillow/import/first: "off"
+        node/no-missing-import: "off"
