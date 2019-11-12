@@ -28,5 +28,8 @@
   },
   "peerDependencies": {
     "rollup": ">=1.0.0"
+  },
+  "dependencies": {
+    "@schemastore/package": "^0.0.5"
   }
 }

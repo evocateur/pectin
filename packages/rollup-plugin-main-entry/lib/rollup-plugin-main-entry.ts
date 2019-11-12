@@ -1,12 +1,14 @@
 import path = require('path');
 
-export default function rollupPluginMainEntry({
-    main,
-    rollup = {},
-    rootDir = rollup.rootDir || 'src',
-    cwd = '.',
-}) {
-    if (!main) {
+import { CoreProperties as PackageManifest } from '@schemastore/package';
+
+export default function mainEntry(
+    pkg: PackageManifest,
+    cwd = (pkg.cwd as string) || process.cwd()
+) {
+    const { rollup: { rootDir = 'src' } = {} } = pkg;
+
+    if (!pkg.main) {
         const location = path.relative('.', path.join(cwd, 'package.json'));
 
         throw new TypeError(`required field 'main' missing in ${location}`);
@@ -23,7 +25,7 @@ export default function rollupPluginMainEntry({
                 (Array.isArray(opts.input) && opts.input.length === 0)
             ) {
                 // eslint-disable-next-line no-param-reassign
-                opts.input = [path.resolve(cwd, rootDir, path.basename(main))];
+                opts.input = [path.resolve(cwd, rootDir as string, path.basename(pkg.main!))];
             }
 
             return opts;

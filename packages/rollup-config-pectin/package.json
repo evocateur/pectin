@@ -30,6 +30,7 @@
     "rollup": ">=1.12.0"
   },
   "dependencies": {
-    "@pectin/core": "file:../pectin-core"
+    "@pectin/core": "file:../pectin-core",
+    "@schemastore/package": "^0.0.5"
   }
 }

@@ -1,8 +1,10 @@
 import builtins = require('builtin-modules');
 import dotProp = require('dot-prop');
 
+import { CoreProperties as PackageManifest } from '@schemastore/package';
+
 // ensure subpath imports (lodash, babel-runtime) are also externalized
-export default function subpathExternals(pkg, output) {
+export default function subpathExternals(pkg: PackageManifest, output) {
     const external = dotProp.get(pkg, 'rollup.external');
     const bundled = dotProp.get(pkg, 'rollup.bundle');
     const { format } = output || {};

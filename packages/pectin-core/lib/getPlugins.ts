@@ -10,7 +10,9 @@ import svg = require('rollup-plugin-svg');
 import { terser } from 'rollup-plugin-terser';
 import babelrc from '@pectin/babelrc';
 
-export async function getPlugins(pkg, cwd, output) {
+import { CoreProperties as PackageManifest } from '@schemastore/package';
+
+export async function getPlugins(pkg: PackageManifest, cwd, output) {
     const env = dotProp.get(output, 'env');
     const fmt = dotProp.get(output, 'format');
     const min = fmt === 'umd' && env === 'production';

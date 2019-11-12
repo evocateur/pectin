@@ -3,7 +3,9 @@ import camelCase = require('camelcase');
 import npa = require('npm-package-arg');
 import dotProp = require('dot-prop');
 
-export function getOutput(pkg, cwd) {
+import { CoreProperties as PackageManifest } from '@schemastore/package';
+
+export function getOutput(pkg: PackageManifest, cwd) {
     const output = [];
 
     // generated chunks as of rollup v0.68.0 need chunkFileNames, not entryFileNames
@@ -12,10 +14,10 @@ export function getOutput(pkg, cwd) {
 
     output.push({
         format: 'cjs',
-        dir: path.dirname(path.resolve(cwd, pkg.main)),
+        dir: path.dirname(path.resolve(cwd, pkg.main!)),
         chunkFileNames,
         // only one entry point, thus no pattern is required
-        entryFileNames: path.basename(pkg.main),
+        entryFileNames: path.basename(pkg.main!),
     });
 
     if (pkg.module) {
@@ -38,15 +40,15 @@ export function getOutput(pkg, cwd) {
     } else if (pkg.browser) {
         // specific files (advanced)
         output.push(
-            pkg.browser[pkg.main] && {
-                file: path.resolve(cwd, pkg.browser[pkg.main]),
+            pkg.browser[pkg.main!] && {
+                file: path.resolve(cwd, pkg.browser[pkg.main!]),
                 format: 'cjs',
                 browser: true,
             }
         );
         output.push(
-            pkg.browser[pkg.module] && {
-                file: path.resolve(cwd, pkg.browser[pkg.module]),
+            pkg.browser[pkg.module!] && {
+                file: path.resolve(cwd, pkg.browser[pkg.module!]),
                 format: 'esm',
                 browser: true,
             }
@@ -75,7 +77,7 @@ export function getOutput(pkg, cwd) {
             };
 
             if (obj.format === 'umd') {
-                extra.name = nameToPascalCase(pkg.name);
+                extra.name = nameToPascalCase(pkg.name!);
                 extra.globals = Object.keys(pkg.peerDependencies || {}).reduce((acc, dep) => {
                     acc[dep] = nameToPascalCase(dep);
 

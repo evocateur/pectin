@@ -1,6 +1,8 @@
 import path = require('path');
 import dotProp = require('dot-prop');
 
+import { CoreProperties as PackageManifest } from '@schemastore/package';
+
 /**
  * By convention, entry points live in the 'src' directory with
  * the same filename as pkg.main.
@@ -9,10 +11,10 @@ import dotProp = require('dot-prop');
  *  - pkg.rollup.rootDir: changes the value of 'src'
  *  - pkg.rollup.input: the full path to entry file
  *
- * @param {Object} pkg
+ * @param {PackageManifest} pkg
  * @return {String} input path resolved to cwd
  */
-export function getInput(pkg, cwd) {
+export function getInput(pkg: PackageManifest, cwd) {
     if (!pkg.main) {
         const location = path.relative('.', path.join(cwd, 'package.json'));
 

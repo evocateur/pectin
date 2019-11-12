@@ -8,6 +8,8 @@ import { getPackages } from '@lerna/project';
 import runTopologically from '@lerna/run-topologically';
 import pectin from '@pectin/core';
 
+import { CoreProperties as PackageManifest } from '@schemastore/package';
+
 const statAsync = util.promisify(fs.stat);
 
 export async function findConfigs({
@@ -19,7 +21,8 @@ export async function findConfigs({
     const configs = await runTopologically(
         lernaPackages,
         // clones internal JSON, maps synthetic location to cwd property
-        pkg => generateConfig(pkg.toJSON(), { cwd: pkg.location, watch }),
+        (pkg: { toJSON: () => PackageManifest; location: string }) =>
+            generateConfig(pkg.toJSON(), { cwd: pkg.location, watch }),
         { concurrency }
     );
 
@@ -27,7 +30,7 @@ export async function findConfigs({
     return configs.reduce((acc, val) => acc.concat(val), []).filter(x => Boolean(x));
 }
 
-export async function generateConfig(pkg, opts) {
+export async function generateConfig(pkg: PackageManifest, opts) {
     let config;
 
     // completely ignore packages that opt-out

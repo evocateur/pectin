@@ -37,6 +37,7 @@
     "@lerna/project": "^3.0.0",
     "@lerna/run-topologically": "^3.16.0",
     "@pectin/core": "file:../pectin-core",
+    "@schemastore/package": "^0.0.5",
     "dot-prop": "^5.1.0",
     "globby": "^10.0.1"
   }

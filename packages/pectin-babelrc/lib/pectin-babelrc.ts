@@ -3,6 +3,8 @@ import cloneDeep = require('clone-deep');
 import cosmiconfig = require('cosmiconfig');
 import resolveFrom = require('resolve-from');
 
+import { CoreProperties as PackageManifest } from '@schemastore/package';
+
 const explorer = cosmiconfig('babel', {
     // we cannot cache transform because per-package dependencies affect result
     searchPlaces: [
@@ -62,7 +64,7 @@ function hasDynamicImportSyntax(plugin) {
     return typeof plugin === 'string' && /@babel\/(plugin-)?syntax-dynamic-import/.test(plugin);
 }
 
-export default async function babelrc(pkg, cwd, output) {
+export default async function babelrc(pkg: PackageManifest, cwd, output) {
     const { format = 'cjs' } = output || {};
     const searchResult = await explorer.search(cwd);
 
