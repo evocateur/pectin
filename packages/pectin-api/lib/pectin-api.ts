@@ -4,8 +4,8 @@ import path = require('path');
 import util = require('util');
 import dotProp = require('dot-prop');
 import globby = require('globby');
-import { getPackages } from '@lerna/project';
-import runTopologically from '@lerna/run-topologically';
+import project = require('@lerna/project');
+import runTopologically = require('@lerna/run-topologically');
 import pectin from '@pectin/core';
 
 import { CoreProperties as PackageManifest } from '@schemastore/package';
@@ -17,7 +17,7 @@ export async function findConfigs({
     concurrency = os.cpus().length,
     watch = !!process.env.ROLLUP_WATCH,
 } = {}) {
-    const lernaPackages = await getPackages(startDir);
+    const lernaPackages = await project.getPackages(opts.cwd);
     const configs = await runTopologically(
         lernaPackages,
         // clones internal JSON, maps synthetic location to cwd property
