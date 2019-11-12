@@ -2,8 +2,8 @@
 
 const log = require('npmlog');
 const { findConfigs } = require('@pectin/api');
-const invokeRollup = require('../lib/invoke-rollup');
-const cli = require('../lib/pectin-cli');
+const invokeRollup = require('../lib/invoke-rollup.ts');
+const cli = require('../lib/pectin-cli.ts');
 
 // silence logging
 log.level = 'silent';

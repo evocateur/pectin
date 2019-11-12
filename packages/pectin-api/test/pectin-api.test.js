@@ -4,7 +4,7 @@ const path = require('path');
 const Tacks = require('tacks');
 const tempy = require('tempy');
 const touch = require('touch');
-const { findConfigs, generateConfig, isUpToDate } = require('../lib/pectin-api');
+const { findConfigs, generateConfig, isUpToDate } = require('../lib/pectin-api.ts');
 
 const { Dir, File, Symlink } = Tacks;
 

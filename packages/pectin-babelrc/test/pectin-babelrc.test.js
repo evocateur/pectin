@@ -3,7 +3,7 @@
 const path = require('path');
 const Tacks = require('tacks');
 const tempy = require('tempy');
-const pectinBabelrc = require('../lib/pectin-babelrc');
+const pectinBabelrc = require('../lib/pectin-babelrc.ts');
 
 const { Dir, File, Symlink } = Tacks;
 

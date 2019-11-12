@@ -5,7 +5,7 @@ const { rollup } = require('rollup');
 const Tacks = require('tacks');
 const tempy = require('tempy');
 const pMap = require('p-map');
-const pectinCore = require('../lib/pectin-core');
+const pectinCore = require('../lib/pectin-core.ts');
 
 const { Dir, File, Symlink } = Tacks;
 

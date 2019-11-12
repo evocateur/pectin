@@ -2,7 +2,7 @@
 
 const path = require('path');
 const { rollup } = require('rollup');
-const mainEntry = require('../lib/rollup-plugin-main-entry');
+const mainEntry = require('../lib/rollup-plugin-main-entry.ts');
 
 function stubInput(relativeFilePath) {
     const fileName = path.resolve(relativeFilePath);
