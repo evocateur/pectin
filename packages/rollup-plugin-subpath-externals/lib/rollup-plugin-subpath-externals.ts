@@ -2,17 +2,18 @@ import builtins = require('builtin-modules');
 import dotProp = require('dot-prop');
 
 import { CoreProperties as PackageManifest } from '@schemastore/package';
+import { Plugin, OutputOptions, IsExternal } from 'rollup';
 
 // ensure subpath imports (lodash, babel-runtime) are also externalized
-export default function subpathExternals(pkg: PackageManifest, output) {
-    const external = dotProp.get(pkg, 'rollup.external');
-    const bundled = dotProp.get(pkg, 'rollup.bundle');
+export default function subpathExternals(pkg: PackageManifest, output?: OutputOptions): Plugin {
+    const external: string[] = dotProp.get(pkg, 'rollup.external', []);
+    const bundled: string[] = dotProp.get(pkg, 'rollup.bundle', []);
     const { format } = output || {};
     const { dependencies = {}, peerDependencies = {} } = pkg;
 
-    let pkgDeps;
+    let pkgDeps: string[];
 
-    if (external) {
+    if (external.length) {
         pkgDeps = external;
     } else if (format === 'umd') {
         pkgDeps = Object.keys(peerDependencies);
@@ -20,7 +21,7 @@ export default function subpathExternals(pkg: PackageManifest, output) {
         pkgDeps = Object.keys(dependencies).concat(Object.keys(peerDependencies));
     }
 
-    if (bundled) {
+    if (bundled.length) {
         const inlined = new Set(bundled);
 
         pkgDeps = pkgDeps.filter(dep => !inlined.has(dep));
@@ -32,7 +33,7 @@ export default function subpathExternals(pkg: PackageManifest, output) {
     // rollup-plugin-node-resolve emits silly warnings even with preferBuiltins: true
     const resolvedExternals = new Set(pkgDeps.concat(builtins));
 
-    function externalPredicate(id, _parentId, isResolved) {
+    const externalPredicate: IsExternal = (id, _parentId, isResolved) => {
         if (isResolved === true) {
             // early return when the work has already been done
             return resolvedExternals.has(id);
@@ -56,13 +57,15 @@ export default function subpathExternals(pkg: PackageManifest, output) {
         }
 
         return false;
-    }
+    };
 
     return {
         name: 'subpath-externals',
         options: opts => {
             // eslint-disable-next-line no-param-reassign
             opts.external = externalPredicate;
+
+            return opts;
         },
     };
 }

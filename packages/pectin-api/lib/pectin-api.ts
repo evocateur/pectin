@@ -9,14 +9,14 @@ import runTopologically = require('@lerna/run-topologically');
 import pectin from '@pectin/core';
 
 import { CoreProperties as PackageManifest } from '@schemastore/package';
+import { RollupOptions } from 'rollup';
 
 const statAsync = util.promisify(fs.stat);
 
-export async function findConfigs({
-    cwd: startDir = undefined,
-    concurrency = os.cpus().length,
-    watch = !!process.env.ROLLUP_WATCH,
-} = {}) {
+export async function findConfigs(opts: { cwd?: string; concurrency: number; watch: boolean }) {
+    const concurrency = opts.concurrency || os.cpus().length;
+    const watch = opts.watch || !!process.env.ROLLUP_WATCH;
+
     const lernaPackages = await project.getPackages(opts.cwd);
     const configs = await runTopologically(
         lernaPackages,
@@ -27,11 +27,19 @@ export async function findConfigs({
     );
 
     // flatten then compact
-    return configs.reduce((acc, val) => acc.concat(val), []).filter(x => Boolean(x));
+    return configs
+        .reduce((acc: any[], val: any) => acc.concat(val), [])
+        .filter((x: any) => Boolean(x));
 }
 
-export async function generateConfig(pkg: PackageManifest, opts) {
-    let config;
+export async function generateConfig(
+    pkg: PackageManifest,
+    opts: {
+        cwd?: string;
+        watch: boolean;
+    }
+): Promise<RollupOptions[] | null> {
+    let config: any;
 
     // completely ignore packages that opt-out
     if (dotProp.has(pkg, 'rollup.skip')) {
@@ -84,7 +92,7 @@ export async function generateConfig(pkg: PackageManifest, opts) {
     return config;
 }
 
-export async function isUpToDate(opts, config) {
+export async function isUpToDate(opts: { cwd?: string }, config: RollupOptions | RollupOptions[]) {
     // back-compat for old signature
     if (Array.isArray(config)) {
         // eslint-disable-next-line no-param-reassign
@@ -92,12 +100,13 @@ export async function isUpToDate(opts, config) {
     }
 
     // only need to test one output since all are built simultaneously
-    const outFile = config.output[0].dir
-        ? path.join(config.output[0].dir, config.output[0].entryFileNames)
-        : config.output[0].file;
+    const firstOutput = Array.isArray(config.output) ? config.output[0] : config.output || {};
+    const outFile = firstOutput.dir
+        ? path.join(firstOutput.dir, firstOutput.entryFileNames || '')
+        : firstOutput.file!;
 
     // short-circuit if output hasn't been built yet
-    let outputStat;
+    let outputStat: fs.Stats;
 
     try {
         outputStat = await statAsync(outFile);
@@ -116,7 +125,7 @@ export async function isUpToDate(opts, config) {
     ];
 
     // re-resolve cwd so logging-friendly relative paths don't muck things up
-    const cwd = path.resolve(path.dirname(config.input));
+    const cwd = path.resolve(path.dirname(config.input as string));
 
     if (cwd === opts.cwd) {
         // a "rooted" module needs to ignore output, test, & node_modules

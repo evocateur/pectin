@@ -7,7 +7,12 @@ import { invokeRollup } from './invoke-rollup';
 
 log.heading = 'pectin';
 
-async function handler(argv) {
+async function handler(argv: {
+    concurrency: number;
+    cwd: string;
+    watch: boolean;
+    _: string[];
+}): Promise<void> {
     const { version } = JSON.parse(
         fs.readFileSync(path.resolve(__dirname, '../package.json'), 'utf8')
     );
@@ -28,7 +33,7 @@ async function handler(argv) {
     }
 }
 
-export default function CLI(argv, cwd) {
+export default function CLI(argv: string[], cwd: string) {
     return yargs(argv, cwd)
         .usage(
             '$0',

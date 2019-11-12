@@ -14,7 +14,7 @@ export interface RollupOutputOptions extends OutputOptions {
     env?: string;
 }
 
-export function getOutput(pkg: PackageManifest, cwd) {
+export function getOutput(pkg: PackageManifest, cwd: string) {
     const output: RollupOutputOptions[] = [];
 
     // generated chunks as of rollup v0.68.0 need chunkFileNames, not entryFileNames
@@ -99,13 +99,13 @@ export function getOutput(pkg: PackageManifest, cwd) {
         });
 }
 
-function safeName(name) {
+function safeName(name: string) {
     const spec = npa(name);
 
     return spec.scope ? spec.name.substr(spec.name.indexOf('/') + 1) : spec.name;
 }
 
-function nameToPascalCase(str) {
+function nameToPascalCase(str: string) {
     const name = safeName(str);
 
     return camelCase(name, { pascalCase: true });

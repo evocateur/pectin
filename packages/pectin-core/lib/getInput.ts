@@ -14,7 +14,7 @@ import { CoreProperties as PackageManifest } from '@schemastore/package';
  * @param {PackageManifest} pkg
  * @return {String} input path resolved to cwd
  */
-export function getInput(pkg: PackageManifest, cwd) {
+export function getInput(pkg: PackageManifest, cwd: string): string {
     if (!pkg.main) {
         const location = path.relative('.', path.join(cwd, 'package.json'));
 
@@ -27,6 +27,6 @@ export function getInput(pkg: PackageManifest, cwd) {
     return path.resolve(cwd, input);
 }
 
-function rebaseInput(rootDir, filePath) {
+function rebaseInput(rootDir: string, filePath: string) {
     return path.join(rootDir, path.basename(filePath));
 }

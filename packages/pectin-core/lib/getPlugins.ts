@@ -13,14 +13,14 @@ import babelrc from '@pectin/babelrc';
 import { CoreProperties as PackageManifest } from '@schemastore/package';
 import { RollupOutputOptions } from './getOutput';
 
-export async function getPlugins(pkg: PackageManifest, cwd, output: RollupOutputOptions) {
-    const env = dotProp.get(output, 'env');
-    const fmt = dotProp.get(output, 'format');
+export async function getPlugins(pkg: PackageManifest, cwd: string, output: RollupOutputOptions) {
+    const env: string | undefined = dotProp.get(output, 'env');
+    const fmt: string | undefined = dotProp.get(output, 'format');
     const min = fmt === 'umd' && env === 'production';
     const rc = await babelrc(pkg, cwd, output);
 
     return [
-        mainEntry(pkg),
+        mainEntry(pkg, cwd),
         subpathExternals(pkg, output),
         // https://github.com/rollup/rollup-plugin-node-resolve#usage
         nodeResolve({

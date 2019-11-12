@@ -4,6 +4,7 @@ import cosmiconfig = require('cosmiconfig');
 import resolveFrom = require('resolve-from');
 
 import { CoreProperties as PackageManifest } from '@schemastore/package';
+import { OutputOptions } from 'rollup';
 
 const explorer = cosmiconfig('babel', {
     // we cannot cache transform because per-package dependencies affect result
@@ -17,21 +18,21 @@ const explorer = cosmiconfig('babel', {
     ],
 });
 
-function isRuntimeTransform(plugin) {
+function isRuntimeTransform(plugin: string) {
     return /@babel\/(plugin-)?transform-runtime/.test(plugin);
 }
 
-function hasSimpleTransform(plugin) {
+function hasSimpleTransform(plugin: string | unknown) {
     return typeof plugin === 'string' && isRuntimeTransform(plugin);
 }
 
-function hasAdvancedTransform(plugin) {
+function hasAdvancedTransform(plugin: string[] | unknown) {
     return Array.isArray(plugin) && isRuntimeTransform(plugin[0]);
 }
 
 // @see https://github.com/babel/babel/issues/10261
 // @see https://github.com/babel/babel/pull/10325
-function resolveDependencyVersion(cwd, depName) {
+function resolveDependencyVersion(cwd: string, depName: string): string | undefined {
     // we can't do a straight-up `require('@babel/runtime/package.json')`
     // because that doesn't respect the target package's cwd
     const pkgPath = resolveFrom(cwd, `${depName}/package.json`);
@@ -41,7 +42,10 @@ function resolveDependencyVersion(cwd, depName) {
     return pkgPath ? require(pkgPath).version : undefined;
 }
 
-function ensureRuntimeHelpers(rc, entryOptions) {
+function ensureRuntimeHelpers(
+    rc: cosmiconfig.Config,
+    entryOptions: { useESModules: boolean; version: string | undefined; corejs?: number }
+): void {
     if (rc.plugins.some(hasSimpleTransform)) {
         const idx = rc.plugins.findIndex(hasSimpleTransform);
         const name = rc.plugins[idx];
@@ -60,11 +64,15 @@ function ensureRuntimeHelpers(rc, entryOptions) {
     rc.runtimeHelpers = true;
 }
 
-function hasDynamicImportSyntax(plugin) {
+function hasDynamicImportSyntax(plugin: string) {
     return typeof plugin === 'string' && /@babel\/(plugin-)?syntax-dynamic-import/.test(plugin);
 }
 
-export default async function babelrc(pkg: PackageManifest, cwd, output) {
+export default async function babelrc(
+    pkg: PackageManifest,
+    cwd: string = process.cwd(),
+    output: OutputOptions
+) {
     const { format = 'cjs' } = output || {};
     const searchResult = await explorer.search(cwd);
 

@@ -2,7 +2,12 @@ import path = require('path');
 import resolveFrom = require('resolve-from');
 
 // istanbul ignore next
-export function invokeRollup(argv) {
+export function invokeRollup(argv: {
+    concurrency: number;
+    cwd: string;
+    watch: boolean;
+    _: string[];
+}) {
     const corePath = resolveFrom(__dirname, '@pectin/api/package.json');
     const autoPath = path.join(path.dirname(corePath), 'auto.js');
     const opts = ['--config', autoPath];
