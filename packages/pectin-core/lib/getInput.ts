@@ -3,6 +3,10 @@ import dotProp = require('dot-prop');
 
 import { CoreProperties as PackageManifest } from '@schemastore/package';
 
+function rebaseInput(rootDir: string, filePath: string) {
+    return path.join(rootDir, path.basename(filePath));
+}
+
 /**
  * By convention, entry points live in the 'src' directory with
  * the same filename as pkg.main.
@@ -25,8 +29,4 @@ export function getInput(pkg: PackageManifest, cwd: string): string {
     const input = dotProp.get(pkg, 'rollup.input', rebaseInput(rootDir, pkg.main));
 
     return path.resolve(cwd, input);
-}
-
-function rebaseInput(rootDir: string, filePath: string) {
-    return path.join(rootDir, path.basename(filePath));
 }

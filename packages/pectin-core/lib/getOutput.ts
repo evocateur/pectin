@@ -14,6 +14,18 @@ export interface RollupOutputOptions extends OutputOptions {
     env?: string;
 }
 
+function safeName(name: string) {
+    const spec = npa(name);
+
+    return spec.scope ? spec.name.substr(spec.name.indexOf('/') + 1) : spec.name;
+}
+
+function nameToPascalCase(str: string) {
+    const name = safeName(str);
+
+    return camelCase(name, { pascalCase: true });
+}
+
 export function getOutput(pkg: PackageManifest, cwd: string) {
     const output: RollupOutputOptions[] = [];
 
@@ -97,16 +109,4 @@ export function getOutput(pkg: PackageManifest, cwd: string) {
 
             return Object.assign(obj, extra);
         });
-}
-
-function safeName(name: string) {
-    const spec = npa(name);
-
-    return spec.scope ? spec.name.substr(spec.name.indexOf('/') + 1) : spec.name;
-}
-
-function nameToPascalCase(str: string) {
-    const name = safeName(str);
-
-    return camelCase(name, { pascalCase: true });
 }
