@@ -52,6 +52,7 @@ export async function getPlugins(pkg: PackageManifest, cwd: string, output: Roll
         commonjs(),
         min &&
             terser({
+                /* eslint-disable @typescript-eslint/camelcase */
                 // https://github.com/terser-js/terser#minify-options
                 compress: {
                     pure_getters: true,
@@ -62,6 +63,7 @@ export async function getPlugins(pkg: PackageManifest, cwd: string, output: Roll
                     keep_classnames: true,
                     keep_fnames: true,
                 },
+                /* eslint-enable @typescript-eslint/camelcase */
             }),
     ].filter(x => Boolean(x));
 }

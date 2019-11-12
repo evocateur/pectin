@@ -37,6 +37,7 @@ export default function CLI(argv: string[], cwd: string) {
     return yargs(argv, cwd)
         .usage(
             '$0',
+            // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
             // @ts-ignore (typescript can't handle ...string concatenation?!?)
             'Execute incremental rollup builds on all monorepo packages.\n' +
                 'Any additional (unknown) arguments are passed to the rollup CLI.',

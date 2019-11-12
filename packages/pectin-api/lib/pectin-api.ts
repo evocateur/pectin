@@ -79,6 +79,7 @@ export async function generateConfig(
     if (opts.watch) {
         // don't clear the screen during watch
         for (const obj of config) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
             // @ts-ignore (missing rollup type, totally works mr. typescript)
             obj.watch = {
                 clearScreen: false,
@@ -136,6 +137,7 @@ export async function isUpToDate(opts: { cwd?: string }, config: RollupOptions |
 
     // gather fs.Stat objects for mtime comparison
     const results = await globby(matchers, { cwd, stats: true });
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
     // @ts-ignore (it works, trust me mr. typescript)
     const fileStats = results.map(obj => obj.stats);
     const lastBuilt = outputStat.mtime.getTime();
