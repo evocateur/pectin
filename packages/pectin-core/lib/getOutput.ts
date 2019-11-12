@@ -4,9 +4,18 @@ import npa = require('npm-package-arg');
 import dotProp = require('dot-prop');
 
 import { CoreProperties as PackageManifest } from '@schemastore/package';
+import { OutputOptions } from 'rollup';
+
+export interface RollupOutputOptions extends OutputOptions {
+    /** An ad-hoc property to indicate this is a browser build */
+    browser?: boolean;
+
+    /** An ad-hoc property to customize the node environment */
+    env?: string;
+}
 
 export function getOutput(pkg: PackageManifest, cwd) {
-    const output = [];
+    const output: RollupOutputOptions[] = [];
 
     // generated chunks as of rollup v0.68.0 need chunkFileNames, not entryFileNames
     const chunkFileNames = dotProp.get(pkg, 'rollup.chunkFileNames', '[name]-[hash].[format].js');
@@ -72,7 +81,7 @@ export function getOutput(pkg: PackageManifest, cwd) {
     return output
         .filter(x => Boolean(x))
         .map(obj => {
-            const extra = {
+            const extra: RollupOutputOptions = {
                 exports: obj.format === 'esm' ? 'named' : 'auto',
             };
 

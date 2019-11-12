@@ -11,8 +11,9 @@ import { terser } from 'rollup-plugin-terser';
 import babelrc from '@pectin/babelrc';
 
 import { CoreProperties as PackageManifest } from '@schemastore/package';
+import { RollupOutputOptions } from './getOutput';
 
-export async function getPlugins(pkg: PackageManifest, cwd, output) {
+export async function getPlugins(pkg: PackageManifest, cwd, output: RollupOutputOptions) {
     const env = dotProp.get(output, 'env');
     const fmt = dotProp.get(output, 'format');
     const min = fmt === 'umd' && env === 'production';
