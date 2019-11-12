@@ -7,4 +7,6 @@
     node/no-missing-require,
     zillow/import/no-unresolved
 */
-require('../dist/pectin-cli')().parse(process.argv.slice(2));
+require('../dist/pectin-cli')
+    .default()
+    .parse(process.argv.slice(2));
