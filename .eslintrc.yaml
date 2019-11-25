@@ -10,6 +10,8 @@
   plugins:
     - node
   rules:
+    # prettier handles max-len fine
+    max-len: "off"
     no-restricted-syntax:
       - error
       - ForInStatement
