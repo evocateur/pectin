@@ -33,6 +33,7 @@ async function handler(argv: {
     }
 }
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function CLI(argv: string[], cwd: string) {
     return yargs(argv, cwd)
         .usage(
@@ -56,7 +57,7 @@ export default function CLI(argv: string[], cwd: string) {
             cwd: {
                 description: 'Current working directory',
                 defaultDescription: 'process.cwd()',
-                default: () => process.cwd(),
+                default: (): string => process.cwd(),
             },
             concurrency: {
                 description: 'Number of concurrent filesystem tasks',

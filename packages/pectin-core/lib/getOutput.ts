@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import path = require('path');
 import camelCase = require('camelcase');
 import npa = require('npm-package-arg');
@@ -14,19 +15,19 @@ export interface RollupOutputOptions extends OutputOptions {
     env?: string;
 }
 
-function safeName(name: string) {
+function safeName(name: string): string {
     const spec = npa(name);
 
     return spec.scope ? spec.name.substr(spec.name.indexOf('/') + 1) : spec.name;
 }
 
-function nameToPascalCase(str: string) {
+function nameToPascalCase(str: string): string {
     const name = safeName(str);
 
     return camelCase(name, { pascalCase: true });
 }
 
-export function getOutput(pkg: PackageManifest, cwd: string) {
+export function getOutput(pkg: PackageManifest, cwd: string): RollupOutputOptions[] {
     const output: RollupOutputOptions[] = [];
 
     // generated chunks as of rollup v0.68.0 need chunkFileNames, not entryFileNames

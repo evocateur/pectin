@@ -7,7 +7,7 @@ export function invokeRollup(argv: {
     cwd: string;
     watch: boolean;
     _: string[];
-}) {
+}): void {
     const corePath = resolveFrom(__dirname, '@pectin/api/package.json');
     const autoPath = path.join(path.dirname(corePath), 'auto.js');
     const opts = ['--config', autoPath];

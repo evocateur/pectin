@@ -2,7 +2,7 @@ import builtins = require('builtin-modules');
 import dotProp = require('dot-prop');
 
 import { CoreProperties as PackageManifest } from '@schemastore/package';
-import { Plugin, OutputOptions, IsExternal } from 'rollup';
+import { Plugin, OutputOptions, IsExternal, InputOptions } from 'rollup';
 
 // ensure subpath imports (lodash, babel-runtime) are also externalized
 export default function subpathExternals(pkg: PackageManifest, output?: OutputOptions): Plugin {
@@ -61,7 +61,7 @@ export default function subpathExternals(pkg: PackageManifest, output?: OutputOp
 
     return {
         name: 'subpath-externals',
-        options: opts => {
+        options: (opts): InputOptions => {
             // eslint-disable-next-line no-param-reassign
             opts.external = externalPredicate;
 

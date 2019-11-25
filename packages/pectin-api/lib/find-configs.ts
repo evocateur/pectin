@@ -27,6 +27,6 @@ export async function findConfigs(opts?: {
 
     // flatten then compact
     return configs
-        .reduce((acc: any[], val: any) => acc.concat(val), [])
-        .filter((x: any) => Boolean(x));
+        .reduce((acc: RollupOptions[], val: RollupOptions) => acc.concat(val), [])
+        .filter((x: RollupOptions) => Boolean(x));
 }

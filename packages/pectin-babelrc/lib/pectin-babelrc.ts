@@ -18,15 +18,15 @@ const explorer = cosmiconfig('babel', {
     ],
 });
 
-function isRuntimeTransform(plugin: string) {
+function isRuntimeTransform(plugin: string): boolean {
     return /@babel\/(plugin-)?transform-runtime/.test(plugin);
 }
 
-function hasSimpleTransform(plugin: string | unknown) {
+function hasSimpleTransform(plugin: string | unknown): boolean {
     return typeof plugin === 'string' && isRuntimeTransform(plugin);
 }
 
-function hasAdvancedTransform(plugin: string[] | unknown) {
+function hasAdvancedTransform(plugin: string[] | unknown): boolean {
     return Array.isArray(plugin) && isRuntimeTransform(plugin[0]);
 }
 
@@ -64,7 +64,7 @@ function ensureRuntimeHelpers(
     rc.runtimeHelpers = true;
 }
 
-function hasDynamicImportSyntax(plugin: string) {
+function hasDynamicImportSyntax(plugin: string): boolean {
     return typeof plugin === 'string' && /@babel\/(plugin-)?syntax-dynamic-import/.test(plugin);
 }
 
@@ -72,7 +72,7 @@ export default async function babelrc(
     pkg: PackageManifest,
     cwd: string = process.cwd(),
     output: OutputOptions
-) {
+): Promise<cosmiconfig.Config> {
     const { format = 'cjs' } = output || {};
     const searchResult = await explorer.search(cwd);
 

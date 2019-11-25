@@ -14,7 +14,7 @@ export async function generateConfig(
         watch: boolean;
     }
 ): Promise<RollupOptions[] | null> {
-    let config: any;
+    let config: RollupOptions[];
 
     // completely ignore packages that opt-out
     if (dotProp.has(pkg, 'rollup.skip')) {
@@ -39,7 +39,7 @@ export async function generateConfig(
 
         // improve the logging output by shortening the input path
         for (const obj of config) {
-            obj.input = path.relative('.', obj.input);
+            obj.input = path.relative('.', obj.input as string);
         }
     } catch (ex) {
         // skip packages that throw errors (e.g., missing pkg.main)

@@ -7,7 +7,10 @@ import { RollupOptions } from 'rollup';
 
 const statAsync = util.promisify(fs.stat);
 
-export async function isUpToDate(opts: { cwd?: string }, config: RollupOptions | RollupOptions[]) {
+export async function isUpToDate(
+    opts: { cwd?: string },
+    config: RollupOptions | RollupOptions[]
+): Promise<boolean> {
     // back-compat for old signature
     if (Array.isArray(config)) {
         // eslint-disable-next-line no-param-reassign
@@ -18,7 +21,8 @@ export async function isUpToDate(opts: { cwd?: string }, config: RollupOptions |
     const firstOutput = Array.isArray(config.output) ? config.output[0] : config.output || {};
     const outFile = firstOutput.dir
         ? path.join(firstOutput.dir, firstOutput.entryFileNames || '')
-        : firstOutput.file!;
+        : // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          firstOutput.file!;
 
     // short-circuit if output hasn't been built yet
     let outputStat: fs.Stats;

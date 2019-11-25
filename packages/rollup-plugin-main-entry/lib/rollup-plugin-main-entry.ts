@@ -1,7 +1,7 @@
 import path = require('path');
 
 import { CoreProperties as PackageManifest } from '@schemastore/package';
-import { Plugin } from 'rollup';
+import { Plugin, InputOptions } from 'rollup';
 
 export default function mainEntry(
     pkg: PackageManifest,
@@ -17,7 +17,7 @@ export default function mainEntry(
 
     return {
         name: 'main-entry',
-        options(opts) {
+        options: (opts): InputOptions => {
             // by convention, entry points always live in 'src' directory
             // with the same filename as pkg.main
             if (
@@ -25,7 +25,7 @@ export default function mainEntry(
                 // rollup v1.11.0 now defaults missing input to an empty array
                 (Array.isArray(opts.input) && opts.input.length === 0)
             ) {
-                // eslint-disable-next-line no-param-reassign
+                // eslint-disable-next-line no-param-reassign, @typescript-eslint/no-non-null-assertion
                 opts.input = [path.resolve(cwd, rootDir as string, path.basename(pkg.main!))];
             }
 

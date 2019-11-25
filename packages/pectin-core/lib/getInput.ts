@@ -3,7 +3,7 @@ import dotProp = require('dot-prop');
 
 import { CoreProperties as PackageManifest } from '@schemastore/package';
 
-function rebaseInput(rootDir: string, filePath: string) {
+function rebaseInput(rootDir: string, filePath: string): string {
     return path.join(rootDir, path.basename(filePath));
 }
 
