@@ -34,7 +34,7 @@ async function handler(argv: {
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default function CLI(argv: string[], cwd: string) {
+export default function CLI(argv?: string[], cwd?: string) {
     return yargs(argv, cwd)
         .usage(
             '$0',
