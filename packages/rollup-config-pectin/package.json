@@ -32,5 +32,8 @@
   "dependencies": {
     "@pectin/core": "file:../pectin-core",
     "@schemastore/package": "^0.0.5"
+  },
+  "devDependencies": {
+    "ts-jest": "^24.2.0"
   }
 }

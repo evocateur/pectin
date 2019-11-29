@@ -40,5 +40,8 @@
     "@schemastore/package": "^0.0.5",
     "dot-prop": "^5.1.0",
     "globby": "^10.0.1"
+  },
+  "devDependencies": {
+    "ts-jest": "^24.2.0"
   }
 }

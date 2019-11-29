@@ -38,5 +38,8 @@
     "clone-deep": "^4.0.1",
     "cosmiconfig": "^5.2.0",
     "resolve-from": "^5.0.0"
+  },
+  "devDependencies": {
+    "ts-jest": "^24.2.0"
   }
 }

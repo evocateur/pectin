@@ -50,5 +50,8 @@
     "rollup-plugin-subpath-externals": "file:../rollup-plugin-subpath-externals",
     "rollup-plugin-svg": "^1.0.1",
     "rollup-plugin-terser": "^5.0.0"
+  },
+  "devDependencies": {
+    "ts-jest": "^24.2.0"
   }
 }
