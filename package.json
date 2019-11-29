@@ -59,6 +59,7 @@
     "@types/cosmiconfig": "^5.0.3",
     "@types/jest": "^24.0.22",
     "@types/npmlog": "^4.1.2",
+    "@types/touch": "^3.1.1",
     "@typescript-eslint/eslint-plugin": "^2.6.1",
     "@typescript-eslint/parser": "^2.6.1",
     "babel-core": "^7.0.0-bridge.0",
