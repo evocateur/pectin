@@ -1,17 +1,22 @@
-'use strict';
-
-const path = require('path');
-const Tacks = require('tacks');
-const tempy = require('tempy');
-const touch = require('touch');
-const { findConfigs, generateConfig, isUpToDate } = require('../lib/pectin-api.ts');
+import path = require('path');
+import Tacks = require('tacks');
+import tempy = require('tempy');
+import touch = require('touch');
+import { findConfigs, generateConfig, isUpToDate } from '../lib/pectin-api';
 
 const { Dir, File, Symlink } = Tacks;
 
-const makeUpdater = cwd => {
+type UpdateHelper = {
+    (fp: string): Promise<void>;
+    cwd: string;
+};
+
+const makeUpdater = (cwd: string): UpdateHelper => {
     const ctime = Date.now() / 1000;
-    const opts = { mtime: ctime + 1 };
-    const updater = async fp => touch(path.join(cwd, 'modules', fp), opts);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore (the types are wrong, stuff it mr. typescript)
+    const opts: touch.Options = { mtime: ctime + 1 };
+    const updater = async (fp: string): Promise<void> => touch(path.join(cwd, 'modules', fp), opts);
 
     // avoid process.cwd() calls
     updater.cwd = cwd;
@@ -19,7 +24,9 @@ const makeUpdater = cwd => {
     return updater;
 };
 
-function createFixture(pkgSpec) {
+type TacksItem = Tacks.Dir | Tacks.File | Tacks.Symlink;
+
+function createFixture(pkgSpec: { [fp: string]: TacksItem }): UpdateHelper {
     const cwd = tempy.directory();
     const fixture = new Tacks(
         Dir({
@@ -274,7 +281,7 @@ describe('pectin-api', () => {
         await updateFile('unwatched/src/index.js');
 
         // simulate `rollup --watch`
-        process.env.ROLLUP_WATCH = true;
+        process.env.ROLLUP_WATCH = 'true';
 
         await expect(findConfigs()).resolves.toStrictEqual([]);
     });
