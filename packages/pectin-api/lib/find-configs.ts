@@ -9,8 +9,8 @@ import { generateConfig } from './generate-config';
 
 export async function findConfigs(opts?: {
     cwd?: string;
-    concurrency: number;
-    watch: boolean;
+    concurrency?: number;
+    watch?: boolean;
 }): Promise<RollupOptions[]> {
     const concurrency = (opts && opts.concurrency) || os.cpus().length;
     const watch =

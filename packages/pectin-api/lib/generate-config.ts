@@ -11,7 +11,7 @@ export async function generateConfig(
     pkg: PackageManifest,
     opts: {
         cwd?: string;
-        watch: boolean;
+        watch?: boolean;
     }
 ): Promise<RollupOptions[] | null> {
     let config: RollupOptions[];
