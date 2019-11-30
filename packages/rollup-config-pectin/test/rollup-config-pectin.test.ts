@@ -1,6 +1,4 @@
-'use strict';
-
-const path = require('path');
+import path = require('path');
 
 const REPO_ROOT = path.resolve(__dirname, '../../..');
 const CONFIG_FILE = path.resolve(__dirname, '../lib/rollup-config-pectin');
@@ -9,7 +7,9 @@ expect.addSnapshotSerializer({
     test(val) {
         return typeof val === 'string' && val.indexOf(REPO_ROOT) > -1;
     },
-    serialize(val, config, indentation, depth) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore (the types are wrong, yet again)
+    serialize(val: string, config, indentation: string, depth: number) {
         const str = val.replace(REPO_ROOT, '<REPO_ROOT>');
 
         // top-level strings don't need quotes, but nested ones do (object properties, etc)
