@@ -53,21 +53,6 @@ describe('rollup-plugin-main-entry', () => {
         expect(chunk.exports).toContain('theAnswer');
     });
 
-    it('accepts custom rootDir option', async () => {
-        const bundle = await rollup({
-            plugins: [
-                stubInput('modules/foo.js'),
-                mainEntry({
-                    main: 'lib/foo.js',
-                    rootDir: 'modules',
-                }),
-            ],
-        });
-        const chunk = await getEntryChunk(bundle);
-
-        expect(chunk.exports).toContain('theAnswer');
-    });
-
     it('accepts custom rollup.rootDir option', async () => {
         const bundle = await rollup({
             plugins: [
