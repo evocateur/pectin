@@ -208,7 +208,7 @@ describe('rollup-plugin-subpath-externals', () => {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('react')) :
     typeof define === 'function' && define.amd ? define(['react'], factory) :
     (global = global || self, global.StubComponent = factory(global.React));
-}(this, function (React) { 'use strict';
+}(this, (function (React) { 'use strict';
 
     React = React && React.hasOwnProperty('default') ? React['default'] : React;
 
@@ -218,7 +218,7 @@ describe('rollup-plugin-subpath-externals', () => {
 
     return stub;
 
-}));
+})));
 "
 `);
     });
