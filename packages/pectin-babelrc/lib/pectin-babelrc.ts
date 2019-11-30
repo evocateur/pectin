@@ -71,7 +71,7 @@ function hasDynamicImportSyntax(plugin: string): boolean {
 export default async function babelrc(
     pkg: PackageManifest,
     cwd: string = process.cwd(),
-    output: OutputOptions
+    output?: OutputOptions
 ): Promise<cosmiconfig.Config> {
     const { format = 'cjs' } = output || {};
     const searchResult = await explorer.search(cwd);
