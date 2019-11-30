@@ -1,21 +1,20 @@
-'use strict';
+import path = require('path');
+import { rollup, Plugin, RollupBuild, OutputChunk, PreRenderedChunk } from 'rollup';
+import mainEntry from '../lib/rollup-plugin-main-entry';
 
-const path = require('path');
-const { rollup } = require('rollup');
-const mainEntry = require('../lib/rollup-plugin-main-entry.ts');
-
-function stubInput(relativeFilePath) {
+function stubInput(relativeFilePath: string): Plugin {
     const fileName = path.resolve(relativeFilePath);
 
     return {
-        resolveId: id => {
+        name: 'stub-input',
+        resolveId: (id): string => {
             if (id === fileName) {
                 return fileName;
             }
 
             return null;
         },
-        load: id => {
+        load: (id): string => {
             if (id === fileName) {
                 return 'export const theAnswer = 42;';
             }
@@ -25,10 +24,11 @@ function stubInput(relativeFilePath) {
     };
 }
 
-async function getEntryChunk(bundle, config = { format: 'esm' }) {
-    const { output } = await bundle.generate(config);
+async function getEntryChunk(bundle: RollupBuild): Promise<OutputChunk> {
+    const { output } = await bundle.generate({ format: 'esm' });
 
-    return output.find(chunk => chunk.isEntry);
+    // jesus this is convoluted. apparently interface extension only works for one hop?
+    return (output as OutputChunk[]).find(chunk => (chunk as PreRenderedChunk).isEntry);
 }
 
 describe('rollup-plugin-main-entry', () => {
