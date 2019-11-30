@@ -42,6 +42,7 @@
       rules:
         # dev dependencies are hoisted to the root
         zillow/import/no-extraneous-dependencies: "off"
+        node/no-extraneous-import: "off"
         node/no-extraneous-require: "off"
     - files: '*.ts'
       parser: '@typescript-eslint/parser'
