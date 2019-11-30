@@ -1,9 +1,7 @@
-'use strict';
-
-const path = require('path');
-const Tacks = require('tacks');
-const tempy = require('tempy');
-const pectinBabelrc = require('../lib/pectin-babelrc.ts');
+import path = require('path');
+import Tacks = require('tacks');
+import tempy = require('tempy');
+import pectinBabelrc from '../lib/pectin-babelrc';
 
 const { Dir, File, Symlink } = Tacks;
 
@@ -13,12 +11,13 @@ const BABEL_RUNTIME_DEFAULT_VERSION = require('@babel/runtime/package.json').ver
 const BABEL_RUNTIME_COREJS2_VERSION = require('@babel/runtime-corejs2/package.json').version;
 const BABEL_RUNTIME_COREJS3_VERSION = require('@babel/runtime-corejs3/package.json').version;
 
-function createFixture(spec) {
+function createFixture(spec): string {
     const cwd = tempy.directory();
 
     new Tacks(
         Dir({
             // spicy symlink necessary due to potential runtime package resolution
+            // eslint-disable-next-line @typescript-eslint/camelcase
             node_modules: Symlink(path.relative(cwd, path.join(REPO_ROOT, 'node_modules'))),
             ...spec,
         })
@@ -35,7 +34,9 @@ expect.addSnapshotSerializer({
     test(val) {
         return typeof val === 'string' && TEMP_DIR_REGEXP.test(val);
     },
-    serialize(val, config, indentation, depth) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore (the types are wrong, yet again)
+    serialize(val: string, config, indentation: string, depth: number) {
         const str = val.replace(TEMP_DIR_REGEXP, (match, cwd, subPath) =>
             path.join('<REPO_ROOT>', subPath)
         );
@@ -534,16 +535,11 @@ describe('pectin-babelrc', () => {
             }),
         });
 
-        pkg1.cwd = path.join(cwd, 'packages', 'pkg1');
-        pkg2.cwd = path.join(cwd, 'packages', 'pkg2');
-        pkg3.cwd = path.join(cwd, 'packages', 'pkg3');
-        pkg4.cwd = path.join(cwd, 'packages', 'pkg4');
-
         const [config1, config2, config3, config4] = await Promise.all([
-            pectinBabelrc(pkg1, pkg1.cwd),
-            pectinBabelrc(pkg2, pkg2.cwd),
-            pectinBabelrc(pkg3, pkg3.cwd),
-            pectinBabelrc(pkg4, pkg4.cwd, { format: 'esm' }),
+            pectinBabelrc(pkg1, path.join(cwd, 'packages', 'pkg1')),
+            pectinBabelrc(pkg2, path.join(cwd, 'packages', 'pkg2')),
+            pectinBabelrc(pkg3, path.join(cwd, 'packages', 'pkg3')),
+            pectinBabelrc(pkg4, path.join(cwd, 'packages', 'pkg4'), { format: 'esm' }),
         ]);
 
         expect(config1).toMatchInlineSnapshot(`
