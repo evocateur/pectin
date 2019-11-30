@@ -1,10 +1,10 @@
 import dotProp = require('dot-prop');
 import babel = require('rollup-plugin-babel');
-import commonjs from 'rollup-plugin-commonjs';
+import commonjs = require('rollup-plugin-commonjs');
 import json = require('rollup-plugin-json');
-import nodeResolve from 'rollup-plugin-node-resolve';
+import nodeResolve = require('rollup-plugin-node-resolve');
 import mainEntry from 'rollup-plugin-main-entry';
-import replace from 'rollup-plugin-replace';
+import replace = require('rollup-plugin-replace');
 import subpathExternals from 'rollup-plugin-subpath-externals';
 import svg = require('rollup-plugin-svg');
 import { terser } from 'rollup-plugin-terser';
@@ -28,6 +28,8 @@ export async function getPlugins(
         mainEntry(pkg, cwd),
         subpathExternals(pkg, output),
         // https://github.com/rollup/rollup-plugin-node-resolve#usage
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore (it fucking works, goddammit)
         nodeResolve({
             preferBuiltins: true,
             // https://github.com/rollup/rollup-plugin-node-resolve/pull/151
@@ -41,6 +43,8 @@ export async function getPlugins(
             ],
         }),
         // https://github.com/rollup/rollup-plugin-replace#usage
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore (it fucking works, goddammit)
         replace(
             Object.assign(env ? { 'process.env.NODE_ENV': JSON.stringify(env) } : {}, {
                 'process.env.BROWSER': JSON.stringify(output.browser || false),
@@ -54,6 +58,8 @@ export async function getPlugins(
         // https://github.com/rollup/rollup-plugin-babel#configuring-babel
         babel(rc),
         // https://github.com/rollup/rollup-plugin-commonjs#usage
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore (it fucking works, goddammit)
         commonjs(),
         min &&
             terser({
