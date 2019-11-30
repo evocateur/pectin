@@ -170,11 +170,11 @@ describe('pectin-api', () => {
             }),
         });
 
-        await [
+        await Promise.all([
             updateFile('old-input/lib/index.js'),
             // less than OR equal
             updateFile('old-input/src/other.js'),
-        ];
+        ]);
 
         await expect(findConfigs()).resolves.toStrictEqual([]);
     });
@@ -240,14 +240,14 @@ describe('pectin-api', () => {
             }),
         });
 
-        await [
+        await Promise.all([
             updateFile('rooted-ignore/__tests__/ignored.js'),
             updateFile('rooted-ignore/node_modules/foo/index.js'),
             updateFile('rooted-ignore/src/__tests__/ignored.js'),
             updateFile('rooted-ignore/src/ignored-test.js'),
             updateFile('rooted-ignore/src/ignored.test.js'),
             updateFile('rooted-ignore/test/ignored.js'),
-        ];
+        ]);
 
         await expect(findConfigs()).resolves.toStrictEqual([]);
     });
@@ -394,10 +394,10 @@ describe('pectin-api', () => {
             }),
         });
 
-        await [
+        await Promise.all([
             updateFile('app/src/other.js'),
             updateFile('lib/missing-dist/node_modules/bar/src/index.js'),
-        ];
+        ]);
 
         await expect(findConfigs()).resolves.toMatchObject([
             {
@@ -442,11 +442,11 @@ describe('pectin-api', () => {
             }),
         });
 
-        await [
+        await Promise.all([
             updateFile('watch-existing/lib/index.js'),
             // watch always builds _everything_
             updateFile('watch-existing/src/other.js'),
-        ];
+        ]);
 
         await expect(findConfigs({ watch: true })).resolves.toMatchObject([
             { watch: { clearScreen: false } },
