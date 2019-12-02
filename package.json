@@ -58,6 +58,7 @@
     "@types/clone-deep": "^4.0.1",
     "@types/cosmiconfig": "^5.0.3",
     "@types/jest": "^24.0.23",
+    "@types/npm-package-arg": "^6.1.0",
     "@types/npmlog": "^4.1.2",
     "@types/touch": "^3.1.1",
     "@typescript-eslint/eslint-plugin": "^2.10.0",

@@ -1,14 +1,19 @@
+/* eslint-disable @typescript-eslint/ban-ts-ignore */
 import dotProp = require('dot-prop');
+// @ts-ignore pending migration to typescript
 import babel = require('rollup-plugin-babel');
 import commonjs = require('rollup-plugin-commonjs');
+// @ts-ignore (TODO: migrate to @rollup/plugin-json)
 import json = require('rollup-plugin-json');
 import nodeResolve = require('rollup-plugin-node-resolve');
 import mainEntry from 'rollup-plugin-main-entry';
 import replace = require('rollup-plugin-replace');
 import subpathExternals from 'rollup-plugin-subpath-externals';
+// @ts-ignore pending migration to typescript(?)
 import svg = require('rollup-plugin-svg');
 import { terser } from 'rollup-plugin-terser';
 import babelrc from '@pectin/babelrc';
+/* eslint-enable */
 
 import { CoreProperties as PackageManifest } from '@schemastore/package';
 import { Plugin } from 'rollup';

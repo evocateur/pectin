@@ -1,6 +1,10 @@
+/* eslint-disable @typescript-eslint/ban-ts-ignore */
 import os = require('os');
+// @ts-ignore pending migration to typescript
 import project = require('@lerna/project');
+// @ts-ignore pending migration to typescript
 import runTopologically = require('@lerna/run-topologically');
+/* eslint-enable */
 
 import { CoreProperties as PackageManifest } from '@schemastore/package';
 import { RollupOptions } from 'rollup';

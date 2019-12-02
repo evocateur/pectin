@@ -18,7 +18,7 @@ export interface RollupOutputOptions extends OutputOptions {
 function safeName(name: string): string {
     const spec = npa(name);
 
-    return spec.scope ? spec.name.substr(spec.name.indexOf('/') + 1) : spec.name;
+    return spec.scope ? spec.name!.substr(spec.name!.indexOf('/') + 1) : spec.name!;
 }
 
 function nameToPascalCase(str: string): string {
@@ -100,11 +100,14 @@ export function getOutput(pkg: PackageManifest, cwd: string): RollupOutputOption
 
             if (obj.format === 'umd') {
                 extra.name = nameToPascalCase(pkg.name!);
-                extra.globals = Object.keys(pkg.peerDependencies || {}).reduce((acc, dep) => {
-                    acc[dep] = nameToPascalCase(dep);
+                extra.globals = Object.keys(pkg.peerDependencies || {}).reduce(
+                    (acc: { [dep: string]: string }, dep: string) => {
+                        acc[dep] = nameToPascalCase(dep);
 
-                    return acc;
-                }, {});
+                        return acc;
+                    },
+                    {}
+                );
                 extra.indent = false;
             }
 
