@@ -18,11 +18,14 @@ export async function isUpToDate(
     }
 
     // only need to test one output since all are built simultaneously
-    const firstOutput = Array.isArray(config.output) ? config.output[0] : config.output || {};
+    /* eslint-disable @typescript-eslint/no-non-null-assertion */
+    const firstOutput = Array.isArray(config.output)
+        ? config.output[0]
+        : /* istanbul ignore next */ config.output!;
     const outFile = firstOutput.dir
-        ? path.join(firstOutput.dir, firstOutput.entryFileNames || '')
-        : // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          firstOutput.file!;
+        ? path.join(firstOutput.dir, firstOutput.entryFileNames!)
+        : firstOutput.file!;
+    /* eslint-enable */
 
     // short-circuit if output hasn't been built yet
     let outputStat: fs.Stats;
