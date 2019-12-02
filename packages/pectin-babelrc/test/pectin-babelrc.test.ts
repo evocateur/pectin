@@ -47,6 +47,31 @@ expect.addSnapshotSerializer({
 });
 
 describe('pectin-babelrc', () => {
+    describe('with implicit cwd', () => {
+        afterEach(() => {
+            // avoid polluting other test state
+            process.chdir(REPO_ROOT);
+        });
+
+        it('begins search for config from process.cwd()', async () => {
+            const pkg = {
+                name: 'implicit-cwd',
+            };
+            const cwd = createFixture({
+                '.babelrc': File({
+                    presets: ['@babel/env'],
+                }),
+                'package.json': File(pkg),
+            });
+
+            process.chdir(cwd);
+
+            const rc = await pectinBabelrc(pkg);
+
+            expect(rc).toHaveProperty('cwd', cwd);
+        });
+    });
+
     it('generates config for rollup-plugin-babel', async () => {
         const pkg = {
             name: 'babel-7-config',
