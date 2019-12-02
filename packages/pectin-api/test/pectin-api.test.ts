@@ -306,8 +306,9 @@ describe('pectin-api', () => {
     });
 
     it('does not build a module with missing pkg.main', async () => {
-        // avoid console spam when error is logged
-        jest.spyOn(console, 'error').mockImplementation(() => {});
+        jest.spyOn(console, 'error').mockImplementation(() => {
+            /* avoid console spam when error is logged */
+        });
 
         createFixture({
             'no-pkg-main': Dir({

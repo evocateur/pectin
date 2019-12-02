@@ -42,7 +42,9 @@ export default function CLI(argv?: string[], cwd?: string) {
             // @ts-ignore (typescript can't handle ...string concatenation?!?)
             'Execute incremental rollup builds on all monorepo packages.\n' +
                 'Any additional (unknown) arguments are passed to the rollup CLI.',
-            () => {},
+            () => {
+                /* no-op builder */
+            },
             handler
         )
         .parserConfiguration({
