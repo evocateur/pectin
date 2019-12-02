@@ -3,10 +3,7 @@ import path = require('path');
 import { CoreProperties as PackageManifest } from '@schemastore/package';
 import { Plugin, InputOptions } from 'rollup';
 
-export default function mainEntry(
-    pkg: PackageManifest,
-    cwd = (pkg.cwd as string) || process.cwd()
-): Plugin {
+export default function mainEntry(pkg: PackageManifest, cwd: string = process.cwd()): Plugin {
     const { rollup: { rootDir = 'src' } = {} } = pkg;
 
     if (!pkg.main) {

@@ -87,14 +87,16 @@ describe('rollup-plugin-main-entry', () => {
         expect(chunk.exports).toContain('theAnswer');
     });
 
-    it('accepts custom cwd option', async () => {
+    it('accepts custom cwd parameter', async () => {
         const bundle = await rollup({
             plugins: [
                 stubInput('/bar/src/foo.js'),
-                mainEntry({
-                    main: 'lib/foo.js',
-                    cwd: '/bar',
-                }),
+                mainEntry(
+                    {
+                        main: 'lib/foo.js',
+                    },
+                    '/bar'
+                ),
             ],
         });
         const chunk = await getEntryChunk(bundle);
