@@ -2,5 +2,11 @@
 
 'use strict';
 
-// eslint-disable-next-line no-unused-expressions
-require('../lib/pectin-cli')().parse(process.argv.slice(2));
+/* eslint-disable
+    no-unused-expressions,
+    node/no-missing-require,
+    zillow/import/no-unresolved
+*/
+require('../dist/pectin-cli')
+    .default()
+    .parse(process.argv.slice(2));

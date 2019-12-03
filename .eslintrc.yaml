@@ -2,6 +2,7 @@
   extends:
     - plugin:zillow/recommended
     - plugin:zillow/jest
+    - plugin:import/typescript
     - plugin:node/recommended
   env:
     browser: false
@@ -9,15 +10,14 @@
   plugins:
     - node
   rules:
+    # prettier handles max-len fine
+    max-len: "off"
     no-restricted-syntax:
       - error
       - ForInStatement
       # allows ForOfStatement
       - LabeledStatement
       - WithStatement
-    node/no-unsupported-features:
-      - error
-      # version controlled by "engines" field in package.json
     padding-line-between-statements:
       - error
       # blank line before return statements
@@ -31,10 +31,31 @@
     prefer-object-spread: "off"
     strict: "off"
   root: true
+  settings:
+    'import/resolver':
+      'eslint-import-resolver-typescript': true
   overrides:
     - files:
         - "packages/*/test/**"
+      env:
+        jest: true
       rules:
         # dev dependencies are hoisted to the root
-        zillow/import/no-extraneous-dependencies: off
-        node/no-extraneous-require: off
+        zillow/import/no-extraneous-dependencies: "off"
+        node/no-extraneous-import: "off"
+        node/no-extraneous-require: "off"
+    - files: '*.ts'
+      parser: '@typescript-eslint/parser'
+      plugins:
+        - '@typescript-eslint'
+      extends:
+        - 'plugin:@typescript-eslint/recommended'
+      rules:
+        node/no-unsupported-features/es-syntax:
+          - error
+          - ignores:
+              - modules
+        # typescript completely bamboozles these rules
+        zillow/import/newline-after-import: "off"
+        zillow/import/first: "off"
+        node/no-missing-import: "off"

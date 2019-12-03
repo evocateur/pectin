@@ -1,7 +1,11 @@
-'use strict';
+import path = require('path');
+import dotProp = require('dot-prop');
 
-const path = require('path');
-const dotProp = require('dot-prop');
+import { CoreProperties as PackageManifest } from '@schemastore/package';
+
+function rebaseInput(rootDir: string, filePath: string): string {
+    return path.join(rootDir, path.basename(filePath));
+}
 
 /**
  * By convention, entry points live in the 'src' directory with
@@ -11,10 +15,10 @@ const dotProp = require('dot-prop');
  *  - pkg.rollup.rootDir: changes the value of 'src'
  *  - pkg.rollup.input: the full path to entry file
  *
- * @param {Object} pkg
+ * @param {PackageManifest} pkg
  * @return {String} input path resolved to cwd
  */
-module.exports = function getInput(pkg, cwd) {
+export function getInput(pkg: PackageManifest, cwd: string): string {
     if (!pkg.main) {
         const location = path.relative('.', path.join(cwd, 'package.json'));
 
@@ -25,8 +29,4 @@ module.exports = function getInput(pkg, cwd) {
     const input = dotProp.get(pkg, 'rollup.input', rebaseInput(rootDir, pkg.main));
 
     return path.resolve(cwd, input);
-};
-
-function rebaseInput(rootDir, filePath) {
-    return path.join(rootDir, path.basename(filePath));
 }

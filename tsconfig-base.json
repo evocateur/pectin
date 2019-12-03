@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+        /* Basic Options */
+        "target": "es2017",
+        "module": "commonjs",
+        "lib": ["es2017"],
+        "declaration": true,
+        "declarationMap": true,
+        "sourceMap": true,
+        "composite": true,
+        // "importHelpers": true,                 /* Import emit helpers from 'tslib'. */
+
+        /* Strict Type-Checking Options */
+        "strict": true,
+
+        /* Additional Checks */
+        "noUnusedLocals": true,                /* Report errors on unused locals. */
+        "noUnusedParameters": true,            /* Report errors on unused parameters. */
+        "noImplicitReturns": true,             /* Report error when not all code paths in function return a value. */
+        "noFallthroughCasesInSwitch": true,    /* Report errors for fallthrough cases in switch statement. */
+
+        /* Module Resolution Options */
+        "moduleResolution": "node",
+        // "preserveSymlinks": true,              /* Do not resolve the real path of symlinks. */
+
+        /* Advanced Options */
+        "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */
+    }
+}

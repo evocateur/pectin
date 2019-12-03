@@ -1,18 +1,25 @@
-'use strict';
+import {
+    rollup,
+    Plugin,
+    InputOptions,
+    OutputOptions,
+    RollupBuild,
+    OutputChunk,
+    PreRenderedChunk,
+} from 'rollup';
+import subpathExternals from '../lib/rollup-plugin-subpath-externals';
 
-const { rollup } = require('rollup');
-const subpathExternals = require('../');
-
-function stubFile(fileName, fileContent) {
+function stubFile(fileName: string, fileContent: string): Plugin {
     return {
-        resolveId: id => {
+        name: 'stub-file',
+        resolveId: (id): string => {
             if (id === fileName) {
                 return fileName;
             }
 
             return null;
         },
-        load: id => {
+        load: (id): string => {
             if (id === fileName) {
                 return fileContent;
             }
@@ -22,26 +29,30 @@ function stubFile(fileName, fileContent) {
     };
 }
 
-function stubInput(fileContent) {
+function stubInput(fileContent: string): Plugin {
     return {
         ...stubFile('stub.js', fileContent),
-        options: opts => {
+        name: 'stub-input',
+        options: (opts: InputOptions): InputOptions => {
             // eslint-disable-next-line no-param-reassign
             opts.input = 'stub.js';
+
+            return opts;
         },
     };
 }
 
-async function getEntryChunk(bundle, config = { format: 'esm' }) {
-    const { output } = await bundle.generate(config);
+async function getEntryChunk(bundle: RollupBuild, config?: OutputOptions): Promise<OutputChunk> {
+    const { output } = await bundle.generate(config || { format: 'esm' });
 
-    return output.find(chunk => chunk.isEntry);
+    // jesus this is convoluted. apparently interface extension only works for one hop?
+    return (output as OutputChunk[]).find(chunk => (chunk as PreRenderedChunk).isEntry);
 }
 
 describe('rollup-plugin-subpath-externals', () => {
     it('overwrites existing opts.external', async () => {
         const bundle = await rollup({
-            external: importee => `overwritten-${importee}`,
+            external: importee => !!`overwritten-${importee}`,
             plugins: [
                 stubInput(`
                     import trim from 'lodash/trim';
@@ -157,14 +168,15 @@ describe('rollup-plugin-subpath-externals', () => {
         const bundle = await rollup({
             plugins: [
                 {
-                    resolveId(id) {
+                    name: 'stub-whackadoodle',
+                    resolveId(id): string {
                         if (id === 'whackadoodle') {
                             return 'whackadoodle';
                         }
 
                         return null;
                     },
-                    load: id => {
+                    load(id): string {
                         if (id === 'whackadoodle') {
                             return 'export default function whackaDoodle(props) { return props.children; };';
                         }
@@ -200,6 +212,8 @@ describe('rollup-plugin-subpath-externals', () => {
             globals: {
                 react: 'React',
             },
+            // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+            // @ts-ignore (it bloody well works, mr. typescript)
             indent: '    ',
         });
 
@@ -208,7 +222,7 @@ describe('rollup-plugin-subpath-externals', () => {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('react')) :
     typeof define === 'function' && define.amd ? define(['react'], factory) :
     (global = global || self, global.StubComponent = factory(global.React));
-}(this, function (React) { 'use strict';
+}(this, (function (React) { 'use strict';
 
     React = React && React.hasOwnProperty('default') ? React['default'] : React;
 
@@ -218,7 +232,7 @@ describe('rollup-plugin-subpath-externals', () => {
 
     return stub;
 
-}));
+})));
 "
 `);
     });
@@ -244,14 +258,15 @@ describe('rollup-plugin-subpath-externals', () => {
         const bundle = await rollup({
             plugins: [
                 {
-                    resolveId(id) {
+                    name: 'stub-embedded',
+                    resolveId(id): string {
                         if (id === 'embedded') {
                             return 'embedded';
                         }
 
                         return null;
                     },
-                    load: id => {
+                    load(id): string {
                         if (id === 'embedded') {
                             return 'export default function embedded(k) { return k; };';
                         }
@@ -296,14 +311,15 @@ export default stub;
         const bundle = await rollup({
             plugins: [
                 {
-                    resolveId(id) {
+                    name: 'stub-inlined',
+                    resolveId(id): string {
                         if (id === 'inlined') {
                             return 'inlined';
                         }
 
                         return null;
                     },
-                    load: id => {
+                    load(id): string {
                         if (id === 'inlined') {
                             return 'export default function inlined(k) { return k; };';
                         }

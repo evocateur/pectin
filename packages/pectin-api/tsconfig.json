@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig-base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./lib"
+  },
+  "include": [
+    "lib/**/*"
+  ],
+  "references": [
+    {
+      "path": "../pectin-core"
+    }
+  ]
+}

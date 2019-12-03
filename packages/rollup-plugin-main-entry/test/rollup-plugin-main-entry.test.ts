@@ -1,21 +1,20 @@
-'use strict';
+import path = require('path');
+import { rollup, Plugin, RollupBuild, OutputChunk, PreRenderedChunk } from 'rollup';
+import mainEntry from '../lib/rollup-plugin-main-entry';
 
-const path = require('path');
-const { rollup } = require('rollup');
-const mainEntry = require('../');
-
-function stubInput(relativeFilePath) {
+function stubInput(relativeFilePath: string): Plugin {
     const fileName = path.resolve(relativeFilePath);
 
     return {
-        resolveId: id => {
+        name: 'stub-input',
+        resolveId: (id): string => {
             if (id === fileName) {
                 return fileName;
             }
 
             return null;
         },
-        load: id => {
+        load: (id): string => {
             if (id === fileName) {
                 return 'export const theAnswer = 42;';
             }
@@ -25,10 +24,11 @@ function stubInput(relativeFilePath) {
     };
 }
 
-async function getEntryChunk(bundle, config = { format: 'esm' }) {
-    const { output } = await bundle.generate(config);
+async function getEntryChunk(bundle: RollupBuild): Promise<OutputChunk> {
+    const { output } = await bundle.generate({ format: 'esm' });
 
-    return output.find(chunk => chunk.isEntry);
+    // jesus this is convoluted. apparently interface extension only works for one hop?
+    return (output as OutputChunk[]).find(chunk => (chunk as PreRenderedChunk).isEntry);
 }
 
 describe('rollup-plugin-main-entry', () => {
@@ -47,21 +47,6 @@ describe('rollup-plugin-main-entry', () => {
     it('provides cwd-resolved opts.input from rebased pkg.main', async () => {
         const bundle = await rollup({
             plugins: [stubInput('src/foo.js'), mainEntry({ main: 'lib/foo.js' })],
-        });
-        const chunk = await getEntryChunk(bundle);
-
-        expect(chunk.exports).toContain('theAnswer');
-    });
-
-    it('accepts custom rootDir option', async () => {
-        const bundle = await rollup({
-            plugins: [
-                stubInput('modules/foo.js'),
-                mainEntry({
-                    main: 'lib/foo.js',
-                    rootDir: 'modules',
-                }),
-            ],
         });
         const chunk = await getEntryChunk(bundle);
 
@@ -102,14 +87,16 @@ describe('rollup-plugin-main-entry', () => {
         expect(chunk.exports).toContain('theAnswer');
     });
 
-    it('accepts custom cwd option', async () => {
+    it('accepts custom cwd parameter', async () => {
         const bundle = await rollup({
             plugins: [
                 stubInput('/bar/src/foo.js'),
-                mainEntry({
-                    main: 'lib/foo.js',
-                    cwd: '/bar',
-                }),
+                mainEntry(
+                    {
+                        main: 'lib/foo.js',
+                    },
+                    '/bar'
+                ),
             ],
         });
         const chunk = await getEntryChunk(bundle);

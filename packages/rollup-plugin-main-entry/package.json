@@ -11,9 +11,10 @@
   "author": "Daniel Stockman <daniel.stockman@gmail.com>",
   "homepage": "https://github.com/evocateur/pectin/tree/latest/packages/rollup-plugin-main-entry#readme",
   "license": "ISC",
-  "main": "lib/rollup-plugin-main-entry.js",
+  "main": "dist/rollup-plugin-main-entry.js",
+  "types": "dist/rollup-plugin-main-entry.d.ts",
   "files": [
-    "lib"
+    "dist"
   ],
   "engines": {
     "node": ">=8.9"
@@ -27,5 +28,11 @@
   },
   "peerDependencies": {
     "rollup": ">=1.0.0"
+  },
+  "dependencies": {
+    "@schemastore/package": "^0.0.5"
+  },
+  "devDependencies": {
+    "ts-jest": "^24.2.0"
   }
 }

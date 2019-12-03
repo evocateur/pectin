@@ -1,17 +1,22 @@
-'use strict';
-
-const path = require('path');
-const Tacks = require('tacks');
-const tempy = require('tempy');
-const touch = require('touch');
-const { findConfigs, generateConfig, isUpToDate } = require('../');
+import path = require('path');
+import Tacks = require('tacks');
+import tempy = require('tempy');
+import touch = require('touch');
+import { findConfigs, generateConfig, isUpToDate } from '../lib/pectin-api';
 
 const { Dir, File, Symlink } = Tacks;
 
-const makeUpdater = cwd => {
+type UpdateHelper = {
+    (fp: string): Promise<void>;
+    cwd: string;
+};
+
+const makeUpdater = (cwd: string): UpdateHelper => {
     const ctime = Date.now() / 1000;
-    const opts = { mtime: ctime + 1 };
-    const updater = async fp => touch(path.join(cwd, 'modules', fp), opts);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore (the types are wrong, stuff it mr. typescript)
+    const opts: touch.Options = { mtime: ctime + 1 };
+    const updater = async (fp: string): Promise<void> => touch(path.join(cwd, 'modules', fp), opts);
 
     // avoid process.cwd() calls
     updater.cwd = cwd;
@@ -19,7 +24,9 @@ const makeUpdater = cwd => {
     return updater;
 };
 
-function createFixture(pkgSpec) {
+type TacksItem = Tacks.Dir | Tacks.File | Tacks.Symlink;
+
+function createFixture(pkgSpec: { [fp: string]: TacksItem }): UpdateHelper {
     const cwd = tempy.directory();
     const fixture = new Tacks(
         Dir({
@@ -170,11 +177,11 @@ describe('pectin-api', () => {
             }),
         });
 
-        await [
+        await Promise.all([
             updateFile('old-input/lib/index.js'),
             // less than OR equal
             updateFile('old-input/src/other.js'),
-        ];
+        ]);
 
         await expect(findConfigs()).resolves.toStrictEqual([]);
     });
@@ -240,14 +247,14 @@ describe('pectin-api', () => {
             }),
         });
 
-        await [
+        await Promise.all([
             updateFile('rooted-ignore/__tests__/ignored.js'),
             updateFile('rooted-ignore/node_modules/foo/index.js'),
             updateFile('rooted-ignore/src/__tests__/ignored.js'),
             updateFile('rooted-ignore/src/ignored-test.js'),
             updateFile('rooted-ignore/src/ignored.test.js'),
             updateFile('rooted-ignore/test/ignored.js'),
-        ];
+        ]);
 
         await expect(findConfigs()).resolves.toStrictEqual([]);
     });
@@ -274,7 +281,7 @@ describe('pectin-api', () => {
         await updateFile('unwatched/src/index.js');
 
         // simulate `rollup --watch`
-        process.env.ROLLUP_WATCH = true;
+        process.env.ROLLUP_WATCH = 'true';
 
         await expect(findConfigs()).resolves.toStrictEqual([]);
     });
@@ -299,8 +306,9 @@ describe('pectin-api', () => {
     });
 
     it('does not build a module with missing pkg.main', async () => {
-        // avoid console spam when error is logged
-        jest.spyOn(console, 'error').mockImplementation(() => {});
+        jest.spyOn(console, 'error').mockImplementation(() => {
+            /* avoid console spam when error is logged */
+        });
 
         createFixture({
             'no-pkg-main': Dir({
@@ -394,10 +402,10 @@ describe('pectin-api', () => {
             }),
         });
 
-        await [
+        await Promise.all([
             updateFile('app/src/other.js'),
             updateFile('lib/missing-dist/node_modules/bar/src/index.js'),
-        ];
+        ]);
 
         await expect(findConfigs()).resolves.toMatchObject([
             {
@@ -442,11 +450,11 @@ describe('pectin-api', () => {
             }),
         });
 
-        await [
+        await Promise.all([
             updateFile('watch-existing/lib/index.js'),
             // watch always builds _everything_
             updateFile('watch-existing/src/other.js'),
-        ];
+        ]);
 
         await expect(findConfigs({ watch: true })).resolves.toMatchObject([
             { watch: { clearScreen: false } },

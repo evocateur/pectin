@@ -1,5 +1,5 @@
 'use strict';
 
-module.exports = require('./lib/pectin-api').findConfigs({
+module.exports = require('./dist/pectin-api').findConfigs({
     cwd: process.cwd(),
 });

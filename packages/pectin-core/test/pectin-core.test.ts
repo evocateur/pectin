@@ -1,11 +1,9 @@
-'use strict';
-
-const path = require('path');
-const { rollup } = require('rollup');
-const Tacks = require('tacks');
-const tempy = require('tempy');
-const pMap = require('p-map');
-const pectinCore = require('../');
+import path = require('path');
+import { rollup, RollupOptions, RollupOutput, OutputOptions, OutputChunk } from 'rollup';
+import Tacks = require('tacks');
+import tempy = require('tempy');
+import pMap = require('p-map');
+import pectinCore from '../lib/pectin-core';
 
 const { Dir, File, Symlink } = Tacks;
 
@@ -16,7 +14,7 @@ afterEach(() => {
     process.chdir(REPO_ROOT);
 });
 
-function createFixture(pkgSpec) {
+function createFixture(pkgSpec): string {
     const cwd = tempy.directory();
     const fixture = new Tacks(
         Dir({
@@ -37,11 +35,19 @@ function createFixture(pkgSpec) {
     return cwd;
 }
 
-async function generateResults(configs) {
+async function generateResults(configs: RollupOptions[]): Promise<OutputChunk[]> {
     const results = await pMap(configs, ({ output: outputOptions, ...inputOptions }) =>
         rollup(inputOptions).then(bundle =>
-            Promise.all(outputOptions.map(opts => bundle.generate(opts))).then(generated =>
-                generated.reduce((arr, result) => arr.concat(result.output), [])
+            Promise.all(
+                (outputOptions as OutputOptions[]).map((opts: OutputOptions) =>
+                    bundle.generate(opts)
+                )
+            ).then((generated: RollupOutput[]) =>
+                generated.reduce(
+                    (arr: OutputChunk[], result) =>
+                        arr.concat((result.output as unknown) as OutputChunk),
+                    []
+                )
             )
         )
     );
@@ -498,7 +504,7 @@ export default Advanced;
 typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('react')) :
 typeof define === 'function' && define.amd ? define(['react'], factory) :
 (global = global || self, global.UnpkgUmdOutput = factory(global.React));
-}(this, function (React) { 'use strict';
+}(this, (function (React) { 'use strict';
 
 React = React && React.hasOwnProperty('default') ? React['default'] : React;
 
@@ -508,7 +514,7 @@ var index = (function () {
 
 return index;
 
-}));
+})));
 "
 `);
         expect(minOutput).toMatchInlineSnapshot(`
@@ -549,7 +555,7 @@ export default function main() {
 typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 typeof define === 'function' && define.amd ? define(factory) :
 (global = global || self, global.ScopedUmd = factory());
-}(this, function () { 'use strict';
+}(this, (function () { 'use strict';
 
 function main() {
   console.log(\\"yay\\");
@@ -557,7 +563,7 @@ function main() {
 
 return main;
 
-}));
+})));
 "
 `);
         expect(minOutput).toMatchInlineSnapshot(`

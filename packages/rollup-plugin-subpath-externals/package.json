@@ -11,9 +11,10 @@
   "author": "Daniel Stockman <daniel.stockman@gmail.com>",
   "homepage": "https://github.com/evocateur/pectin/tree/latest/packages/rollup-plugin-subpath-externals#readme",
   "license": "ISC",
-  "main": "lib/rollup-plugin-subpath-externals.js",
+  "main": "dist/rollup-plugin-subpath-externals.js",
+  "types": "dist/rollup-plugin-subpath-externals.d.ts",
   "files": [
-    "lib"
+    "dist"
   ],
   "engines": {
     "node": ">=8.9"
@@ -29,7 +30,11 @@
     "rollup": ">=1.0.0"
   },
   "dependencies": {
+    "@schemastore/package": "^0.0.5",
     "builtin-modules": "^3.0.0",
     "dot-prop": "^5.1.0"
+  },
+  "devDependencies": {
+    "ts-jest": "^24.2.0"
   }
 }

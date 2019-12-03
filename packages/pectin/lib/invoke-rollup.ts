@@ -1,12 +1,13 @@
-'use strict';
-
-const path = require('path');
-const resolveFrom = require('resolve-from');
-
-module.exports = invokeRollup;
+import path = require('path');
+import resolveFrom = require('resolve-from');
 
 // istanbul ignore next
-function invokeRollup(argv) {
+export function invokeRollup(argv: {
+    concurrency: number;
+    cwd: string;
+    watch: boolean;
+    _: string[];
+}): void {
     const corePath = resolveFrom(__dirname, '@pectin/api/package.json');
     const autoPath = path.join(path.dirname(corePath), 'auto.js');
     const opts = ['--config', autoPath];
@@ -19,7 +20,11 @@ function invokeRollup(argv) {
         opts.push(...argv._);
     }
 
-    /* eslint-disable global-require, zillow/import/no-dynamic-require */
+    /* eslint-disable
+        global-require,
+        zillow/import/no-dynamic-require,
+        @typescript-eslint/no-var-requires
+    */
     // @see https://github.com/zkat/npx/blob/b7c8b9f07605b9f41931ad3ef8e74a65d2f062bb/index.js#L258-L268
     const Module = require('module');
     const rollupPkg = resolveFrom(argv.cwd, 'rollup/package.json');

@@ -11,9 +11,10 @@
   "author": "Daniel Stockman <daniel.stockman@gmail.com>",
   "homepage": "https://github.com/evocateur/pectin/tree/latest/packages/rollup-config-pectin#readme",
   "license": "ISC",
-  "main": "lib/rollup-config-pectin.js",
+  "main": "dist/rollup-config-pectin.js",
+  "types": "dist/rollup-config-pectin.d.ts",
   "files": [
-    "lib"
+    "dist"
   ],
   "engines": {
     "node": ">=8.9"
@@ -29,6 +30,10 @@
     "rollup": ">=1.12.0"
   },
   "dependencies": {
-    "@pectin/core": "file:../pectin-core"
+    "@pectin/core": "file:../pectin-core",
+    "@schemastore/package": "^0.0.5"
+  },
+  "devDependencies": {
+    "ts-jest": "^24.2.0"
   }
 }

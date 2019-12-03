@@ -9,9 +9,10 @@
   "author": "Daniel Stockman <daniel.stockman@gmail.com>",
   "homepage": "https://github.com/evocateur/pectin/tree/latest/packages/pectin-babelrc#readme",
   "license": "ISC",
-  "main": "lib/pectin-babelrc.js",
+  "main": "dist/pectin-babelrc.js",
+  "types": "dist/pectin-babelrc.d.ts",
   "files": [
-    "lib"
+    "dist"
   ],
   "engines": {
     "node": ">=8.9"
@@ -27,13 +28,18 @@
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "peerDependencies": {
+    "rollup": ">=1.12.0",
     "rollup-plugin-babel": "^4.2.0"
   },
   "dependencies": {
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/plugin-transform-runtime": "^7.2.0",
+    "@schemastore/package": "^0.0.5",
     "clone-deep": "^4.0.1",
     "cosmiconfig": "^5.2.0",
     "resolve-from": "^5.0.0"
+  },
+  "devDependencies": {
+    "ts-jest": "^24.2.0"
   }
 }

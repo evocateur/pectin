@@ -4,7 +4,7 @@
 module.exports = {
     cacheDirectory: '<rootDir>/node_modules/.cache/jest',
     clearMocks: true,
-    collectCoverageFrom: ['**/lib/*.js'],
+    collectCoverageFrom: ['**/lib/*.ts'],
     coverageDirectory: '<rootDir>/coverage',
     coverageReporters: ['cobertura', 'html', 'text'],
     coverageThreshold: {
@@ -17,4 +17,5 @@ module.exports = {
     },
     roots: ['<rootDir>/packages'],
     testEnvironment: 'node',
+    preset: 'ts-jest',
 };

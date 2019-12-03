@@ -11,13 +11,14 @@
   "author": "Daniel Stockman <daniel.stockman@gmail.com>",
   "homepage": "https://github.com/evocateur/pectin/tree/latest/packages/pectin#readme",
   "license": "ISC",
-  "main": "lib/pectin-cli.js",
+  "main": "dist/pectin-cli.js",
+  "types": "dist/pectin-cli.d.ts",
   "bin": {
     "pectin": "bin/pectin"
   },
   "files": [
     "bin",
-    "lib"
+    "dist"
   ],
   "engines": {
     "node": ">=8.9"
@@ -38,5 +39,8 @@
     "resolve-from": "^5.0.0",
     "rollup": "^1.23.1",
     "yargs": "^14.2.0"
+  },
+  "devDependencies": {
+    "ts-jest": "^24.2.0"
   }
 }

@@ -1,27 +1,40 @@
-'use strict';
+/* eslint-disable @typescript-eslint/ban-ts-ignore */
+import dotProp = require('dot-prop');
+// @ts-ignore pending migration to typescript
+import babel = require('rollup-plugin-babel');
+import commonjs = require('rollup-plugin-commonjs');
+// @ts-ignore (TODO: migrate to @rollup/plugin-json)
+import json = require('rollup-plugin-json');
+import nodeResolve = require('rollup-plugin-node-resolve');
+import mainEntry from 'rollup-plugin-main-entry';
+import replace = require('rollup-plugin-replace');
+import subpathExternals from 'rollup-plugin-subpath-externals';
+// @ts-ignore pending migration to typescript(?)
+import svg = require('rollup-plugin-svg');
+import { terser } from 'rollup-plugin-terser';
+import babelrc from '@pectin/babelrc';
+/* eslint-enable */
 
-const dotProp = require('dot-prop');
-const babel = require('rollup-plugin-babel');
-const commonjs = require('rollup-plugin-commonjs');
-const json = require('rollup-plugin-json');
-const nodeResolve = require('rollup-plugin-node-resolve');
-const mainEntry = require('rollup-plugin-main-entry');
-const replace = require('rollup-plugin-replace');
-const subpathExternals = require('rollup-plugin-subpath-externals');
-const svg = require('rollup-plugin-svg');
-const { terser } = require('rollup-plugin-terser');
-const babelrc = require('@pectin/babelrc');
+import { CoreProperties as PackageManifest } from '@schemastore/package';
+import { Plugin } from 'rollup';
+import { RollupOutputOptions } from './getOutput';
 
-module.exports = async function getPlugins(pkg, cwd, output) {
-    const env = dotProp.get(output, 'env');
-    const fmt = dotProp.get(output, 'format');
+export async function getPlugins(
+    pkg: PackageManifest,
+    cwd: string,
+    output: RollupOutputOptions
+): Promise<Plugin[]> {
+    const env: string | undefined = dotProp.get(output, 'env');
+    const fmt: string | undefined = dotProp.get(output, 'format');
     const min = fmt === 'umd' && env === 'production';
     const rc = await babelrc(pkg, cwd, output);
 
     return [
-        mainEntry(pkg),
+        mainEntry(pkg, cwd),
         subpathExternals(pkg, output),
         // https://github.com/rollup/rollup-plugin-node-resolve#usage
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore (it fucking works, goddammit)
         nodeResolve({
             preferBuiltins: true,
             // https://github.com/rollup/rollup-plugin-node-resolve/pull/151
@@ -35,6 +48,8 @@ module.exports = async function getPlugins(pkg, cwd, output) {
             ],
         }),
         // https://github.com/rollup/rollup-plugin-replace#usage
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore (it fucking works, goddammit)
         replace(
             Object.assign(env ? { 'process.env.NODE_ENV': JSON.stringify(env) } : {}, {
                 'process.env.BROWSER': JSON.stringify(output.browser || false),
@@ -48,9 +63,12 @@ module.exports = async function getPlugins(pkg, cwd, output) {
         // https://github.com/rollup/rollup-plugin-babel#configuring-babel
         babel(rc),
         // https://github.com/rollup/rollup-plugin-commonjs#usage
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore (it fucking works, goddammit)
         commonjs(),
         min &&
             terser({
+                /* eslint-disable @typescript-eslint/camelcase */
                 // https://github.com/terser-js/terser#minify-options
                 compress: {
                     pure_getters: true,
@@ -61,6 +79,7 @@ module.exports = async function getPlugins(pkg, cwd, output) {
                     keep_classnames: true,
                     keep_fnames: true,
                 },
+                /* eslint-enable @typescript-eslint/camelcase */
             }),
     ].filter(x => Boolean(x));
-};
+}
