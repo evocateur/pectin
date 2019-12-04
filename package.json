@@ -19,7 +19,7 @@
   },
   "scripts": {
     "prepare": "npm run build",
-    "build": "tsc -b",
+    "build": "tsc --build --verbose",
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint --ignore-path .gitignore --ext js,ts .",
     "pretest": "npm run lint",
     "test": "jest --coverage"
