@@ -42,6 +42,7 @@
     "globby": "^10.0.1"
   },
   "devDependencies": {
+    "tacks": "^1.3.0",
     "ts-jest": "^24.2.0"
   }
 }
