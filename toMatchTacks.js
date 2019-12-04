@@ -1,9 +1,15 @@
 'use strict';
 
+/* eslint-disable
+    zillow/import/no-extraneous-dependencies,
+    node/no-extraneous-require,
+    node/no-unpublished-require
+*/
 const path = require('path');
 const Tacks = require('tacks');
 const loadFromDir = require('tacks/load-from-dir');
 const diff = require('jest-diff');
+/* eslint-enable */
 
 module.exports = toMatchTacks;
 
