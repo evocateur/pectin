@@ -34,6 +34,9 @@
   settings:
     'import/resolver':
       'eslint-import-resolver-typescript': true
+    # avoid eslint-plugin-node tripping over TS
+    node:
+      tryExtensions: ['.ts', '.js']
   overrides:
     - files:
         - "packages/*/test/**"
@@ -42,8 +45,6 @@
       rules:
         # dev dependencies are hoisted to the root
         zillow/import/no-extraneous-dependencies: "off"
-        node/no-extraneous-import: "off"
-        node/no-extraneous-require: "off"
     - files: '*.ts'
       parser: '@typescript-eslint/parser'
       plugins:
@@ -58,4 +59,3 @@
         # typescript completely bamboozles these rules
         zillow/import/newline-after-import: "off"
         zillow/import/first: "off"
-        node/no-missing-import: "off"
