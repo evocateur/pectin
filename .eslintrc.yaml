@@ -1,67 +1,67 @@
 ---
-  extends:
-    - plugin:zillow/recommended
-    - plugin:zillow/jest
-    - plugin:import/typescript
-    - plugin:node/recommended
-  env:
-    browser: false
-    node: true
-  plugins:
-    - node
-  rules:
-    # prettier handles max-len fine
-    max-len: "off"
-    no-restricted-syntax:
-      - error
-      - ForInStatement
-      # allows ForOfStatement
-      - LabeledStatement
-      - WithStatement
-    padding-line-between-statements:
-      - error
-      # blank line before return statements
-      - { blankLine: "always", prev: "*", next: "return" }
-      # blank line after const/let statement(s)
-      - { blankLine: "always", prev: ["const", "let"], next: "*" }
-      - { blankLine: "any",    prev: ["const", "let"], next: ["const", "let"] }
-      # blank line before and after multi-line block-like statements
-      - { blankLine: "always", prev: "*", next: "multiline-block-like" }
-      - { blankLine: "always", prev: "multiline-block-like", next: "*" }
-    prefer-object-spread: "off"
-    strict: "off"
-    # extend missing eslint-plugin-zillow patterns
-    zillow/import/no-extraneous-dependencies:
-      - error
-      - devDependencies: ["**/test/**"]
-  root: true
-  settings:
-    # effectively extending import/typescript config
-    'import/extensions': ['.ts', '.d.ts', '.js', '.json']
-    'import/parsers':
-      '@typescript-eslint/parser': ['.ts', '.d.ts']
-    'import/resolver':
-      node:
-        extensions: ['.ts', '.d.ts', '.js', '.json']
-      'eslint-import-resolver-typescript': true
-    # avoid eslint-plugin-node tripping over TS
+extends:
+  - plugin:zillow/recommended
+  - plugin:zillow/jest
+  - plugin:import/typescript
+  - plugin:node/recommended
+env:
+  browser: false
+  node: true
+plugins:
+  - node
+rules:
+  # prettier handles max-len fine
+  max-len: 'off'
+  no-restricted-syntax:
+    - error
+    - ForInStatement
+    # allows ForOfStatement
+    - LabeledStatement
+    - WithStatement
+  padding-line-between-statements:
+    - error
+    # blank line before return statements
+    - { blankLine: 'always', prev: '*', next: 'return' }
+    # blank line after const/let statement(s)
+    - { blankLine: 'always', prev: ['const', 'let'], next: '*' }
+    - { blankLine: 'any', prev: ['const', 'let'], next: ['const', 'let'] }
+    # blank line before and after multi-line block-like statements
+    - { blankLine: 'always', prev: '*', next: 'multiline-block-like' }
+    - { blankLine: 'always', prev: 'multiline-block-like', next: '*' }
+  prefer-object-spread: 'off'
+  strict: 'off'
+  # extend missing eslint-plugin-zillow patterns
+  zillow/import/no-extraneous-dependencies:
+    - error
+    - devDependencies: ['**/test/**']
+root: true
+settings:
+  # effectively extending import/typescript config
+  'import/extensions': ['.ts', '.d.ts', '.js', '.json']
+  'import/parsers':
+    '@typescript-eslint/parser': ['.ts', '.d.ts']
+  'import/resolver':
     node:
-      tryExtensions: ['.ts', '.js']
-  overrides:
-    - files: "**/test/**"
-      env:
-        jest: true
-    - files: '*.ts'
-      parser: '@typescript-eslint/parser'
-      plugins:
-        - '@typescript-eslint'
-      extends:
-        - 'plugin:@typescript-eslint/recommended'
-      rules:
-        node/no-unsupported-features/es-syntax:
-          - error
-          - ignores:
-              - modules
-        # typescript completely bamboozles these rules
-        zillow/import/newline-after-import: "off"
-        zillow/import/first: "off"
+      extensions: ['.ts', '.d.ts', '.js', '.json']
+    'eslint-import-resolver-typescript': true
+  # avoid eslint-plugin-node tripping over TS
+  node:
+    tryExtensions: ['.ts', '.js']
+overrides:
+  - files: '**/test/**'
+    env:
+      jest: true
+  - files: '*.ts'
+    parser: '@typescript-eslint/parser'
+    plugins:
+      - '@typescript-eslint'
+    extends:
+      - 'plugin:@typescript-eslint/recommended'
+    rules:
+      node/no-unsupported-features/es-syntax:
+        - error
+        - ignores:
+            - modules
+      # typescript completely bamboozles these rules
+      zillow/import/newline-after-import: 'off'
+      zillow/import/first: 'off'
