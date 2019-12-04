@@ -30,6 +30,10 @@
     }
   },
   "lint-staged": {
+    "*.{yaml,yml}": [
+      "prettier --write",
+      "git add"
+    ],
     "*.[jt]s": [
       "eslint --fix",
       "jest --find-related-tests",
