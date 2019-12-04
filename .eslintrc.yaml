@@ -30,6 +30,10 @@
       - { blankLine: "always", prev: "multiline-block-like", next: "*" }
     prefer-object-spread: "off"
     strict: "off"
+    # extend missing eslint-plugin-zillow patterns
+    zillow/import/no-extraneous-dependencies:
+      - error
+      - devDependencies: ["**/test/**"]
   root: true
   settings:
     'import/resolver':
@@ -38,13 +42,9 @@
     node:
       tryExtensions: ['.ts', '.js']
   overrides:
-    - files:
-        - "packages/*/test/**"
+    - files: "**/test/**"
       env:
         jest: true
-      rules:
-        # dev dependencies are hoisted to the root
-        zillow/import/no-extraneous-dependencies: "off"
     - files: '*.ts'
       parser: '@typescript-eslint/parser'
       plugins:
