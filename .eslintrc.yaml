@@ -36,7 +36,13 @@
       - devDependencies: ["**/test/**"]
   root: true
   settings:
+    # effectively extending import/typescript config
+    'import/extensions': ['.ts', '.d.ts', '.js', '.json']
+    'import/parsers':
+      '@typescript-eslint/parser': ['.ts', '.d.ts']
     'import/resolver':
+      node:
+        extensions: ['.ts', '.d.ts', '.js', '.json']
       'eslint-import-resolver-typescript': true
     # avoid eslint-plugin-node tripping over TS
     node:
