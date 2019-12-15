@@ -146,6 +146,8 @@ describe('pectin-babelrc', () => {
         const opts = await pectinBabelrc(pkg, cwd);
 
         // cosmiconfig caches live objects
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore (artificial example)
         opts.foo = 'bar';
 
         const rc = await pectinBabelrc(pkg, cwd);

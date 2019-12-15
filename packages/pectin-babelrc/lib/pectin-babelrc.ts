@@ -1,10 +1,30 @@
 import path = require('path');
 import cloneDeep = require('clone-deep');
-import cosmiconfig = require('cosmiconfig');
+import { cosmiconfig } from 'cosmiconfig';
 import resolveFrom = require('resolve-from');
 
 import { CoreProperties as PackageManifest } from '@schemastore/package';
 import { OutputOptions } from 'rollup';
+
+// lazy copypasta of https://github.com/babel/babel/blob/e74efd2/packages/babel-core/src/config/validation/options.js#L249-L257
+type PluginOptions = {};
+type PluginTarget = string;
+type PluginIdentifier = string;
+type PluginItem =
+    | PluginTarget
+    | [PluginTarget, PluginOptions]
+    | [PluginTarget, PluginOptions, PluginIdentifier];
+
+// TODO: employ @rollup/plugin-babel types when they are available
+type RuntimeConfig = {
+    babelrc: boolean;
+    cwd: string;
+    exclude: string;
+    extensions: string[];
+    presets: PluginItem[];
+    plugins: PluginItem[];
+    runtimeHelpers?: boolean;
+};
 
 const explorer = cosmiconfig('babel', {
     // we cannot cache transform because per-package dependencies affect result
@@ -42,20 +62,23 @@ function resolveDependencyVersion(cwd: string, depName: string): string | undefi
     return pkgPath ? require(pkgPath).version : undefined;
 }
 
-function ensureRuntimeHelpers(
-    rc: cosmiconfig.Config,
-    entryOptions: { useESModules: boolean; version: string | undefined; corejs?: number }
-): void {
+type BabelEntryOptions = {
+    useESModules: boolean;
+    version: string | undefined;
+    corejs?: number;
+};
+
+function ensureRuntimeHelpers(rc: RuntimeConfig, entryOptions: BabelEntryOptions): void {
     if (rc.plugins.some(hasSimpleTransform)) {
         const idx = rc.plugins.findIndex(hasSimpleTransform);
-        const name = rc.plugins[idx];
+        const name = rc.plugins[idx] as string;
 
         rc.plugins.splice(idx, 1, [name, entryOptions]);
     } else if (rc.plugins.some(hasAdvancedTransform)) {
         const idx = rc.plugins.findIndex(hasAdvancedTransform);
-        const [name, config = {}] = rc.plugins[idx];
+        const [name, config = {}] = rc.plugins[idx] as [PluginTarget, PluginOptions];
 
-        rc.plugins.splice(idx, 1, [name, { ...config, ...entryOptions }]);
+        rc.plugins.splice(idx, 1, [name as string, { ...config, ...entryOptions }]);
     } else {
         rc.plugins.push(['@babel/plugin-transform-runtime', entryOptions]);
     }
@@ -72,7 +95,7 @@ export default async function babelrc(
     pkg: PackageManifest,
     cwd: string = process.cwd(),
     output?: OutputOptions
-): Promise<cosmiconfig.Config> {
+): Promise<RuntimeConfig> {
     const { format = 'cjs' } = output || {};
     const searchResult = await explorer.search(cwd);
 
