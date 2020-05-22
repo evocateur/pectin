@@ -22,7 +22,7 @@ function invokeRollup(argv) {
     /* eslint-disable global-require, zillow/import/no-dynamic-require */
     // @see https://github.com/zkat/npx/blob/b7c8b9f07605b9f41931ad3ef8e74a65d2f062bb/index.js#L258-L268
     const Module = require('module');
-    const rollupPkg = resolveFrom(argv.cwd, 'rollup/package.json');
+    const rollupPkg = resolveFrom(__dirname, 'rollup/package.json');
     // instead of hard-coded subpath, read package.json metadata to retrieve bin location
     const rollupBin = path.join(path.dirname(rollupPkg), require(rollupPkg).bin.rollup);
 
