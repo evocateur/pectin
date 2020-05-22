@@ -498,9 +498,9 @@ export default Advanced;
 typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('react')) :
 typeof define === 'function' && define.amd ? define(['react'], factory) :
 (global = global || self, global.UnpkgUmdOutput = factory(global.React));
-}(this, function (React) { 'use strict';
+}(this, (function (React) { 'use strict';
 
-React = React && React.hasOwnProperty('default') ? React['default'] : React;
+React = React && Object.prototype.hasOwnProperty.call(React, 'default') ? React['default'] : React;
 
 var index = (function () {
   return React.render(\\"woo\\");
@@ -508,11 +508,11 @@ var index = (function () {
 
 return index;
 
-}));
+})));
 "
 `);
         expect(minOutput).toMatchInlineSnapshot(`
-"!function(e,t){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?module.exports=t(require(\\"react\\")):\\"function\\"==typeof define&&define.amd?define([\\"react\\"],t):(e=e||self).UnpkgUmdOutput=t(e.React)}(this,(function(e){\\"use strict\\";e=e&&e.hasOwnProperty(\\"default\\")?e.default:e;return function(){return e.render(\\"woo\\")}}));
+"!function(e,t){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?module.exports=t(require(\\"react\\")):\\"function\\"==typeof define&&define.amd?define([\\"react\\"],t):(e=e||self).UnpkgUmdOutput=t(e.React)}(this,(function(e){\\"use strict\\";e=e&&Object.prototype.hasOwnProperty.call(e,\\"default\\")?e.default:e;return function(){return e.render(\\"woo\\")}}));
 "
 `);
     });
@@ -549,7 +549,7 @@ export default function main() {
 typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 typeof define === 'function' && define.amd ? define(factory) :
 (global = global || self, global.ScopedUmd = factory());
-}(this, function () { 'use strict';
+}(this, (function () { 'use strict';
 
 function main() {
   console.log(\\"yay\\");
@@ -557,7 +557,7 @@ function main() {
 
 return main;
 
-}));
+})));
 "
 `);
         expect(minOutput).toMatchInlineSnapshot(`
