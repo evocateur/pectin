@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.6.2](https://github.com/evocateur/pectin/compare/pectin@3.6.1...pectin@3.6.2) (2020-05-22)
+
+
+### Bug Fixes
+
+* **cli:** Always resolve rollup from installed location, not CWD ([291a6fa](https://github.com/evocateur/pectin/commit/291a6fa54c592ca018b2bdef24358a61dc05014c))
+
+
+
+
+
 ## [3.6.1](https://github.com/evocateur/pectin/compare/pectin@3.6.0...pectin@3.6.1) (2019-10-17)
 
 **Note:** Version bump only for package pectin

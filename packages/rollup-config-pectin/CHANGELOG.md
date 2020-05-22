@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.4](https://github.com/evocateur/pectin/compare/rollup-config-pectin@4.0.3...rollup-config-pectin@4.0.4) (2020-05-22)
+
+
+### Bug Fixes
+
+* **core:** Preserve format extensions against Rollup v2 chicanery ([14efe1e](https://github.com/evocateur/pectin/commit/14efe1e2dcd99294d86fabf0acbbf4020ed8bade))
+
+
+
+
+
 ## [4.0.3](https://github.com/evocateur/pectin/compare/rollup-config-pectin@4.0.2...rollup-config-pectin@4.0.3) (2019-08-21)
 
 **Note:** Version bump only for package rollup-config-pectin
