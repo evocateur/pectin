@@ -8,14 +8,11 @@ const dotProp = require('dot-prop');
 module.exports = function getOutput(pkg, cwd) {
     const output = [];
 
-    // generated chunks as of rollup v0.68.0 need chunkFileNames, not entryFileNames
-    const chunkFileNames = dotProp.get(pkg, 'rollup.chunkFileNames', '[name]-[hash].[format].js');
-    const entryFileNames = dotProp.get(pkg, 'rollup.entryFileNames', '[name].[format].js');
-
     output.push({
         format: 'cjs',
         dir: path.dirname(path.resolve(cwd, pkg.main)),
-        chunkFileNames,
+        // generated chunks as of rollup v0.68.0 need chunkFileNames, not entryFileNames
+        chunkFileNames: dotProp.get(pkg, 'rollup.chunkFileNames', '[name]-[hash].cjs.js'),
         // only one entry point, thus no pattern is required
         entryFileNames: path.basename(pkg.main),
     });
@@ -24,8 +21,8 @@ module.exports = function getOutput(pkg, cwd) {
         output.push({
             format: 'esm',
             dir: path.dirname(path.resolve(cwd, pkg.module)),
-            chunkFileNames,
-            entryFileNames,
+            chunkFileNames: dotProp.get(pkg, 'rollup.chunkFileNames', '[name]-[hash].esm.js'),
+            entryFileNames: dotProp.get(pkg, 'rollup.entryFileNames', '[name].esm.js'),
         });
     }
 

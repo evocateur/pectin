@@ -36,7 +36,7 @@ Object {
   "input": "<REPO_ROOT>/packages/rollup-config-pectin/src/rollup-config-pectin.js",
   "output": Array [
     Object {
-      "chunkFileNames": "[name]-[hash].[format].js",
+      "chunkFileNames": "[name]-[hash].cjs.js",
       "dir": "<REPO_ROOT>/packages/rollup-config-pectin/lib",
       "entryFileNames": "rollup-config-pectin.js",
       "exports": "auto",
